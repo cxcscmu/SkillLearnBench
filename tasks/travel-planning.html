@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>travel-planning — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>travel-planning</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Information Retrieval › Web Search</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 5 instances</span>
+    </div>
+    <p class="task-description">Build a 7-day travel itinerary using a provided database of cities, restaurants, accommodations, attractions, and driving distances. The agent must follow budget constraints, cuisine preferences, pet-friendly requirements, and transportation limitations.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 5</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>## Task
+Build an itinerary for the user according to the following requirements:
+&quot;We require a 7-day travel itinerary for two leaving from Minneapolis and covering three cities in Ohio, starting from March 17th to March 23rd, 2022. Our budget is up to $5,100. We will be accompanied by our pet dog, so we need pet-friendly accommodations. Our meals should preferably include American, Mediterranean, Chinese, and Italian cuisines. Please note we prefer not to take any flights so our travel plan should not include them.&quot;
+
+## Rules
+- You must search for real-world data in the provided database, do not use data/POIs from your memory.
+
+## Output Format (JSON file)
+
+Produce a single JSON file to `/app/output/itinerary.json` with the following structure:
+
+**Top-level keys:**
+- `plan`: array of exactly 7 day objects (see below)
+- `data_sources`: array of strings listing dataset files used (e.g., `[&quot;background/citySet_with_states.txt&quot;, &quot;restaurants/clean_restaurant_2022.csv&quot;]`)
+
+**Each day object in `plan` must contain:**
+- `day`: integer day number (1–7)
+- `current_city`: string (city name, or `&quot;from A to B&quot;` when moving between cities)
+- `transportation`: string (e.g., `&quot;Self-driving: from A to B&quot;`; do not use flights)
+- `breakfast`, `lunch`, `dinner`: string; use `&quot;-&quot;` if intentionally skipped
+- `attraction`: string; list multiple attractions separated by `;` and end with `;` (e.g., `&quot;Rock &amp; Roll Hall of Fame;West Side Market;&quot;`)
+- `accommodation`: string; pet-friendly lodging
+
+**Example:**
+```json
+{
+  &quot;plan&quot;: [
+    {
+      &quot;day&quot;: 1,
+      &quot;current_city&quot;: &quot;Minneapolis&quot;,
+      &quot;transportation&quot;: &quot;Self-driving: from Minneapolis to Cleveland&quot;,
+      &quot;breakfast&quot;: &quot;Hell&#x27;s Kitchen, Minneapolis&quot;,
+      &quot;lunch&quot;: &quot;American cuisine at The Loon Cafe, Minneapolis&quot;,
+      &quot;dinner&quot;: &quot;Italian at Bar La Grassa, Minneapolis&quot;,
+      &quot;attraction&quot;: &quot;Minnehaha Falls;Walker Art Center;&quot;,
+      &quot;accommodation&quot;: &quot;Pet-friendly Hyatt Regency Minneapolis&quot;
+    }
+  ],
+  &quot;data_sources&quot;: [
+    &quot;background/citySet_with_states.txt&quot;,
+    &quot;accommodations/clean_accommodations_2022.csv&quot;,
+    &quot;restaurants/clean_restaurant_2022.csv&quot;,
+    &quot;attractions/attractions.csv&quot;,
+    &quot;googleDistanceMatrix/distance.csv&quot;
+  ]
+}
+```</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>## Task
+Build an itinerary for the user according to the following requirements:
+&quot;We require a 7-day travel itinerary for two leaving from Minneapolis and covering three cities in Ohio, starting from March 17th to March 23rd, 2022. Our budget is up to $5,100. We will be accompanied by our pet dog, so we need pet-friendly accommodations. Our meals should preferably include BBQ, Seafood, Chinese, and Mexican cuisines. Please note we prefer not to take any flights so our travel plan should not include them.&quot;
+
+## Rules
+- You must search for real-world data in the provided database, do not use data/POIs from your memory.
+
+## Output Format (JSON file)
+
+Produce a single JSON file to `/app/output/itinerary.json` with the following structure:
+
+**Top-level keys:**
+- `plan`: array of exactly 7 day objects (see below)
+- `data_sources`: array of strings listing dataset files used (e.g., `[&quot;background/citySet_with_states.txt&quot;, &quot;restaurants/clean_restaurant_2022.csv&quot;]`)
+
+**Each day object in `plan` must contain:**
+- `day`: integer day number (1–7)
+- `current_city`: string (city name, or `&quot;from A to B&quot;` when moving between cities)
+- `transportation`: string (e.g., `&quot;Self-driving: from A to B&quot;`; do not use flights)
+- `breakfast`, `lunch`, `dinner`: string; use `&quot;-&quot;` if intentionally skipped
+- `attraction`: string; list multiple attractions separated by `;` and end with `;` (e.g., `&quot;Rock &amp; Roll Hall of Fame;West Side Market;&quot;`)
+- `accommodation`: string; pet-friendly lodging
+
+**Example:**
+```json
+{
+  &quot;plan&quot;: [
+    {
+      &quot;day&quot;: 1,
+      &quot;current_city&quot;: &quot;Minneapolis&quot;,
+      &quot;transportation&quot;: &quot;Self-driving: from Minneapolis to Cleveland&quot;,
+      &quot;breakfast&quot;: &quot;Hell&#x27;s Kitchen, Minneapolis&quot;,
+      &quot;lunch&quot;: &quot;American cuisine at The Loon Cafe, Minneapolis&quot;,
+      &quot;dinner&quot;: &quot;Italian at Bar La Grassa, Minneapolis&quot;,
+      &quot;attraction&quot;: &quot;Minnehaha Falls;Walker Art Center;&quot;,
+      &quot;accommodation&quot;: &quot;Pet-friendly Hyatt Regency Minneapolis&quot;
+    }
+  ],
+  &quot;data_sources&quot;: [
+    &quot;background/citySet_with_states.txt&quot;,
+    &quot;accommodations/clean_accommodations_2022.csv&quot;,
+    &quot;restaurants/clean_restaurant_2022.csv&quot;,
+    &quot;attractions/attractions.csv&quot;,
+    &quot;googleDistanceMatrix/distance.csv&quot;
+  ]
+}
+```</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>## Task
+Build an itinerary for the user according to the following requirements:
+&quot;We require a 7-day travel itinerary for two leaving from Minneapolis and covering three cities in Ohio, starting from March 17th to March 23rd, 2022. Our budget is up to $5,100. We will be accompanied by our pet dog, so we need pet-friendly accommodations. Our meals should preferably include American, Mediterranean, Chinese, and Italian cuisines. Please note we prefer not to take any flights so our travel plan should not include them. Also, on day 4, we do not want to visit any attractions. &quot;
+
+## Rules
+- You must search for real-world data in the provided database, do not use data/POIs from your memory.
+
+## Output Format (JSON file)
+
+Produce a single JSON file to `/app/output/itinerary.json` with the following structure:
+
+**Top-level keys:**
+- `plan`: array of exactly 7 day objects (see below)
+- `data_sources`: array of strings listing dataset files used (e.g., `[&quot;background/citySet_with_states.txt&quot;, &quot;restaurants/clean_restaurant_2022.csv&quot;]`)
+
+**Each day object in `plan` must contain:**
+- `day`: integer day number (1–7)
+- `current_city`: string (city name, or `&quot;from A to B&quot;` when moving between cities)
+- `transportation`: string (e.g., `&quot;Self-driving: from A to B&quot;`; do not use flights)
+- `breakfast`, `lunch`, `dinner`: string; use `&quot;-&quot;` if intentionally skipped
+- `attraction`: string; list multiple attractions separated by `;` and end with `;` (e.g., `&quot;Rock &amp; Roll Hall of Fame;West Side Market;&quot;`) 
+- `accommodation`: string; pet-friendly lodging
+
+**Note:use `&quot;-&quot;` if intentionally skipped**
+
+**Example:**
+```json
+{
+  &quot;plan&quot;: [
+    {
+      &quot;day&quot;: 1,
+      &quot;current_city&quot;: &quot;Minneapolis&quot;,
+      &quot;transportation&quot;: &quot;Self-driving: from Minneapolis to Cleveland&quot;,
+      &quot;breakfast&quot;: &quot;Hell&#x27;s Kitchen, Minneapolis&quot;,
+      &quot;lunch&quot;: &quot;American cuisine at The Loon Cafe, Minneapolis&quot;,
+      &quot;dinner&quot;: &quot;Italian at Bar La Grassa, Minneapolis&quot;,
+      &quot;attraction&quot;: &quot;Minnehaha Falls;Walker Art Center;&quot;,
+      &quot;accommodation&quot;: &quot;Pet-friendly Hyatt Regency Minneapolis&quot;
+    }
+  ],
+  &quot;data_sources&quot;: [
+    &quot;background/citySet_with_states.txt&quot;,
+    &quot;accommodations/clean_accommodations_2022.csv&quot;,
+    &quot;restaurants/clean_restaurant_2022.csv&quot;,
+    &quot;attractions/attractions.csv&quot;,
+    &quot;googleDistanceMatrix/distance.csv&quot;
+  ]
+}
+```</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>## Task
+Build an itinerary for the user according to the following requirements:
+&quot;We require a 7-day travel itinerary for two leaving from Minneapolis and covering three cities in Ohio, starting from March 17th to March 23rd, 2022. Our budget is up to $5,100. Our meals should preferably include BBQ, Seafood, Chinese, and Mexican cuisines. Please note we prefer not to take any flights so our travel plan should not include them.&quot;
+
+## Rules
+- You must search for real-world data in the provided database, do not use data/POIs from your memory.
+
+## Output Format (JSON file)
+
+Produce a single JSON file to `/app/output/itinerary.json` with the following structure:
+
+**Top-level keys:**
+- `plan`: array of exactly 7 day objects (see below)
+- `data_sources`: array of strings listing dataset files used (e.g., `[&quot;background/citySet_with_states.txt&quot;, &quot;restaurants/clean_restaurant_2022.csv&quot;]`)
+
+**Each day object in `plan` must contain:**
+- `day`: integer day number (1–7)
+- `current_city`: string (city name, or `&quot;from A to B&quot;` when moving between cities)
+- `transportation`: string (e.g., `&quot;Self-driving: from A to B&quot;`; do not use flights)
+- `breakfast`, `lunch`, `dinner`: string; use `&quot;-&quot;` if intentionally skipped
+- `attraction`: string; list multiple attractions separated by `;` and end with `;` (e.g., `&quot;Rock &amp; Roll Hall of Fame;West Side Market;&quot;`)
+- `accommodation`: string; 
+
+**Example:**
+```json
+{
+  &quot;plan&quot;: [
+    {
+      &quot;day&quot;: 1,
+      &quot;current_city&quot;: &quot;Minneapolis&quot;,
+      &quot;transportation&quot;: &quot;Self-driving: from Minneapolis to Cleveland&quot;,
+      &quot;breakfast&quot;: &quot;Hell&#x27;s Kitchen, Minneapolis&quot;,
+      &quot;lunch&quot;: &quot;American cuisine at The Loon Cafe, Minneapolis&quot;,
+      &quot;dinner&quot;: &quot;Italian at Bar La Grassa, Minneapolis&quot;,
+      &quot;attraction&quot;: &quot;Minnehaha Falls;Walker Art Center;&quot;,
+      &quot;accommodation&quot;: &quot;Hyatt Regency Minneapolis&quot;
+    }
+  ],
+  &quot;data_sources&quot;: [
+    &quot;background/citySet_with_states.txt&quot;,
+    &quot;accommodations/clean_accommodations_2022.csv&quot;,
+    &quot;restaurants/clean_restaurant_2022.csv&quot;,
+    &quot;attractions/attractions.csv&quot;,
+    &quot;googleDistanceMatrix/distance.csv&quot;
+  ]
+}
+```</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>## Task
+Build an itinerary for the user according to the following requirements:
+&quot;We require a 7-day travel itinerary for two leaving from Atlanta and covering three cities in Ohio, starting from March 17th to March 23rd, 2022. Our budget is up to $5,100. We will be accompanied by our pet dog, so we need pet-friendly accommodations. Our meals should preferably include American, Mediterranean, Chinese, and Italian cuisines. Please note we prefer not to take any flights so our travel plan should not include them.&quot;
+
+## Rules
+- You must search for real-world data in the provided database, do not use data/POIs from your memory.
+
+## Output Format (JSON file)
+
+Produce a single JSON file to `/app/output/itinerary.json` with the following structure:
+
+**Top-level keys:**
+- `plan`: array of exactly 7 day objects (see below)
+- `data_sources`: array of strings listing dataset files used (e.g., `[&quot;background/citySet_with_states.txt&quot;, &quot;restaurants/clean_restaurant_2022.csv&quot;]`)
+
+**Each day object in `plan` must contain:**
+- `day`: integer day number (1–7)
+- `current_city`: string (city name, or `&quot;from A to B&quot;` when moving between cities)
+- `transportation`: string (e.g., `&quot;Self-driving: from A to B&quot;`; do not use flights)
+- `breakfast`, `lunch`, `dinner`: string; use `&quot;-&quot;` if intentionally skipped
+- `attraction`: string; list multiple attractions separated by `;` and end with `;` (e.g., `&quot;Rock &amp; Roll Hall of Fame;West Side Market;&quot;`)
+- `accommodation`: string; pet-friendly lodging
+
+**Example:**
+```json
+{
+  &quot;plan&quot;: [
+    {
+      &quot;day&quot;: 1,
+      &quot;current_city&quot;: &quot;Atlanta&quot;,
+      &quot;transportation&quot;: &quot;Self-driving: from Atlanta to Cleveland&quot;,
+      &quot;breakfast&quot;: &quot;South City Kitchen, Atlanta&quot;,
+      &quot;lunch&quot;: &quot;American cuisine at The Optimist, Atlanta&quot;,
+      &quot;dinner&quot;: &quot;Italian at BoccaLupo, Atlanta&quot;,
+      &quot;attraction&quot;: &quot;Georgia Aquarium;Piedmont Park;&quot;,
+      &quot;accommodation&quot;: &quot;Pet-friendly Hyatt Regency Atlanta&quot;
+    }
+  ],
+  &quot;data_sources&quot;: [
+    &quot;background/citySet_with_states.txt&quot;,
+    &quot;accommodations/clean_accommodations_2022.csv&quot;,
+    &quot;restaurants/clean_restaurant_2022.csv&quot;,
+    &quot;attractions/attractions.csv&quot;,
+    &quot;googleDistanceMatrix/distance.csv&quot;
+  ]
+}
+```</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 5;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>

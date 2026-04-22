@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard — SkillLearnBench</title>
+  <meta name="description" content="SkillLearnBench leaderboard — results and analysis of four continual learning methods across six LLMs." />
+
+  <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+<!-- ════════════ Navbar ════════════ -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Homepage</a></li>
+      <li><a href="tasks.html">Tasks</a></li>
+      <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ════════════ Page Hero ════════════ -->
+<header class="page-hero">
+  <div class="container">
+    <h1><span>Leaderboard</span> &amp; Analysis</h1>
+    <p>How four continual learning methods — <strong>One-Shot</strong>, <strong>Self Feedback</strong>, <strong>Teacher Feedback</strong>, and <strong>Skill Creator</strong> — perform across six LLM backbones, evaluated at three levels: skill quality, trajectory, and task outcome. SkillLearnBench is open-source and supports testing more continual learning methods and LLMs.</p>
+
+    <div class="hero-actions">
+      <div class="section-tabs">
+        <a href="#methods" class="tab">Methods</a>
+        <a href="#leaderboard" class="tab">Leaderboard</a>
+        <a href="#results" class="tab">Main Results</a>
+        <a href="#analysis" class="tab">Analysis</a>
+      </div>
+      <a class="run-pill" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener" title="Run SkillLearnBench with different LLMs / continual learning methods">
+        <i class="fa-brands fa-github"></i>
+        <span>Run SkillLearnBench Yourself</span>
+        <span class="run-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════ Methods ════════════ -->
+<section id="methods">
+  <div class="container">
+    <h2 class="section-title">Continual Learning <span>Methods</span></h2>
+    <p class="section-subtitle">
+      We evaluate four methods covering diverse learning strategies. All methods receive the same task instruction plus one seed instance as input and produce a skill set as output.
+    </p>
+
+    <div class="figure-full" style="margin-bottom: 1.75rem;">
+      <img src="static/images/baselines.png" alt="Workflows of four continual learning methods" />
+      <div class="caption"><strong>Figure 1.</strong> Workflows of four continual learning methods through skill generation.</div>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <h3><i class="fa-solid fa-bolt"></i> One-Shot</h3>
+        <p>The agent generates a skill set in a single pass from the task description. Serves as a baseline for knowledge acquisition without any feedback or recursive optimization.</p>
+      </div>
+      <div class="method-card">
+        <h3><i class="fa-solid fa-rotate"></i> Self Feedback</h3>
+        <p>A self-evolution loop: the agent generates initial skills, attempts the task, reviews its own trajectory, identifies issues, and refines skills. This cycle repeats K times without external supervision.</p>
+      </div>
+      <div class="method-card">
+        <h3><i class="fa-solid fa-chalkboard-user"></i> Teacher Feedback</h3>
+        <p>An expert teacher with access to human-authored skills provides directional guidance (without revealing ground-truth) after each failed attempt. The agent updates skills and re-attempts.</p>
+      </div>
+      <div class="method-card">
+        <h3><i class="fa-solid fa-layer-group"></i> Skill Creator</h3>
+        <p>A structured multi-stage pipeline: analyzing task intent, investigating edge cases, writing a skill specification, and validating it with automated checks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Model Leaderboard ════════════ -->
+<section id="leaderboard" class="alt">
+  <div class="container">
+    <h2 class="section-title">LLM <span>Leaderboard</span></h2>
+    <p class="section-subtitle">Ranking of 6 LL M backbones under each continual learning method, across all three evaluation levels. Scores are averaged across all 20 tasks; rank is by task accuracy.</p>
+
+    <div class="mlb-card">
+      <div class="mlb-header">
+        <div>
+          <h3>LLM Performance by Method</h3>
+          <div class="mlb-caption">Click a method tab to re-rank the 6 models.</div>
+        </div>
+        <div class="mlb-tabs" id="mlbTabs" role="tablist">
+          <button class="mlb-tab active" data-method="avg">Average</button>
+          <button class="mlb-tab" data-method="os">One-Shot</button>
+          <button class="mlb-tab" data-method="sf">Self Feedback</button>
+          <button class="mlb-tab" data-method="tf">Teacher Feedback</button>
+          <button class="mlb-tab" data-method="sc">Skill Creator</button>
+        </div>
+      </div>
+      <div class="mlb-table-wrap">
+        <table class="mlb-table mlb-table-wide" id="mlbTable">
+          <thead>
+            <tr>
+              <th rowspan="2" class="sortable" data-col="rank">#<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th rowspan="2" class="sortable" data-col="name">Model<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="group-header" colspan="3">Level 1: Skill Quality</th>
+              <th class="group-header" colspan="2">Level 2: Trajectory</th>
+              <th class="group-header" colspan="2">Level 3: Outcome</th>
+            </tr>
+            <tr>
+              <th class="sortable" data-col="cov">Coverage<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="exec">Executability<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="safe">Safety<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="align">Alignment<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="usage">Usage<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="tokens">Tokens ↓<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+              <th class="sortable" data-col="acc">Accuracy<i class="fa-solid fa-sort mlb-sort-ico"></i></th>
+            </tr>
+          </thead>
+          <tbody id="mlbBody"></tbody>
+        </table>
+      </div>
+      <div class="mlb-foot">
+        <span>All values are % averages across 20 tasks; tokens are per-task solving cost.</span>
+      </div>
+    </div>
+
+    <div class="run-cta">
+      <a class="run-cta-link" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i>
+        Run SkillLearnBench Yourself 
+        <span class="run-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Main Results ════════════ -->
+<section id="results">
+  <div class="container">
+    <h2 class="section-title">Main <span>Results</span></h2>
+    <p class="section-subtitle">Headline takeaways from evaluating four continual learning methods across six LLMs.</p>
+
+    <!-- Key findings cards -->
+    <div class="findings-grid" style="margin-bottom: 2.25rem;">
+      <div class="finding-card">
+        <div class="icon">📊</div>
+        <h3>Skills Help, but a Large Gap Remains</h3>
+        <p>Every continual learning method outperforms the no-skill baseline, yet even the best method covers only ~45% of the gap to human-authored performance, leaving substantial room for improvement.</p>
+      </div>
+      <div class="finding-card">
+        <div class="icon">🔄</div>
+        <h3>No Universal Winner</h3>
+        <p>No single method leads across all tasks and LLMs, and scaling to stronger LLMs does not reliably produce better skills. The best strategy depends on both the task type and the generation LLM.</p>
+      </div>
+      <div class="finding-card">
+        <div class="icon">🔁</div>
+        <h3>External Feedback Drives Real Gains</h3>
+        <p>Multiple iterations with external teacher feedback yield genuine improvement, while self-feedback alone induces recursive drift after the first round — coverage stalls and accuracy degrades.</p>
+      </div>
+    </div>
+
+    <h3 style="text-align:center; margin-bottom:0.5rem; font-size:1rem; font-weight:700;">Main Results on SkillLearnBench</h3>
+    <p style="text-align:center; font-size:0.78rem; color:var(--muted); margin-bottom:1rem;">
+      Click column headers to sort. All metrics are in % except #Tokens. <strong style="color:var(--accent)">Bold</strong>: best among four methods per LLM; <u>underline</u>: second best.
+    </p>
+    <div class="results-table-wrap">
+      <table class="results-table" id="main-results-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="text-align:left" class="sortable" data-col="0">Method <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="group-header" colspan="3">Level 1: Skill Quality</th>
+            <th class="group-header" colspan="2">Level 2: Trajectory</th>
+            <th class="group-header" colspan="2">Level 3: Outcome</th>
+          </tr>
+          <tr>
+            <th class="sortable" data-col="1">Coverage <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="2">Executability <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="3">Safety <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="4">Alignment <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="5">Usage <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="6">#Tokens ↓ <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+            <th class="sortable" data-col="7">Acc. <i class="fa-solid fa-sort" style="font-size:0.7em;opacity:0.5;"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- References -->
+          <tr class="baseline-row">
+            <td>No Skill</td>
+            <td>—</td><td>—</td><td>—</td>
+            <td>70.22</td><td>—</td><td>727K</td><td>10.17</td>
+          </tr>
+          <tr class="baseline-row">
+            <td>Human-authored</td>
+            <td>92.77</td><td>52.96</td><td>92.01</td>
+            <td>84.47</td><td>87.67</td><td>590K</td><td>74.50</td>
+          </tr>
+          <!-- Claude Haiku -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Claude Haiku 4.5</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td>41.01</td><td class="best">51.54</td><td class="best">94.33</td>
+            <td class="second">76.68</td><td class="second">58.02</td><td class="second">537K</td><td class="second">30.33</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td>37.42</td><td>44.40</td><td class="second">94.25</td>
+            <td>74.39</td><td>51.31</td><td class="best">474K</td><td>26.50</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td class="best">45.00</td><td>47.98</td><td>94.20</td>
+            <td>75.48</td><td>49.29</td><td>639K</td><td class="best">34.00</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td class="second">41.86</td><td class="second">48.54</td><td>93.80</td>
+            <td class="best">76.84</td><td class="best">82.81</td><td>551K</td><td>16.67</td>
+          </tr>
+          <!-- Claude Sonnet -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Claude Sonnet 4.6</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td class="second">50.27</td><td>46.82</td><td class="best">94.46</td>
+            <td class="second">72.39</td><td class="second">78.17</td><td class="second">321K</td><td class="best">38.83</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td class="best">50.86</td><td>47.92</td><td>93.79</td>
+            <td class="best">73.29</td><td>73.86</td><td class="best">313K</td><td>31.33</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td>47.49</td><td class="best">56.68</td><td>91.79</td>
+            <td>72.10</td><td>62.34</td><td>521K</td><td class="second">34.83</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td>43.32</td><td class="second">50.12</td><td class="second">93.88</td>
+            <td>70.54</td><td class="best">82.33</td><td>323K</td><td>19.50</td>
+          </tr>
+          <!-- Claude Opus -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Claude Opus 4.6</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td>42.21</td><td>43.89</td><td class="second">94.56</td>
+            <td class="second">75.52</td><td>71.19</td><td>341K</td><td>28.17</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td>42.61</td><td>45.36</td><td class="best">94.72</td>
+            <td>75.30</td><td>67.17</td><td class="second">305K</td><td class="second">31.50</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td class="best">50.52</td><td class="best">51.48</td><td>91.93</td>
+            <td class="best">78.32</td><td class="second">71.76</td><td>412K</td><td class="best">34.00</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td class="second">45.69</td><td class="second">49.77</td><td>94.11</td>
+            <td>74.96</td><td class="best">81.58</td><td class="best">291K</td><td>30.50</td>
+          </tr>
+          <!-- Gemini Flash Lite -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Gemini 3.1 Flash Lite</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td>22.10</td><td class="second">39.69</td><td class="best">94.47</td>
+            <td class="best">76.41</td><td class="second">75.33</td><td class="best">471K</td><td>19.33</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td>20.74</td><td>37.53</td><td>93.33</td>
+            <td class="second">75.36</td><td>67.64</td><td class="second">490K</td><td class="best">31.50</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td class="best">34.39</td><td>38.40</td><td>92.10</td>
+            <td>74.49</td><td>67.68</td><td>549K</td><td>15.17</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td class="second">26.71</td><td class="best">42.84</td><td class="second">93.45</td>
+            <td>75.22</td><td class="best">91.42</td><td>501K</td><td class="second">22.00</td>
+          </tr>
+          <!-- Gemini Flash -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Gemini 3 Flash</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td>36.61</td><td class="best">46.06</td><td class="second">95.22</td>
+            <td>76.29</td><td class="second">76.25</td><td>492K</td><td class="second">31.67</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td>34.57</td><td>38.06</td><td>94.34</td>
+            <td class="best">77.77</td><td>66.61</td><td class="best">399K</td><td>27.67</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td class="second">41.50</td><td class="second">45.59</td><td>93.88</td>
+            <td>72.30</td><td>68.75</td><td>542K</td><td>29.00</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td class="best">42.33</td><td>44.79</td><td class="best">95.55</td>
+            <td class="second">77.66</td><td class="best">77.37</td><td class="second">424K</td><td class="best">38.50</td>
+          </tr>
+          <!-- Gemini Pro -->
+          <tr class="section-header"><td colspan="8">Continual Learning LLM: Gemini 3.1 Pro</td></tr>
+          <tr>
+            <td>One-Shot</td>
+            <td>31.34</td><td>45.93</td><td class="second">94.53</td>
+            <td>73.94</td><td>66.96</td><td>604K</td><td>34.33</td>
+          </tr>
+          <tr>
+            <td>Self Feedback</td>
+            <td class="second">33.55</td><td class="second">48.78</td><td class="best">95.59</td>
+            <td>73.51</td><td class="second">74.83</td><td class="second">360K</td><td class="best">38.00</td>
+          </tr>
+          <tr>
+            <td>Teacher Feedback</td>
+            <td>21.80</td><td>36.84</td><td>91.31</td>
+            <td class="second">74.55</td><td>41.40</td><td>504K</td><td>17.83</td>
+          </tr>
+          <tr>
+            <td>Skill Creator</td>
+            <td class="best">46.85</td><td class="best">49.29</td><td>93.01</td>
+            <td class="best">76.60</td><td class="best">91.33</td><td class="best">348K</td><td class="second">36.83</td>
+          </tr>
+          <!-- Average -->
+          <tr class="section-header"><td colspan="8"><strong>Average Across All LLMs</strong></td></tr>
+          <tr class="avg-row">
+            <td><strong>One-Shot</strong></td>
+            <td>37.26</td><td>45.66</td><td class="best">94.59</td>
+            <td class="second">75.21</td><td class="second">70.99</td><td>461K</td><td class="second">30.44</td>
+          </tr>
+          <tr class="avg-row">
+            <td><strong>Self Feedback</strong></td>
+            <td>36.63</td><td>43.68</td><td class="second">94.34</td>
+            <td>74.94</td><td>66.90</td><td class="best">390K</td><td class="best">31.08</td>
+          </tr>
+          <tr class="avg-row">
+            <td><strong>Teacher Feedback</strong></td>
+            <td class="second">40.12</td><td class="second">46.16</td><td>92.53</td>
+            <td>74.54</td><td>60.20</td><td>528K</td><td>27.47</td>
+          </tr>
+          <tr class="avg-row">
+            <td><strong>Skill Creator</strong></td>
+            <td class="best">41.12</td><td class="best">47.56</td><td>93.97</td>
+            <td class="best">75.30</td><td class="best">84.47</td><td class="second">406K</td><td>27.33</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Analysis ════════════ -->
+<section id="analysis" class="alt">
+  <div class="container">
+    <h2 class="section-title">Further <span>Analysis</span></h2>
+    <p class="section-subtitle">Deeper look at what each continual learning method changes — and when skills actually help.</p>
+
+    <!-- Category Results -->
+    <h3 style="margin:1.25rem 0 0.5rem; font-size:1.05rem; font-weight:700;">Learning Effect Across Categories</h3>
+    <p style="color: var(--muted); margin-bottom: 1.25rem; font-size:0.9rem; line-height: 1.7;">
+      <strong>Continual learning through skills helps most when tasks have reusable structure.</strong>
+      The largest gains appear in categories with clear workflows such as Software Engineering and Productivity Tools. Categories that are more open-ended show smaller gains and sometimes regress, suggesting a rigid skill can hurt when the task does not match the learned template.
+    </p>
+
+    <div class="figure-full" style="margin-bottom: 2.5rem;">
+      <img src="static/images/category_tokens.png" alt="Token cost by category" style="max-width: 420px;" />
+      <div class="caption"><strong>Figure 2(a).</strong> Solving token cost by task category. Token cost varies substantially across categories, while the four methods are similar within the same category.</div>
+    </div>
+
+    <!-- Generalization -->
+    <h3 style="margin:1.25rem 0 0.5rem; font-size:1.05rem; font-weight:700;">Skill Reusability</h3>
+    <p style="color: var(--muted); margin-bottom: 1.25rem; font-size:0.9rem; line-height: 1.7;">
+      Most generated skills are partially effective: they pass some instances but fail on others, indicating they capture only part of the task knowledge. Accuracy on held-out instances is comparable to the seed instance, ruling out overfitting. <strong>The bottleneck is not that skills overfit to the seed, but that they fail to capture the core task logic needed across all instances.</strong>
+    </p>
+
+    <div class="figure-full" style="margin-bottom: 2.5rem;">
+      <img src="static/images/generalization.png" alt="Skill generalization" style="max-width: 700px;" />
+      <div class="caption"><strong>Figure 2(b–c).</strong> (b) Proportion of skills that pass all, partial, or no instances. (c) Accuracy on the seed instance versus held-out instances.</div>
+    </div>
+
+    <!-- Agent Behavior -->
+    <h3 style="margin:1.25rem 0 0.5rem; font-size:1.05rem; font-weight:700;">Learning Effect on Agent Behavior</h3>
+    <p style="color: var(--muted); margin-bottom: 1.25rem; font-size:0.9rem; line-height: 1.7;">
+      Different continual learning mechanisms alter agent behavior in fundamentally different ways:
+      <strong>Self Feedback</strong> produces more focused skills through execution-based revision → shorter, more direct trajectories.
+      <strong>Teacher Feedback</strong> expands the skill set → higher coverage but heavier execution.
+      <strong>Skill Creator</strong> produces structured skills invoked most often, yet accuracy lags when content misses key task logic.
+    </p>
+
+    <div class="method-compare">
+      <div class="method-compare-radar">
+        <img src="static/images/method_comparison_radar.png" alt="Method comparison radar" />
+      </div>
+      <div class="method-compare-table">
+        <img src="static/images/method_comparison_table.png" alt="Method comparison table" />
+      </div>
+    </div>
+    <div class="figure-full" style="margin-top:0.25rem; margin-bottom: 2rem;">
+      <div class="caption"><strong>Figure 3.</strong> Method profiles across six dimensions (left) with raw values (right). Different feedback mechanisms reshape agent behavior in distinct ways.</div>
+    </div>
+
+    <!-- Skill Evolution -->
+    <h3 style="margin:1.25rem 0 0.5rem; font-size:1.05rem; font-weight:700;">Skill Evolution Across Learning Rounds</h3>
+    <p style="color: var(--muted); margin-bottom: 1.25rem; font-size:0.9rem; line-height: 1.7;">
+      <strong>External feedback drives genuine improvement, while self-revision without new information leads to drift.</strong>
+      With Self Feedback, coverage stays flat and alignment declines — accuracy briefly rises but then falls sharply. With Teacher Feedback, the first round of external feedback substantially restructures skills, and improvement compounds over subsequent rounds.
+    </p>
+
+    <div class="figure-full">
+      <img src="static/images/skill_evolution.png" alt="Skill evolution" style="width: 80%;" />
+      <div class="caption"><strong>Figure 4.</strong> Skill evolution across learning rounds for Self Feedback and Teacher Feedback on Productivity Tools (Claude Sonnet 4.6).</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<!-- ════════════ Footer ════════════ -->
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+// ── Model Leaderboard ──
+(function() {
+  const tabs = document.getElementById('mlbTabs');
+  const tbody = document.getElementById('mlbBody');
+  if (!tabs || !tbody) return;
+
+  // [cov, exec, safe, align, usage, tokensK, acc]
+  const models = [
+    {
+      name: 'Claude Haiku 4.5', org: 'Anthropic',
+      os: [41.01, 51.54, 94.33, 76.68, 58.02, 537, 30.33],
+      sf: [37.42, 44.40, 94.25, 74.39, 51.31, 474, 26.50],
+      tf: [45.00, 47.98, 94.20, 75.48, 49.29, 639, 34.00],
+      sc: [41.86, 48.54, 93.80, 76.84, 82.81, 551, 16.67],
+    },
+    {
+      name: 'Claude Sonnet 4.6', org: 'Anthropic',
+      os: [50.27, 46.82, 94.46, 72.39, 78.17, 321, 38.83],
+      sf: [50.86, 47.92, 93.79, 73.29, 73.86, 313, 31.33],
+      tf: [47.49, 56.68, 91.79, 72.10, 62.34, 521, 34.83],
+      sc: [43.32, 50.12, 93.88, 70.54, 82.33, 323, 19.50],
+    },
+    {
+      name: 'Claude Opus 4.6', org: 'Anthropic',
+      os: [42.21, 43.89, 94.56, 75.52, 71.19, 341, 28.17],
+      sf: [42.61, 45.36, 94.72, 75.30, 67.17, 305, 31.50],
+      tf: [50.52, 51.48, 91.93, 78.32, 71.76, 412, 34.00],
+      sc: [45.69, 49.77, 94.11, 74.96, 81.58, 291, 30.50],
+    },
+    {
+      name: 'Gemini 3.1 Flash Lite', org: 'Google',
+      os: [22.10, 39.69, 94.47, 76.41, 75.33, 471, 19.33],
+      sf: [20.74, 37.53, 93.33, 75.36, 67.64, 490, 31.50],
+      tf: [34.39, 38.40, 92.10, 74.49, 67.68, 549, 15.17],
+      sc: [26.71, 42.84, 93.45, 75.22, 91.42, 501, 22.00],
+    },
+    {
+      name: 'Gemini 3 Flash', org: 'Google',
+      os: [36.61, 46.06, 95.22, 76.29, 76.25, 492, 31.67],
+      sf: [34.57, 38.06, 94.34, 77.77, 66.61, 399, 27.67],
+      tf: [41.50, 45.59, 93.88, 72.30, 68.75, 542, 29.00],
+      sc: [42.33, 44.79, 95.55, 77.66, 77.37, 424, 38.50],
+    },
+    {
+      name: 'Gemini 3.1 Pro', org: 'Google',
+      os: [31.34, 45.93, 94.53, 73.94, 66.96, 604, 34.33],
+      sf: [33.55, 48.78, 95.59, 73.51, 74.83, 360, 38.00],
+      tf: [21.80, 36.84, 91.31, 74.55, 41.40, 504, 17.83],
+      sc: [46.85, 49.29, 93.01, 76.60, 91.33, 348, 36.83],
+    },
+  ];
+
+  function avg(m) {
+    const ms = ['os','sf','tf','sc'].map(k => m[k]);
+    const n = ms[0].length;
+    return Array.from({length: n}, (_, i) =>
+      ms.reduce((s, a) => s + a[i], 0) / ms.length
+    );
+  }
+
+  function rowFor(m, method) {
+    return method === 'avg' ? avg(m) : m[method];
+  }
+
+  // column keys → index into values array [cov, exec, safe, align, usage, tokens, acc]
+  const COL_IDX = { cov: 0, exec: 1, safe: 2, align: 3, usage: 4, tokens: 5, acc: 6 };
+  // Tokens default to ascending (lower is better); others descending
+  const COL_ASC_DEFAULT = { tokens: true };
+
+  let activeMethod = 'avg';
+  let sortCol = 'acc';     // default: sort by accuracy
+  let sortAsc = false;     // descending
+
+  const table = document.getElementById('mlbTable');
+
+  function updateSortIcons() {
+    table.querySelectorAll('th.sortable').forEach(th => {
+      const ico = th.querySelector('.mlb-sort-ico');
+      if (th.dataset.col === sortCol) {
+        th.classList.add('sort-active');
+        if (ico) ico.className = 'mlb-sort-ico fa-solid ' + (sortAsc ? 'fa-sort-up' : 'fa-sort-down');
+      } else {
+        th.classList.remove('sort-active');
+        if (ico) ico.className = 'mlb-sort-ico fa-solid fa-sort';
+      }
+    });
+  }
+
+  function compare(a, b) {
+    if (sortCol === 'name') {
+      const cmp = a.m.name.localeCompare(b.m.name);
+      return sortAsc ? cmp : -cmp;
+    }
+    if (sortCol === 'rank') {
+      // "Rank" is just accuracy desc; clicking toggles direction
+      const av = a.v[COL_IDX.acc], bv = b.v[COL_IDX.acc];
+      return sortAsc ? av - bv : bv - av;
+    }
+    const idx = COL_IDX[sortCol];
+    const av = a.v[idx], bv = b.v[idx];
+    return sortAsc ? av - bv : bv - av;
+  }
+
+  function render() {
+    const rows = models.map(m => ({ m, v: rowFor(m, activeMethod) }));
+    rows.sort(compare);
+
+    const maxAcc = Math.max(...rows.map(r => r.v[COL_IDX.acc]));
+
+    tbody.innerHTML = rows.map((r, i) => {
+      const rank = i + 1;
+      const rankCls = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
+      const [cov, exec, safe, align, usage, tokens, acc] = r.v;
+      const accPct = Math.min(100, (acc / maxAcc) * 100);
+      return `
+        <tr>
+          <td><span class="mlb-rank ${rankCls}">${rank}</span></td>
+          <td>
+            <div class="mlb-model">
+              <span class="mlb-model-name">${r.m.name}</span>
+              <span class="mlb-model-org">${r.m.org}</span>
+            </div>
+          </td>
+          <td class="mlb-num">${cov.toFixed(2)}</td>
+          <td class="mlb-num">${exec.toFixed(2)}</td>
+          <td class="mlb-num">${safe.toFixed(2)}</td>
+          <td class="mlb-num">${align.toFixed(2)}</td>
+          <td class="mlb-num">${usage.toFixed(2)}</td>
+          <td class="mlb-tokens">${Math.round(tokens)}K</td>
+          <td>
+            <div class="mlb-acc-wrap">
+              <div class="mlb-acc-bar"><div class="mlb-acc-fill" style="width:${accPct}%"></div></div>
+              <span class="mlb-acc-val">${acc.toFixed(2)}</span>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    updateSortIcons();
+  }
+
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mlb-tab');
+    if (!btn) return;
+    tabs.querySelectorAll('.mlb-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeMethod = btn.dataset.method;
+    render();
+  });
+
+  table.querySelectorAll('th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (col === sortCol) {
+        sortAsc = !sortAsc;
+      } else {
+        sortCol = col;
+        // Name defaults to A→Z; Tokens defaults to ascending; others descending
+        sortAsc = col === 'name' ? true : !!COL_ASC_DEFAULT[col];
+      }
+      render();
+    });
+  });
+
+  render();
+})();
+
+// ── Table sorting ──
+(function() {
+  const table = document.getElementById('main-results-table');
+  if (!table) return;
+  const tbody = table.querySelector('tbody');
+  const headers = table.querySelectorAll('th.sortable');
+  let sortCol = -1, sortAsc = true;
+
+  function parseVal(text) {
+    text = text.trim().replace(/,/g, '');
+    if (text === '—' || text === '–' || text === '-' || text === '') return -Infinity;
+    const kMatch = text.match(/^([\d.]+)K$/i);
+    if (kMatch) return parseFloat(kMatch[1]);
+    const num = parseFloat(text);
+    return isNaN(num) ? text.toLowerCase() : num;
+  }
+
+  headers.forEach(th => {
+    th.addEventListener('click', () => {
+      const col = parseInt(th.dataset.col);
+      if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+
+      headers.forEach(h => {
+        const icon = h.querySelector('i');
+        if (icon) { icon.className = 'fa-solid fa-sort'; icon.style.opacity = '0.5'; }
+      });
+      const activeIcon = th.querySelector('i');
+      if (activeIcon) {
+        activeIcon.className = sortAsc ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+        activeIcon.style.opacity = '1';
+      }
+
+      const allRows = Array.from(tbody.querySelectorAll('tr'));
+      const groups = [];
+      let currentGroup = { header: null, rows: [] };
+
+      allRows.forEach(row => {
+        if (row.classList.contains('section-header') || row.classList.contains('baseline-row')) {
+          if (currentGroup.header || currentGroup.rows.length) groups.push(currentGroup);
+          currentGroup = { header: row, rows: [] };
+        } else {
+          currentGroup.rows.push(row);
+        }
+      });
+      if (currentGroup.header || currentGroup.rows.length) groups.push(currentGroup);
+
+      groups.forEach(g => {
+        g.rows.sort((a, b) => {
+          const aVal = parseVal(a.cells[col]?.textContent || '');
+          const bVal = parseVal(b.cells[col]?.textContent || '');
+          if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return sortAsc ? aVal - bVal : bVal - aVal;
+          }
+          return sortAsc
+            ? String(aVal).localeCompare(String(bVal))
+            : String(bVal).localeCompare(String(aVal));
+        });
+      });
+
+      groups.forEach(g => {
+        if (g.header) tbody.appendChild(g.header);
+        g.rows.forEach(r => tbody.appendChild(r));
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

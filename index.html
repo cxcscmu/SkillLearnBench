@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillLearnBench: Benchmarking Continual Learning Methods for Agent Skill Generation</title>
+  <meta name="description" content="SkillLearnBench is the first benchmark for evaluating continual learning methods that generate agent skills, comprising 20 verified tasks across 15 sub-domains with a three-level evaluation framework." />
+
+  <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+<!-- ════════════ Navbar ════════════ -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Homepage</a></li>
+      <li><a href="tasks.html">Tasks</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ════════════ Hero ════════════ -->
+<header class="hero">
+  <div class="container hero-inner">
+    <h1><span class="accent">SkillLearnBench:</span> Benchmarking Continual Learning Methods for Agent Skill Generation on Real-World Tasks</h1>
+
+    <div class="authors">
+      <span>Shanshan Zhong<sup>1</sup></span>
+      <span>Yi Lu<sup>1</sup></span>
+      <span>Jingjie Ning<sup>1</sup></span>
+      <span>Yibing Wan<sup>1</sup></span>
+      <span>Lihan Feng<sup>1</sup></span>
+      <span>Yuyi Ao<sup>1</sup></span>
+    </div>
+    <div class="authors">
+      <span>Leonardo F. R. Ribeiro<sup>2</sup></span>
+      <span>Markus Dreyer<sup>2</sup></span>
+      <span>Sean Ammirati<sup>1</sup></span>
+      <span>Chenyan Xiong<sup>1</sup></span>
+    </div>
+    <div class="affiliations"><sup>1</sup>Carnegie Mellon University &nbsp;·&nbsp; <sup>2</sup>Amazon AGI</div>
+
+    <div class="hero-stats">
+      <div class="h-stat"><span class="h-stat-n">20</span><span class="h-stat-l">Tasks</span></div>
+      <div class="h-stat"><span class="h-stat-n">15</span><span class="h-stat-l">Sub-domains</span></div>
+      <div class="h-stat"><span class="h-stat-n">100</span><span class="h-stat-l">Instances</span></div>
+      <div class="h-stat"><span class="h-stat-n">3</span><span class="h-stat-l">Eval Levels</span></div>
+    </div>
+
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#" target="_blank">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="btn btn-outline" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank">
+        <i class="fa-brands fa-github"></i> Code
+      </a>
+      <a class="btn btn-outline" href="tasks.html">
+        <i class="fa-solid fa-list-check"></i> Browse Tasks
+      </a>
+      <a class="btn btn-outline" href="leaderboard.html">
+        <i class="fa-solid fa-ranking-star"></i> Leaderboard
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════ Key Contributions ════════════ -->
+<section>
+  <div class="container">
+    <h2 class="section-title">Key <span>Contributions</span></h2>
+    <p class="section-subtitle">Three pillars that together enable systematic evaluation of continual skill learning.</p>
+    <div class="hl-grid">
+      <div class="hl-card">
+        <div class="hl-icon">🧪</div>
+        <h3>SkillLearnBench</h3>
+        <p>The first benchmark for evaluating continual skill learning, featuring verified skill-dependent tasks with multi-instance testing for reusability, grounded in a real-world community-driven taxonomy.</p>
+        <div class="hl-tags"><span class="hl-tag">20 tasks</span><span class="hl-tag">100 instances</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hl-icon">📐</div>
+        <h3>Three-Level Framework</h3>
+        <p>Evaluates skill quality, execution trajectory, and task outcome — diagnosing where methods succeed or fail along the full skill-to-outcome chain.</p>
+        <div class="hl-tags"><span class="hl-tag">quality</span><span class="hl-tag">trajectory</span><span class="hl-tag">outcome</span></div>
+      </div>
+      <div class="hl-card">
+        <div class="hl-icon">🔬</div>
+        <h3>Controlled Comparison</h3>
+        <p>The first controlled comparison of recent continual learning methods — revealing a large gap to human-authored performance and highlighting directions for future improvement.</p>
+        <div class="hl-tags"><span class="hl-tag">4 methods</span><span class="hl-tag">6 LLMs</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Abstract ════════════ -->
+<section id="abstract" class="alt">
+  <div class="container">
+    <h2 class="section-title">Abstract</h2>
+    <p class="section-subtitle">The first benchmark for evaluating continual skill learning methods on real-world agent tasks.</p>
+    <div class="abstract-content">
+      <p>
+Skills have become the de facto way to enable LLM agents to perform complex real-world tasks with customized instructions, workflows, and tools, but how to learn them automatically and effectively remains unclear.
+We introduce SkillLearnBench, the first benchmark for evaluating continual skill learning methods, comprising 20 verified, skill-dependent tasks across 15 sub-domains derived from a real-world skill taxonomy, evaluated at three levels: skill quality, execution trajectory, and task outcome.
+Using this benchmark, we evaluate recent continual learning techniques, those leveraging one-shot, self/teacher feedback, and skill creator to generate skills from agent experiences.
+We find that all continual learning methods improve over the no-skill baseline,
+yet consistent gains remain elusive: no method leads across all tasks and LLMs, and scaling to stronger LLMs does not reliably help.
+Continual learning improves tasks with clear, reusable workflows but struggles on open-ended tasks, and using stronger LLM backbones does not consistently produce better skills.
+Our analysis also revealed that multiple iterations in continual learning facilitate genuine improvement via external feedback, whereas self-feedback alone induces recursive drift.
+Our data and code are open-source to enable further studies of automatic skill generation and continual learning techniques.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Framework Overview ════════════ -->
+<section id="framework">
+  <div class="container">
+    <h2 class="section-title">Three-Level <span>Evaluation Framework</span></h2>
+    <p class="section-subtitle">
+      Skill generation and usage form a chain: a method produces a skill specification → which guides the agent's execution → which determines the task outcome. We evaluate each stage to diagnose where methods differ or fail.
+    </p>
+    <div class="framework-steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Skill Quality</h3>
+        <p>Evaluates generated skills as textual artifacts without executing them.</p>
+        <ul class="step-metrics">
+          <li><strong>Coverage</strong> — fraction of reference key points supported by the generated skill</li>
+          <li><strong>Executability</strong> — completeness, determinism, consistency, and usability</li>
+          <li><strong>Safety</strong> — average score across six risk dimensions</li>
+        </ul>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Trajectory Analysis</h3>
+        <p>Assesses the agent's execution behavior when using the generated skills.</p>
+        <ul class="step-metrics">
+          <li><strong>Trajectory Alignment</strong> — key-point recall, order correctness, completion</li>
+          <li><strong>Skill Usage Rate</strong> — fraction of generated skills actually invoked</li>
+        </ul>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Task Outcome</h3>
+        <p>Measures the final task results with deterministic verifiers.</p>
+        <ul class="step-metrics">
+          <li><strong>Task Accuracy</strong> — binary pass/fail per instance, aggregated across tasks</li>
+          <li><strong>Solving Efficiency</strong> — total token consumption during task solving</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ Citation ════════════ -->
+<section id="citation" class="bibtex-section alt">
+  <div class="container">
+    <h2 class="section-title">Citation</h2>
+    <p class="section-subtitle">If you find SkillLearnBench useful, please consider citing:</p>
+    <div class="bibtex-block">
+      <button class="copy-btn" onclick="copyBibtex()">
+        <i class="fa-regular fa-copy"></i> Copy
+      </button>
+<pre id="bibtex-text">@article{zhong2026skilllearnbench,
+  title={SkillLearnBench: Benchmarking Continual Learning Methods for Agent Skill Generation on Real-World Tasks},
+  author={Zhong, Shanshan and Lu, Yi and Ning, Jingjie and Wan, Yibing and Feng, Lihan and Ao, Yuyi and Dreyer, Markus and Ribeiro, Leonardo F. R. and Ammirati, Sean and Xiong, Chenyan},
+  year={2026}
+}</pre>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<!-- ════════════ Footer ════════════ -->
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+function copyBibtex() {
+  const text = document.getElementById('bibtex-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.bibtex-block .copy-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>earthquake-plate-calculation — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>earthquake-plate-calculation</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Data &amp; Analytics › Data Processing</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 6 instances</span>
+    </div>
+    <p class="task-description">Use GeoPandas to find specific earthquakes relative to tectonic plate boundaries. Compute distances and output structured results with earthquake details.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 6</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>You are a geospatial analyst with expertise in plate tectonics and earthquake analysis. I want to find the earthquake that occurred furthest from the Pacific plate boundary within the Pacific plate itself. Use GeoPandas projections. Output the result to `/root/answer.json` as a JSON file with the following fields:
+
+- `id`: The earthquake ID
+- `place`: The earthquake location description
+- `time`: The earthquake time in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- `magnitude`: The earthquake magnitude
+- `latitude`: The earthquake latitude
+- `longitude`: The earthquake longitude
+- `distance_km`: Largest distance to the Pacific plate boundary in kilometers (rounded to 2 decimal places)
+
+The earthquake data is provided in `/root/earthquakes_2024.json`. The plate boundary data is given in `/root/PB2002_boundaries.json` and `/root/PB2002_plates.json`.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>Acting as a geospatial analyst with expertise in plate tectonics, your mission is to identify the specific 2024 seismic event that occurred at the absolute minimum distance to any global plate boundary. Using the seismic records in `/root/earthquakes_2024.json` and the tectonic framework defined in `/root/PB2002_boundaries.json`, you must determine which earthquake epicenter is geographically nearest to a recorded plate margin on a global scale.
+
+The final result must be exported to `/root/answer.json` as a single JSON object containing the following fields: 
+- `id`: The unique earthquake identifier.
+- `place`: The descriptive string for the earthquake location.
+- `time`: The timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ).
+- `magnitude`: The numeric magnitude of the event.
+- `latitude`: The epicenter latitude.
+- `longitude`: The epicenter longitude.
+- `distance_km`: The calculated largest distance to the Africa plate boundary in kilometers, rounded to exactly 2 decimal places.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>As a geospatial analyst with expertise in plate tectonics and earthquake analysis, your objective is to identify the specific 2024 seismic event located within the **Africa plate** that occurred at the maximum distance from its own tectonic boundaries. You must process the earthquake data provided in `/root/earthquakes_2024.json` against the tectonic framework defined in `/root/PB2002_plates.json` and `/root/PB2002_boundaries.json`.
+
+The final result must be exported to `/root/answer.json` as a single JSON object containing the following fields: 
+- `id`: The unique earthquake identifier.
+- `place`: The descriptive string for the earthquake location.
+- `time`: The timestamp in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ).
+- `magnitude`: The numeric magnitude of the event.
+- `latitude`: The epicenter latitude.
+- `longitude`: The epicenter longitude.
+- `distance_km`: The calculated largest distance to the Africa plate boundary in kilometers, rounded to exactly 2 decimal places.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>You are a geospatial analyst with expertise in plate tectonics and earthquake analysis. I want to find the earthquake that occurred closest from the Antarctica and Caribbean plate boundary within the plates themselves. Use GeoPandas projections. Output the result to `/root/answer.json` as a JSON file with the following fields:
+
+- `id`: The earthquake ID
+- `place`: The earthquake location description
+- `time`: The earthquake time in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- `magnitude`: The earthquake magnitude
+- `latitude`: The earthquake latitude
+- `longitude`: The earthquake longitude
+- `distance_km`: Largest distance to the Pacific plate boundary in kilometers (rounded to 2 decimal places)
+
+The earthquake data is provided in `/root/earthquakes_2024.json`. The plate boundary data is given in `/root/PB2002_boundaries.json` and `/root/PB2002_plates.json`.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>You are a geospatial analyst with expertise in plate tectonics and earthquake analysis. Find the distance of the highest magnitude earthquake from the plate edge in the plate with the highest number of earthquakes. Output the result to `/root/answer.json` as a JSON file with the following fields:
+
+- `id`: The earthquake ID
+- `place`: The earthquake location description
+- `time`: The earthquake time in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- `magnitude`: The earthquake magnitude
+- `latitude`: The earthquake latitude
+- `longitude`: The earthquake longitude
+- `distance_km`: Largest distance to the Pacific plate boundary in kilometers (rounded to 2 decimal places)
+
+The earthquake data is provided in `/root/earthquakes_2024.json`. The plate boundary data is given in `/root/PB2002_boundaries.json` and `/root/PB2002_plates.json`.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="5">
+        <pre>In your capacity as a geospatial analyst specializing in global tectonics, you are tasked with conducting a spatial proximity analysis for seismic activity in the year 2024. 
+Utilizing the GeoPandas library, you must project your data into an appropriate coordinate reference system to accurately measure Euclidean distances. 
+
+First, filter the seismic events to only those located within the polygon representing the Pacific plate as defined in `/root/PB2002_plates.json`. 
+
+Then, calculate the distance from each of these points to the nearest line segment in the `/root/PB2002_boundaries.json` file. Identify the outlier event that is the earthquake that occurred furthest from the Pacific plate boundary within the Pacific plate itself. 
+
+Finally, export this data to `/root/answer.json`, ensuring the timestamp adheres to ISO 8601 standards and the distance metric is converted to kilometers and rounded to two decimal places. Output the result to `/root/answer.json` as a JSON file with the following fields:
+
+ `id`: The earthquake ID
+- `place`: The earthquake location description
+- `time`: The earthquake time in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- `magnitude`: The earthquake magnitude
+- `latitude`: The earthquake latitude
+- `longitude`: The earthquake longitude
+- `distance_km`: Largest distance to the Pacific plate boundary in kilometers (rounded to 2 decimal places)</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+        <button onclick="goToSlide(5)" title="Instance 6"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 6;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>

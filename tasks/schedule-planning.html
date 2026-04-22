@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>schedule-planning — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>schedule-planning</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Productivity Tools › Team Communication</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 5 instances</span>
+    </div>
+    <p class="task-description">Parse meeting request emails and a visual PDF calendar, identify available time slots (treating blue blocks as overwritable), and generate structured meeting reply files.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 5</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>You need to read meeting schedule request emails from `/root/test_input.json`. You should parse your internal calendar `/root/calendar.pdf` to propose a meeting time for all requests. The time between two adjacent horizontal lines in the calendar is 15 minutes.
+
+## Workflow
+1. Extract Request Details: From each email in `/root/test_input.json`, extract the meeting duration and any specific time/date constraints mentioned in the message body.
+2. Access and read `/root/calendar.pdf`. Extract any existing appointments listed in this document. Determine the start and end times for each appointment block by measuring its position and span relative to the calendar&#x27;s timeline axis.
+3. Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open. Ensure that the earliest compatible time is selected, provided that all requests can be accommodated.
+4. Generate the reply content and save as a .txt file:
+For each email, instead of sending a reply, generate the content based on the template below and save it as an individual text file (e.g., `/root/reply_{messageID}.txt`):
+
+    &quot;&quot;&quot;Hi,
+
+        Thank you for your meeting request.
+
+        I can be available:
+
+        Date: {day_name}, {date_formatted}
+        Time: {time_range}
+        Duration: {meetingDuration} hour(s)
+
+        If this time doesn&#x27;t work, please let me know your preferred alternatives.
+
+        Best regards,
+        ConSkillBench&quot;&quot;&quot;
+
+   - The date format should be `{day_name}, {month} {DD}, {YYYY}`. For example: `Thursday, January 08, 2026` (NOT `January 8th, 2026` or `January 8, 2026`)
+   - The time format should be `{HH:MM AM/PM} - {HH:MM AM/PM}`. For example: `09:00 AM - 10:30 AM` (NOT `9:00 AM - 10:30 AM`)
+   - All the time should be set according to the time zone in the calendar.
+5. Save the results in results.json:
+Log the filenames of all generated text files in `/root/results.json` using the following format:
+{
+  &quot;sent_results&quot;: [
+    {&quot;filename&quot;: &quot;reply_{messageID1}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient1&gt;},
+    {&quot;filename&quot;: &quot;reply_{messageID2}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient2&gt;}
+  ]
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>You need to read meeting schedule request emails from `/root/test_input.json`. You should parse your internal calendar `/root/calendar.pdf` to propose a meeting time for all requests. The time between two adjacent horizontal lines in the calendar is 15 minutes.
+
+## Workflow
+1. Extract Request Details: From each email in `/root/test_input.json`, extract the meeting duration and any specific time/date constraints mentioned in the message body.
+2. Access and read `/root/calendar.pdf`. Extract any existing appointments listed in this document. Determine the start and end times for each appointment block by measuring its position and span relative to the calendar&#x27;s timeline axis.
+3. Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open. Ensure that the earliest compatible time is selected, provided that all requests can be accommodated.
+4. Generate the reply content and save as a .txt file:
+For each email, instead of sending a reply, generate the content based on the template below and save it as an individual text file (e.g., `/root/reply_{messageID}.txt`):
+
+    &quot;&quot;&quot;Hi,
+
+        Thank you for your meeting request.
+
+        I can be available:
+
+        Date: {day_name}, {date_formatted}
+        Time: {time_range}
+        Duration: {meetingDuration} hour(s)
+
+        If this time doesn&#x27;t work, please let me know your preferred alternatives.
+
+        Best regards,
+        ConSkillBench&quot;&quot;&quot;
+
+   - The date format should be `{day_name}, {month} {DD}, {YYYY}`. For example: `Thursday, January 08, 2026` (NOT `January 8th, 2026` or `January 8, 2026`)
+   - The time format should be `{HH:MM AM/PM} - {HH:MM AM/PM}`. For example: `09:00 AM - 10:30 AM` (NOT `9:00 AM - 10:30 AM`)
+   - All the time should be set according to the time zone in the calendar.
+5. Save the results in results.json:
+Log the filenames of all generated text files in `/root/results.json` using the following format:
+{
+  &quot;sent_results&quot;: [
+    {&quot;filename&quot;: &quot;reply_{messageID1}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient1&gt;},
+    {&quot;filename&quot;: &quot;reply_{messageID2}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient2&gt;}
+  ]
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>You need to read meeting schedule request emails from `/root/test_input.json`. You should parse your internal calendar `/root/calendar.pdf` to propose a meeting time for all requests. The time between two adjacent horizontal lines in the calendar is 15 minutes.
+
+## Workflow
+1. Extract Request Details: From each email in `/root/test_input.json`, extract the meeting duration and any specific time/date constraints mentioned in the message body.
+2. Access and read `/root/calendar.pdf`. Extract any existing appointments listed in this document. Determine the start and end times for each appointment block by measuring its position and span relative to the calendar&#x27;s timeline axis.
+3. Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open. Ensure that the earliest compatible time is selected, provided that all requests can be accommodated.
+4. Generate the reply content and save as a .txt file:
+For each email, instead of sending a reply, generate the content based on the template below and save it as an individual text file (e.g., `/root/reply_{messageID}.txt`):
+
+    &quot;&quot;&quot;Hi,
+
+        Thank you for your meeting request.
+
+        I can be available:
+
+        Date: {day_name}, {date_formatted}
+        Time: {time_range}
+        Duration: {meetingDuration} hour(s)
+
+        If this time doesn&#x27;t work, please let me know your preferred alternatives.
+
+        Best regards,
+        ConSkillBench&quot;&quot;&quot;
+
+   - The date format should be `{day_name}, {month} {DD}, {YYYY}`. For example: `Thursday, January 08, 2026` (NOT `January 8th, 2026` or `January 8, 2026`)
+   - The time format should be `{HH:MM AM/PM} - {HH:MM AM/PM}`. For example: `09:00 AM - 10:30 AM` (NOT `9:00 AM - 10:30 AM`)
+   - All the time should be set according to the time zone in the calendar.
+5. Save the results in results.json:
+Log the filenames of all generated text files in `/root/results.json` using the following format:
+{
+  &quot;sent_results&quot;: [
+    {&quot;filename&quot;: &quot;reply_{messageID1}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient1&gt;},
+    {&quot;filename&quot;: &quot;reply_{messageID2}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient2&gt;}
+  ]
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>You need to read meeting schedule request emails from `/root/test_input.json`. You should parse your internal calendar `/root/calendar.pdf` to propose a meeting time for all requests. The time between two adjacent horizontal lines in the calendar is 15 minutes.
+
+## Workflow
+1. Extract Request Details: From each email in `/root/test_input.json`, extract the meeting duration and any specific time/date constraints mentioned in the message body.
+2. Access and read `/root/calendar.pdf`. Extract any existing appointments listed in this document. Determine the start and end times for each appointment block by measuring its position and span relative to the calendar&#x27;s timeline axis.
+3. Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open. Ensure that the earliest compatible time is selected, provided that all requests can be accommodated.
+4. Generate the reply content and save as a .txt file:
+For each email, instead of sending a reply, generate the content based on the template below and save it as an individual text file (e.g., `/root/reply_{messageID}.txt`):
+
+    &quot;&quot;&quot;Hi,
+
+        Thank you for your meeting request.
+
+        I can be available:
+
+        Date: {day_name}, {date_formatted}
+        Time: {time_range}
+        Duration: {meetingDuration} hour(s)
+
+        If this time doesn&#x27;t work, please let me know your preferred alternatives.
+
+        Best regards,
+        ConSkillBench&quot;&quot;&quot;
+
+   - The date format should be `{day_name}, {month} {DD}, {YYYY}`. For example: `Thursday, January 08, 2026` (NOT `January 8th, 2026` or `January 8, 2026`)
+   - The time format should be `{HH:MM AM/PM} - {HH:MM AM/PM}`. For example: `09:00 AM - 10:30 AM` (NOT `9:00 AM - 10:30 AM`)
+   - All the time should be set according to the time zone in the calendar.
+5. Save the results in results.json:
+Log the filenames of all generated text files in `/root/results.json` using the following format:
+{
+  &quot;sent_results&quot;: [
+    {&quot;filename&quot;: &quot;reply_{messageID1}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient1&gt;},
+    {&quot;filename&quot;: &quot;reply_{messageID2}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient2&gt;}
+  ]
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>You need to read meeting schedule request emails from `/root/test_input.json`. You should parse your internal calendar `/root/calendar.pdf` to propose a meeting time for all requests. The time between two adjacent horizontal lines in the calendar is 15 minutes.
+
+## Workflow
+1. Extract Request Details: From each email in `/root/test_input.json`, extract the meeting duration and any specific time/date constraints mentioned in the message body.
+2. Access and read `/root/calendar.pdf`. Extract any existing appointments listed in this document. Determine the start and end times for each appointment block by measuring its position and span relative to the calendar&#x27;s timeline axis.
+3. Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open. Ensure that the earliest compatible time is selected, provided that all requests can be accommodated.
+4. Generate the reply content and save as a .txt file:
+For each email, instead of sending a reply, generate the content based on the template below and save it as an individual text file (e.g., `/root/reply_{messageID}.txt`):
+
+    &quot;&quot;&quot;Hi,
+
+        Thank you for your meeting request.
+
+        I can be available:
+
+        Date: {day_name}, {date_formatted}
+        Time: {time_range}
+        Duration: {meetingDuration} hour(s)
+
+        If this time doesn&#x27;t work, please let me know your preferred alternatives.
+
+        Best regards,
+        ConSkillBench&quot;&quot;&quot;
+
+   - The date format should be `{day_name}, {month} {DD}, {YYYY}`. For example: `Thursday, January 08, 2026` (NOT `January 8th, 2026` or `January 8, 2026`)
+   - The time format should be `{HH:MM AM/PM} - {HH:MM AM/PM}`. For example: `09:00 AM - 10:30 AM` (NOT `9:00 AM - 10:30 AM`)
+   - All the time should be set according to the time zone in the calendar.
+5. Save the results in results.json:
+Log the filenames of all generated text files in `/root/results.json` using the following format:
+{
+  &quot;sent_results&quot;: [
+    {&quot;filename&quot;: &quot;reply_{messageID1}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient1&gt;},
+    {&quot;filename&quot;: &quot;reply_{messageID2}.txt&quot;, &quot;recipient&quot;: &lt;email of recipient2&gt;}
+  ]
+}</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 5;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>

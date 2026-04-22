@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>github-repo-analytics — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>github-repo-analytics</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Software Engineering › Version Control</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 5 instances</span>
+    </div>
+    <p class="task-description">Analyze PR metrics for a GitHub repository in a specific quarter: count PRs changing ≥8 files, compute merge rates, average time-to-merge, and identify top contributors.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 5</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>I’m preparing a short &quot;Q4 2024 large-PR community pulse&quot; write-up for the `cli/cli` repository, and I want you to help me turn raw activity into a clean, meeting-ready summary.
+
+For the period 2024-10-01 to 2024-12-31, I want you to gather the following pull request metrics for PRs that changed at least 8 files:
+
+- Count how many such PRs were created during the period.
+- Report how many of those PRs had been merged by `2025-01-01T00:00:00Z`.
+- Report how many of those PRs had been closed without merge by `2025-01-01T00:00:00Z`.
+- Compute the average time-to-merge in days across those PRs merged by `2025-01-01T00:00:00Z`, measured from PR creation time to merge time, rounded to one decimal place.
+- Identify the person who opened the most such PRs during the period. If there is a tie, return the lexicographically smallest GitHub login.
+
+I want you to compile everything into a `report.json` file and place it in the `/app/` directory. The JSON must use this exact structure:
+
+```json
+{
+  &quot;pr&quot;: {
+    &quot;total&quot;: &lt;int&gt;,
+    &quot;merged&quot;: &lt;int&gt;,
+    &quot;closed&quot;: &lt;int&gt;,
+    &quot;avg_merge_days&quot;: &lt;float&gt;,
+    &quot;top_contributor&quot;: &lt;str&gt;
+  }
+}
+```
+
+In the output schema, `closed` means &quot;closed without merge by 2025-01-01T00:00:00Z&quot;.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>I’m preparing a short &quot;December community pulse&quot; write-up for the `cli/cli` repository, and I want you to help me turn raw activity into a clean, meeting-ready summary.
+
+For the period 2024-12-01 to 2024-12-31, I want you to gather the following pull request metrics:
+
+- Count how many PRs were created during the month.
+- Report how many of those PRs had been merged by `2026-01-01T00:00:00Z`.
+- Report how many of those PRs had been closed without merge by `2026-01-01T00:00:00Z`.
+- Compute the average time-to-merge in days across PRs merged by `2026-01-01T00:00:00Z`, measured from PR creation time to merge time, rounded to one decimal place.
+- Identify the person who opened the most PRs during the month. If there is a tie, return the lexicographically smallest GitHub login.
+
+I want you to compile everything into a `report.json` file and place it in the `/app/` directory. The JSON must use this exact structure:
+
+```json
+{
+  &quot;pr&quot;: {
+    &quot;total&quot;: &lt;int&gt;,
+    &quot;merged&quot;: &lt;int&gt;,
+    &quot;closed&quot;: &lt;int&gt;,
+    &quot;avg_merge_days&quot;: &lt;float&gt;,
+    &quot;top_contributor&quot;: &lt;str&gt;
+  }
+}
+```
+
+In the output schema, `closed` means &quot;closed without merge by 2026-01-01T00:00:00Z&quot;.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>I’m preparing a short &quot;Q1 2024 large-PR community pulse&quot; write-up for the `cli/cli` repository, and I want you to help me turn raw activity into a clean, meeting-ready summary.
+
+For the period 2024-01-01 to 2024-03-31, I want you to gather the following pull request metrics for PRs that changed at least 8 files:
+
+- Count how many such PRs were created during the period.
+- Report how many of those PRs had been merged by `2024-04-15T00:00:00Z`.
+- Report how many of those PRs had been closed without merge by `2024-04-15T00:00:00Z`.
+- Compute the average time-to-merge in days across those PRs merged by `2024-04-15T00:00:00Z`, measured from PR creation time to merge time, rounded to one decimal place.
+- Identify the person who opened the most such PRs during the period. If there is a tie, return the lexicographically smallest GitHub login.
+
+I want you to compile everything into a `report.json` file and place it in the `/app/` directory. The JSON must use this exact structure:
+
+```json
+{
+  &quot;pr&quot;: {
+    &quot;total&quot;: &lt;int&gt;,
+    &quot;merged&quot;: &lt;int&gt;,
+    &quot;closed&quot;: &lt;int&gt;,
+    &quot;avg_merge_days&quot;: &lt;float&gt;,
+    &quot;top_contributor&quot;: &lt;str&gt;
+  }
+}
+```
+
+In the output schema, `closed` means &quot;closed without merge by 2024-04-15T00:00:00Z&quot;.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>I’m preparing a short &quot;Q2 2024 large-PR community pulse&quot; write-up for the `cli/cli` repository, and I want you to help me turn raw activity into a clean, meeting-ready summary.
+
+For the period 2024-04-01 to 2024-06-30, I want you to gather the following pull request metrics for PRs that changed at least 8 files:
+
+- Count how many such PRs were created during the period.
+- Report how many of those PRs had been merged by `2024-07-15T00:00:00Z`.
+- Report how many of those PRs had been closed without merge by `2024-07-15T00:00:00Z`.
+- Compute the average time-to-merge in days across those PRs merged by `2024-07-15T00:00:00Z`, measured from PR creation time to merge time, rounded to one decimal place.
+- Identify the person who opened the most such PRs during the period. If there is a tie, return the lexicographically smallest GitHub login.
+
+I want you to compile everything into a `report.json` file and place it in the `/app/` directory. The JSON must use this exact structure:
+
+```json
+{
+  &quot;pr&quot;: {
+    &quot;total&quot;: &lt;int&gt;,
+    &quot;merged&quot;: &lt;int&gt;,
+    &quot;closed&quot;: &lt;int&gt;,
+    &quot;avg_merge_days&quot;: &lt;float&gt;,
+    &quot;top_contributor&quot;: &lt;str&gt;
+  }
+}
+```
+
+In the output schema, `closed` means &quot;closed without merge by 2024-07-15T00:00:00Z&quot;.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>I’m preparing a short &quot;Q3 2024 large-PR community pulse&quot; write-up for the `cli/cli` repository, and I want you to help me turn raw activity into a clean, meeting-ready summary.
+
+For the period 2024-07-01 to 2024-09-30, I want you to gather the following pull request metrics for PRs that changed at least 8 files:
+
+- Count how many such PRs were created during the period.
+- Report how many of those PRs had been merged by `2024-10-15T00:00:00Z`.
+- Report how many of those PRs had been closed without merge by `2024-10-15T00:00:00Z`.
+- Compute the average time-to-merge in days across those PRs merged by `2024-10-15T00:00:00Z`, measured from PR creation time to merge time, rounded to one decimal place.
+- Identify the person who opened the most such PRs during the period. If there is a tie, return the lexicographically smallest GitHub login.
+
+I want you to compile everything into a `report.json` file and place it in the `/app/` directory. The JSON must use this exact structure:
+
+```json
+{
+  &quot;pr&quot;: {
+    &quot;total&quot;: &lt;int&gt;,
+    &quot;merged&quot;: &lt;int&gt;,
+    &quot;closed&quot;: &lt;int&gt;,
+    &quot;avg_merge_days&quot;: &lt;float&gt;,
+    &quot;top_contributor&quot;: &lt;str&gt;
+  }
+}
+```
+
+In the output schema, `closed` means &quot;closed without merge by 2024-10-15T00:00:00Z&quot;.</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 5;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>

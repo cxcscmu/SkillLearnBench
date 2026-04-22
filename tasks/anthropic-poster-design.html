@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>anthropic-poster-design — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>anthropic-poster-design</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Content &amp; Creative › Image Generation</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 5 instances</span>
+    </div>
+    <p class="task-description">Generate a technical &#x27;exploded-view&#x27; poster for a hardware device using Anthropic brand colors and typography. Must correctly apply brand guidelines from provided skill.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 5</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>You are working as a Brand Design Engineer at Anthropic. We need to generate a &quot;Technical Exploded-View&quot; for the upcoming Nova edge device to be used in our internal engineering handbook. Apply Anthropic’s official brand colors and typography to the artifact wherever brand styling is relevant. Use Anthropic’s company design standards, visual formatting, and brand tokens consistently across the poster, including background, hardware accents, annotation lines, and title typography.
+
+The requirements are: 
+1.  Create a clean technical poster showing the Nova device as an exploded-view showing at least 5 layers of internal hardware (Casing, Thermal Unit, PCB, Battery, Interface).
+2.  Color Application Strategy:
+    * The outer casing should use Anthropic Corporate Dark.
+    * The entire poster background must be the Anthropic Identity Light color.
+    * Use the Tertiary Brand Accent for the PCB substrate and the Secondary Brand Accent for the Thermal Management unit.
+    * The primary interaction details and connector highlights should use the Primary Brand Accent.
+    * Annotation leader lines should appear in a thin Muted Mid Gray.
+3.  Place the product title &quot;NOVA&quot; in the top-left as a clear heading block.
+4.  The overall image must remain minimalist, low-saturation, and explicitly avoid neon or high-intensity &quot;AI gradient&quot; styling.
+
+Generate `/root/nova_technical_poster.png` as the final poster image. Also generate `/root/design_parameters.json`, which must contain only the applied HEX color values and the heading font name used in the poster, using exactly the following JSON structure:
+{
+  &quot;background_hex&quot;: &quot;&quot;,
+  &quot;corporate_dark_hex&quot;: &quot;&quot;,
+  &quot;primary_accent_hex&quot;: &quot;&quot;,
+  &quot;secondary_accent_hex&quot;: &quot;&quot;,
+  &quot;tertiary_accent_hex&quot;: &quot;&quot;,
+  &quot;muted_mid_gray_hex&quot;: &quot;&quot;,
+  &quot;applied_heading_font&quot;: &quot;&quot;
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>You are working as a Brand Design Engineer at Anthropic. We need to generate a branded visual artifact for a fictional Anthropic edge product called Atlas Mini. Apply Anthropic’s official brand colors and typography to the artifact wherever brand styling is relevant. Use Anthropic’s company design standards, visual formatting, and brand tokens consistently across the composition.
+
+The requirements are:
+1. Create a clean launch card or product announcement image for &quot;ATLAS MINI&quot; with a strong typographic heading and a simple product-shaped graphic or abstract device silhouette.
+2. The main title or darkest structural graphic elements should use Anthropic Corporate Dark.
+3. Use Anthropic Primary Accent in a restrained way for one or more small focal highlights.
+4. The overall image must remain minimalist, low-saturation, and clearly avoid neon, glow effects, or generic &quot;AI gradient&quot; aesthetics.
+
+Generate `/root/anthropic_branded_artifact.png` as the final image. Also generate `/root/design_parameters.json`, which must contain only the applied HEX color values and the heading font name used in the artifact, using exactly the following JSON structure:
+{
+  &quot;background_hex&quot;: &quot;&quot;,
+  &quot;corporate_dark_hex&quot;: &quot;&quot;,
+  &quot;primary_accent_hex&quot;: &quot;&quot;,
+  &quot;applied_heading_font&quot;: &quot;&quot;
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>You are working as a Brand Design Engineer at Anthropic. We need to generate a branded packaging-front visual for a fictional Anthropic hardware accessory called Relay Dock. Apply Anthropic’s official brand colors and typography to the artifact wherever brand styling is relevant. Use Anthropic’s company design standards, visual formatting, and brand tokens consistently across the composition.
+
+The requirements are:
+1. Create a minimalist packaging-front style image for &quot;RELAY DOCK&quot; using clear hierarchy, generous whitespace, and one simple product illustration or icon.
+2. The background must use Anthropic Identity Light.
+3. The primary title and major visual structure should use Anthropic Corporate Dark.
+4. Use Anthropic Primary Accent sparingly for one restrained highlight or emphasis element.
+5. The final composition should feel premium, quiet, low-saturation, and should explicitly avoid loud gradients, neon colors, or flashy visual effects.
+
+Generate `/root/anthropic_branded_artifact.png` as the final image. Also generate `/root/design_parameters.json`, which must contain only the applied HEX color values and the heading font name used in the artifact, using exactly the following JSON structure:
+{
+  &quot;background_hex&quot;: &quot;&quot;,
+  &quot;corporate_dark_hex&quot;: &quot;&quot;,
+  &quot;primary_accent_hex&quot;: &quot;&quot;,
+  &quot;applied_heading_font&quot;: &quot;&quot;
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>You are working as a Brand Design Engineer at Anthropic. We need to generate a technical internal visual for the upcoming Orion edge control module to be used in our engineering handbook. Apply Anthropic’s official brand colors and typography to the artifact wherever brand styling is relevant. Use Anthropic’s company design standards, visual formatting, and brand tokens consistently across the poster, including the background, dominant hardware forms, annotation details, and title typography.
+
+The requirements are:
+1. Create a clean technical poster showing the Orion device as a separated internal hardware composition with multiple clearly readable modules, suitable for internal engineering documentation.
+2.  Color Application Strategy:
+    * The outer casing should use Anthropic Corporate Light.
+    * The entire poster background must be the Anthropic Corporate Dark.
+    * Use the Tertiary Brand Accent for the PCB substrate and the Secondary Brand Accent for the Thermal Management unit.
+    * The primary interaction details and connector highlights should use the Primary Brand Accent.
+    * Annotation leader lines should appear in a thin Muted Mid Gray.
+3. The overall image must remain minimalist, low-saturation, and explicitly avoid neon or high-intensity &quot;AI gradient&quot; styling. The composition should feel precise, editorial, and technically legible rather than promotional.
+
+Generate `/root/orion_technical_poster.png` as the final poster image. Also generate `/root/design_parameters.json`, which must contain only the applied HEX color values used in the poster, using exactly the following JSON structure:
+{
+  &quot;background_hex&quot;: &quot;&quot;,
+  &quot;corporate_light_hex&quot;: &quot;&quot;,
+  &quot;primary_accent_hex&quot;: &quot;&quot;,
+  &quot;secondary_accent_hex&quot;: &quot;&quot;,
+  &quot;tertiary_accent_hex&quot;: &quot;&quot;,
+  &quot;muted_mid_gray_hex&quot;: &quot;&quot;
+}</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>You are working as a Brand Design Engineer at Anthropic. We need to generate a branded packaging-front visual for a fictional Anthropic hardware accessory called Relay Dock. Apply Anthropic’s official brand colors and typography to the artifact wherever brand styling is relevant. Use Anthropic’s company design standards, visual formatting, and brand tokens consistently across the composition.
+
+The requirements are:
+1. Create a minimalist packaging-front style image for &quot;RELAY DOCK&quot; using clear hierarchy, generous whitespace, and one simple product illustration or icon.
+2. Use Anthropic’s official visual language consistently across the full composition so that the artifact reads as unmistakably Anthropic-branded, with a clear distinction between light background, dominant forms, and restrained highlight details. The highlights should not be more than 8% of the poster.
+3. The title &quot;RELAY DOCK&quot; should appear as the primary heading with strong visual clarity and clean typographic hierarchy.
+4. The final composition should feel premium, quiet, low-saturation, and should explicitly avoid loud gradients, neon colors, or flashy visual effects.
+
+Generate `/root/anthropic_branded_artifact.png` as the final image. Also generate `/root/design_parameters.json`, which must contain only the applied HEX color values and the heading font name used in the artifact, using exactly the following JSON structure:
+{
+  &quot;background_hex&quot;: &quot;&quot;,
+  &quot;corporate_dark_hex&quot;: &quot;&quot;,
+  &quot;primary_accent_hex&quot;: &quot;&quot;,
+  &quot;applied_heading_font&quot;: &quot;&quot;
+}</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 5;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>

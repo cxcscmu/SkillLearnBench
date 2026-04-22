@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>temperature-simulation — SkillLearnBench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <link rel="stylesheet" href="../static/css/task.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span> SkillLearnBench</a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Homepage</a></li>
+      <li><a href="../tasks.html" class="active">Tasks</a></li>
+      <li><a href="../leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="gh-btn" href="#" target="_blank" rel="noopener">
+        <i class="fa-regular fa-file-lines"></i> Paper
+      </a>
+      <a class="gh-btn" href="https://github.com/cxcscmu/SkillLearnBench" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+<header class="task-hero">
+  <div class="container">
+    <a href="../tasks.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to All Tasks</a>
+    <h1>temperature-simulation</h1>
+    <div class="task-meta">
+      <span class="badge badge-category"><i class="fa-solid fa-folder"></i> Utilities &amp; Other › Command Execution</span>
+      <span class="badge badge-instances"><i class="fa-solid fa-clone"></i> 5 instances</span>
+    </div>
+    <p class="task-description">Run the General Lake Model (GLM) to simulate vertical water temperature for Lake Mendota. Calibrate 5 parameters within published ranges to meet RMSE thresholds.</p>
+  </div>
+</header>
+
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">Instance Instructions</h2>
+    <div class="carousel-wrap" id="instanceCarousel">
+      <div class="carousel-header">
+        <h3><i class="fa-solid fa-clipboard-list" style="color:var(--accent);"></i> </h3>
+        <div class="carousel-nav">
+          <button onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="carousel-counter" id="carouselCounter">Instance 1 / 5</span>
+          <button onclick="nextSlide()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+            <div class="carousel-slide active" data-idx="0">
+        <pre>Please run the General Lake Model to simulate the vertical water temperature for Lake Mendota.
+
+The data that you may use includes:
+1. Meteorological and hydrological forcing data in `/root/bcs/`
+2. Field water temperature observations data in `/root/field_temp_oxy.csv`
+3. GLM configuration file in `/root/glm3.nml`
+
+You should generate the simulation output from 2009-01-01 to 2015-12-30 at `/root/output/output.nc`.
+
+This query is evaluated with three exact RMSE checks computed from the matched observation/simulation pairs obtained by an exact `datetime` + rounded-depth merge:
+1. `overall_rmse &lt; 1.60`
+2. `annual_deep_rmse &lt; 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
+3. `summer_deep_rmse &lt; 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
+
+Additional task rules:
+1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
+2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
+3. Keep your final parameter values within these published calibration ranges: `Kw` in `[0.1, 0.5]`, `coef_mix_hyp` in `[0.3, 0.7]`, `wind_factor` in `[0.7, 1.3]`, `lw_factor` in `[0.7, 1.3]`, and `ch` in `[0.0005, 0.002]`.
+4. Save your final exact self-evaluation to `/root/metrics.json` with JSON keys `overall_rmse`, `annual_deep_rmse`, `summer_deep_rmse`, `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs`.
+5. Do not use nearest-time matching, interpolation, or alternative depth binning in those final reported metrics.
+
+I will verify that:
+1. GLM runs successfully with the parameters you leave behind.
+2. The final configuration still writes `/root/output/output.nc`.
+3. Only the allowed calibration parameters were changed.
+4. Your final parameter values stay within the published calibration ranges.
+5. Your `/root/metrics.json` matches my exact recomputed metrics closely.
+6. All three RMSE thresholds above are satisfied.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <pre>Please run the General Lake Model to simulate the vertical water temperature for Lake Mendota.
+
+The data that you may use includes:
+1. Meteorological and hydrological forcing data in `/root/bcs/`
+2. Field water temperature observations data in `/root/field_temp_oxy.csv`
+3. GLM configuration file in `/root/glm3.nml`
+
+You should generate the simulation output from 2009-01-01 to 2015-12-30 at `/root/output/output.nc`.
+
+This query is evaluated with three exact RMSE checks computed from the matched observation/simulation pairs obtained by an exact `datetime` + rounded-depth merge:
+1. `overall_rmse &lt; 1.60`
+2. `annual_deep_rmse &lt; 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
+3. `summer_deep_rmse &lt; 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
+
+Additional task rules:
+1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
+2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
+3. Keep your final parameter values within these published calibration ranges: `Kw` in `[0.1, 0.5]`, `coef_mix_hyp` in `[0.3, 0.7]`, `wind_factor` in `[0.7, 1.3]`, `lw_factor` in `[0.7, 1.3]`, and `ch` in `[0.0005, 0.002]`.
+4. Save your final exact self-evaluation to `/root/metrics.json` with JSON keys `overall_rmse`, `annual_deep_rmse`, `summer_deep_rmse`, `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs`.
+5. Do not use nearest-time matching, interpolation, or alternative depth binning in those final reported metrics.
+
+I will verify that:
+1. GLM runs successfully with the parameters you leave behind.
+2. The final configuration still writes `/root/output/output.nc`.
+3. Only the allowed calibration parameters were changed.
+4. Your final parameter values stay within the published calibration ranges.
+5. Your `/root/metrics.json` matches my exact recomputed metrics closely.
+6. All three RMSE thresholds above are satisfied.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <pre>Please run the General Lake Model to simulate the vertical water temperature for Lake Mendota.
+
+The data that you may use includes:
+1. Meteorological and hydrological forcing data in `/root/bcs/`
+2. Field water temperature observations data in `/root/field_temp_oxy.csv`
+3. GLM configuration file in `/root/glm3.nml`
+
+You should generate the simulation output from 2009-01-01 to 2015-12-30 at `/root/output/output.nc`.
+
+This query is evaluated with three exact RMSE checks computed from the matched observation/simulation pairs obtained by an exact `datetime` + rounded-depth merge:
+1. `overall_rmse &lt; 1.60`
+2. `annual_deep_rmse &lt; 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
+3. `summer_deep_rmse &lt; 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
+
+Additional task rules:
+1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
+2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
+3. Keep your final parameter values within these published calibration ranges: `Kw` in `[0.1, 0.5]`, `coef_mix_hyp` in `[0.3, 0.7]`, `wind_factor` in `[0.7, 1.3]`, `lw_factor` in `[0.7, 1.3]`, and `ch` in `[0.0005, 0.002]`.
+4. Save your final exact self-evaluation to `/root/metrics.json` with JSON keys `overall_rmse`, `annual_deep_rmse`, `summer_deep_rmse`, `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs`.
+5. Do not use nearest-time matching, interpolation, or alternative depth binning in those final reported metrics.
+
+I will verify that:
+1. GLM runs successfully with the parameters you leave behind.
+2. The final configuration still writes `/root/output/output.nc`.
+3. Only the allowed calibration parameters were changed.
+4. Your final parameter values stay within the published calibration ranges.
+5. Your `/root/metrics.json` matches my exact recomputed metrics closely.
+6. All three RMSE thresholds above are satisfied.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="3">
+        <pre>Please run the General Lake Model to simulate the vertical water temperature for Lake Mendota.
+
+The data that you may use includes:
+1. Meteorological and hydrological forcing data in `/root/bcs/`
+2. Field water temperature observations data in `/root/field_temp_oxy.csv`
+3. GLM configuration file in `/root/glm3.nml`
+
+You should generate the simulation output from 2009-01-01 to 2015-12-30 at `/root/output/output.nc`.
+
+This query is evaluated with three exact RMSE checks computed from the matched observation/simulation pairs obtained by an exact `datetime` + rounded-depth merge:
+1. `overall_rmse &lt; 1.60`
+2. `annual_deep_rmse &lt; 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
+3. `summer_deep_rmse &lt; 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
+
+Additional task rules:
+1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
+2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
+3. Keep your final parameter values within these published calibration ranges: `Kw` in `[0.1, 0.5]`, `coef_mix_hyp` in `[0.3, 0.7]`, `wind_factor` in `[0.7, 1.3]`, `lw_factor` in `[0.7, 1.3]`, and `ch` in `[0.0005, 0.002]`.
+4. Save your final exact self-evaluation to `/root/metrics.json` with JSON keys `overall_rmse`, `annual_deep_rmse`, `summer_deep_rmse`, `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs`.
+5. Do not use nearest-time matching, interpolation, or alternative depth binning in those final reported metrics.
+
+I will verify that:
+1. GLM runs successfully with the parameters you leave behind.
+2. The final configuration still writes `/root/output/output.nc`.
+3. Only the allowed calibration parameters were changed.
+4. Your final parameter values stay within the published calibration ranges.
+5. Your `/root/metrics.json` matches my exact recomputed metrics closely.
+6. All three RMSE thresholds above are satisfied.</pre>
+      </div>
+      <div class="carousel-slide" data-idx="4">
+        <pre>Please run the General Lake Model to simulate the vertical water temperature for Lake Mendota.
+
+The data that you may use includes:
+1. Meteorological and hydrological forcing data in `/root/bcs/`
+2. Field water temperature observations data in `/root/field_temp_oxy.csv`
+3. GLM configuration file in `/root/glm3.nml`
+
+You should generate the simulation output from 2009-01-01 to 2015-12-30 at `/root/output/output.nc`.
+
+This query is evaluated with three exact RMSE checks computed from the matched observation/simulation pairs obtained by an exact `datetime` + rounded-depth merge:
+1. `overall_rmse &lt; 1.60`
+2. `annual_deep_rmse &lt; 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
+3. `summer_deep_rmse &lt; 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
+
+Additional task rules:
+1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
+2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
+3. Keep your final parameter values within these published calibration ranges: `Kw` in `[0.1, 0.5]`, `coef_mix_hyp` in `[0.3, 0.7]`, `wind_factor` in `[0.7, 1.3]`, `lw_factor` in `[0.7, 1.3]`, and `ch` in `[0.0005, 0.002]`.
+4. Save your final exact self-evaluation to `/root/metrics.json` with JSON keys `overall_rmse`, `annual_deep_rmse`, `summer_deep_rmse`, `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs`.
+5. Do not use nearest-time matching, interpolation, or alternative depth binning in those final reported metrics.
+
+I will verify that:
+1. GLM runs successfully with the parameters you leave behind.
+2. The final configuration still writes `/root/output/output.nc`.
+3. Only the allowed calibration parameters were changed.
+4. Your final parameter values stay within the published calibration ranges.
+5. Your `/root/metrics.json` matches my exact recomputed metrics closely.
+6. All three RMSE thresholds above are satisfied.</pre>
+      </div>
+
+      <div class="carousel-dots" id="carouselDots">
+                <button class="active" onclick="goToSlide(0)" title="Instance 1"></button>
+        <button onclick="goToSlide(1)" title="Instance 2"></button>
+        <button onclick="goToSlide(2)" title="Instance 3"></button>
+        <button onclick="goToSlide(3)" title="Instance 4"></button>
+        <button onclick="goToSlide(4)" title="Instance 5"></button>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<footer>
+  <div class="container">
+    <p>SkillLearnBench &copy; 2026 &mdash; Built for the research community. Template inspired by <a href="https://claw-eval.github.io" target="_blank">Claw-Eval</a>.</p>
+  </div>
+</footer>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 5;
+
+function showSlide(idx) {
+  document.querySelectorAll('.carousel-slide').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.carousel-dots button').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  document.getElementById('carouselCounter').textContent = 'Instance ' + (idx + 1) + ' / ' + totalSlides;
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === totalSlides - 1);
+  currentSlide = idx;
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) showSlide(currentSlide - 1);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>
