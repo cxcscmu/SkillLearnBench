@@ -280,8 +280,8 @@ section.alt { background: var(--surface); border-top: 1px solid var(--border); b
 .hero .authors span { white-space: nowrap; }
 
 .hero .affiliations {
-  font-size: 0.82rem;
-  color: var(--muted);
+  font-size: 0.92rem;
+  color: var(--text);
   margin-top: 8px;
   margin-bottom: 1.75rem;
 }
