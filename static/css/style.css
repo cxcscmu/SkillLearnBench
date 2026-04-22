@@ -281,12 +281,54 @@ section.alt { background: var(--surface); border-top: 1px solid var(--border); b
 
 .hero .affiliations {
   font-size: 0.92rem;
+  font-weight: 700;
   color: var(--text);
   margin-top: 8px;
   margin-bottom: 1.75rem;
 }
 
 .hero .affiliations sup { margin: 0 1px; }
+
+.affiliations-inline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.9rem;
+  row-gap: 0.5rem;
+}
+
+.aff-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.aff-item a {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.9;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.aff-item a:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.aff-sep {
+  color: var(--muted);
+}
+
+.aff-logo {
+  display: block;
+  width: auto;
+  object-fit: contain;
+}
+
+.aff-logo-cmu { height: 36px; }
+.aff-logo-amazon { height: 20px; }
 
 .btn-row {
   display: flex;
@@ -1508,6 +1550,10 @@ footer a:hover { color: var(--accent); }
   }
   section { padding: 2rem 0; }
   .abstract-content { padding: 1.25rem; font-size: 0.88rem; }
+  .affiliations-inline { gap: 0.6rem; }
+  .aff-item { gap: 0.4rem; }
+  .aff-logo-cmu { height: 28px; }
+  .aff-logo-amazon { height: 16px; }
 }
 
 @media (max-width: 480px) {
