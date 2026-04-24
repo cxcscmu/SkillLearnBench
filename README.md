@@ -24,7 +24,6 @@ cp .env.example .env                                           # fill in your AP
 
 Docker is a hard requirement, since every agent trial runs inside a container. Install it from [docs.docker.com/get-docker](https://docs.docker.com/get-docker/).
 
-
 ## Quick Start of Evaluation
 
 ```bash
@@ -83,7 +82,6 @@ SkillLearnBench contains 20 tasks across 6 real-world categories, with 100 insta
 | **Trajectory Quality** | Key-point recall, execution order, completeness | Whether the solving agent's action trace matches the expected solution path |
 
 The solving agent is powered by Claude Sonnet 4.6, and the LLM-as-judge uses GPT-5-mini.
-
 
 ## Baselines
 
