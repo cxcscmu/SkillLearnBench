@@ -14,8 +14,6 @@
 20 skill-dependent tasks · 15 sub-domains · 100 verified instances
 </div>
 
-
-
 ## Installation
 
 ```bash
@@ -25,7 +23,6 @@ cp .env.example .env                                           # fill in your AP
 ```
 
 Docker is a hard requirement, since every agent trial runs inside a container. Install it from [docs.docker.com/get-docker](https://docs.docker.com/get-docker/).
-
 
 
 ## Quick Start of Evaluation
