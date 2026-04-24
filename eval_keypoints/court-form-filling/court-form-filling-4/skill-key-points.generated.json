@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker needed to import and use pypdf's main classes to open the blank PDF and write the filled output; this underlies the actions where they read the PDF, populated fields, and saved /root/sc100-filled.pdf.",
+    "key_point": "Import and use pypdf's PdfReader and PdfWriter to open and write PDF files.",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter"
+  },
+  {
+    "reason": "The worker checked the PDF by opening it and inspecting page count and structure before filling; the reader creation and pages check shows the exact pattern they followed to read the PDF.",
+    "key_point": "Instantiate a PdfReader for a file (reader = PdfReader(...)) and inspect reader.pages (e.g., print number of pages) to examine the PDF before modifying it.",
+    "skill_reference": "reader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")"
+  },
+  {
+    "reason": "To map and verify text fields and form content, the worker used the documented method to extract page text by iterating pages and calling extract_text(), which they relied on when inspecting the blank form and verifying filled content.",
+    "key_point": "Extract text from a PDF by looping over reader.pages and calling page.extract_text() to gather page text for inspection.",
+    "skill_reference": "# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "The skill explicitly instructs that form-filling procedures are in forms.md and the worker followed that guidance (they read forms.md and then extracted form fields and mapped values), so this instruction was essential to know where to find the form-filling workflow.",
+    "key_point": "If you need to fill out a PDF form, consult the forms.md instructions provided by the skill.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The worker chose the appropriate tool for filling PDF forms (pypdf) as recommended by the skill; this justifies using pypdf-based form-fill code and assembling field_values.json to populate the form.",
+    "key_point": "The recommended tools for filling PDF forms are pdf-lib or pypdf (see forms.md); prefer pypdf for Python-based form manipulation.",
+    "skill_reference": "Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md"
+  },
+  {
+    "reason": "The worker ran shell tools to inspect/verify PDF contents and convert pages; the skill's pdftotext command shows the exact CLI usage pattern they could apply for extracting text from PDFs via bash during checks.",
+    "key_point": "Use the pdftotext command-line tool to extract text from a PDF (optionally with -layout to preserve layout) when inspecting PDF content via shell.",
+    "skill_reference": "pdftotext -layout input.pdf output.txt"
+  },
+  {
+    "reason": "To visually verify the filled pages the worker converted PDF pages to images; the skill's pdf2image usage provides the exact function used to convert PDFs to images for visual/OCR checks.",
+    "key_point": "Convert PDF pages to images using pdf2image.convert_from_path(...) so you can view or OCR pages when verifying filled output.",
+    "skill_reference": "images = convert_from_path('scanned.pdf')"
+  }
+]

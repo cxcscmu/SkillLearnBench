@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "Knowing to prioritize the repo-declared dependencies guided the worker to align the runtime environment to the repository requirements before installing packages; the worker explicitly followed this guidance when checking Python versions and dependency files.",
+    "key_point": "Always align the environment to the repository's declared dependencies first (do dependency alignment before installs).",
+    "skill_reference": "When reproducing an NLP research repo, **always align the environment to the repo’s declared dependencies first**."
+  },
+  {
+    "reason": "The worker diagnosed a mismatch between system Python and the repo's expected Python and used that diagnosis to decide to create a matching environment (via uv), so the note that Python version mismatches are a primary failure mode was essential.",
+    "key_point": "Treat Python version mismatch as a primary cause of failures and check Python version early.",
+    "skill_reference": "Most failures come from **Python version mismatch** or installing packages without following `requirements.txt` / `environment.yml`."
+  },
+  {
+    "reason": "The worker read the repo dependency files first (environment.yml / requirements.txt) to determine which Python and packages to install; this step directed subsequent decisions about environment setup and package installs.",
+    "key_point": "First read the repository dependency files to determine required Python and packages.",
+    "skill_reference": "1. **Read the repo dependency files**"
+  },
+  {
+    "reason": "When both dependency files exist the worker needed a rule to resolve conflicts; the skill told them to treat environment.yml as the base and requirements.txt as supplemental, which the worker implicitly followed when choosing how to install dependencies.",
+    "key_point": "If both environment.yml and requirements.txt exist, treat environment.yml as the base and requirements.txt as supplemental.",
+    "skill_reference": "If both exist, treat `environment.yml` as the base, `requirements.txt` as supplemental unless README says otherwise"
+  },
+  {
+    "reason": "The worker logged Python and pip state as part of reproducibility; the skill's instruction to run python -VV and pip freeze determined exactly what commands to save for /root/python_info.txt.",
+    "key_point": "Log the current environment by running python -VV, python -m pip --version, and python -m pip freeze and save the output.",
+    "skill_reference": "- `python -VV` *(required; Python version is often the root cause)*\n- `python -m pip --version`\n- `python -m pip freeze`"
+  },
+  {
+    "reason": "Because the worker's system Python differed from the repo expectation, the decision rule to set up a matching environment (rather than force-installing on the wrong Python) directly led to creating a new Python runtime.",
+    "key_point": "If the repo expects a specific Python major/minor and the current Python does not match, set up a matching environment before installing dependencies.",
+    "skill_reference": "If the repo expects a specific Python major/minor and the current Python does not match, it’s usually best to **set up a matching environment**  before installing dependencies."
+  },
+  {
+    "reason": "The worker used uv to install and manage the repo-matching Python; the skill's explicit uv example provided the exact command pattern to install a specific Python version.",
+    "key_point": "Use uv to install a specific Python version (e.g., uv python install <version>).",
+    "skill_reference": "uv python install 3.11.8"
+  },
+  {
+    "reason": "After installing a new Python, the worker needed to create and use a venv from that interpreter; the skill's uv venv example provided the exact invocation pattern used to make and use the environment.",
+    "key_point": "Create a virtualenv from the installed Python using uv venv --python <version> <path> and run installs with that interpreter.",
+    "skill_reference": "uv venv --python 3.11.8 /opt/py311"
+  },
+  {
+    "reason": "To avoid breaking the environment the worker followed the guidance to install dependencies from the repo files and to run a quick smoke test; this prevented random upgrades and validated the install before running unit tests.",
+    "key_point": "Prefer installing exactly from the repository dependency files (avoid random upgrades) and run a quick import/smoke test afterward.",
+    "skill_reference": "Prefer installing from the repo’s dependency files (avoid random upgrades), then run a quick import/smoke test."
+  }
+]

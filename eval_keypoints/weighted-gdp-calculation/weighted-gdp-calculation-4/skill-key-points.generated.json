@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker followed the instruction to place LOOKUP formulas into the three yellow data blocks on the Task sheet; this exact range was where they wrote the INDEX/MATCH formulas to pull exports, imports and GDP values from the Data sheet.",
+    "key_point": "Put INDEX&MATCH lookup formulas into Task sheet ranges H12:L17, H19:L24, and H26:L31.",
+    "skill_reference": "**Step 1 — INDEX&MATCH formulas in H12:L17, H19:L24, H26:L31:**"
+  },
+  {
+    "reason": "The worker implemented the lookup using INDEX over the numeric table and MATCH for the row and column positions—this formula pattern is the core method they used to retrieve the correct Data! values by series code and year.",
+    "key_point": "Use an INDEX over Data!$H$21:$M$40 with two MATCHes: one to find the series-code row in Data!$B$21:$B$40 and one to find the year column in Data!$H$4:$M$4.",
+    "skill_reference": "=INDEX(Data!$H$21:$M$40, MATCH($D<row>, Data!$B$21:$B$40, 0), MATCH(<col>$10, Data!$H$4:$M$4, 0))"
+  },
+  {
+    "reason": "This specifies how the two MATCH calls are used (series code and year) and the exact Data row/column ranges the worker relied on to fetch the right cell from the Data sheet.",
+    "key_point": "Match the Task sheet series code (column D) against Data column B (rows 21–40) and match the Task sheet year (row 10) against Data row 4 (2018–2023) to index the numeric table.",
+    "skill_reference": "- First MATCH finds the series code (column D) in Data column B (rows 21–40)\n- Second MATCH finds the year (row 10) in Data row 4 header (2018–2023)"
+  },
+  {
+    "reason": "The worker calculated net exports per country per year using this exact arithmetic and rounding; they inserted ROUND(...) formulas in H35:L40 following this pattern.",
+    "key_point": "Compute net exports as (Exports − Imports) / GDP × 100 and round to one decimal place using ROUND(..., 1).",
+    "skill_reference": "**Step 2 — Net exports % of GDP in H35:L40 (rounded to 1 dp):**\n=ROUND((Exports - Imports) / GDP * 100, 1)"
+  },
+  {
+    "reason": "For the GCC weighted mean the worker used SUMPRODUCT of net exports and GDP (equivalently total net exports divided by total GDP) and rounded the result; this is the formula they entered in the weighted-mean cell.",
+    "key_point": "Calculate the GDP-weighted mean as ROUND( SUMPRODUCT(Exports_range - Imports_range) / SUM(GDP_range) * 100 , 1 ).",
+    "skill_reference": "**Step 3 — GDP-weighted mean in H50:L50:**\n=ROUND(SUMPRODUCT(Exports_range - Imports_range) / SUM(GDP_range) * 100, 1)"
+  },
+  {
+    "reason": "The worker avoided hardcoding computed values and instead left formulas in cells so the workbook remains dynamic; this constraint guided the choice to write Excel formulas rather than computing in Python and writing constants.",
+    "key_point": "Do not hardcode calculated values; always use Excel formulas instead of calculating in Python and hardcoding results.",
+    "skill_reference": "**Always use Excel formulas instead of calculating values in Python and hardcoding them.**"
+  },
+  {
+    "reason": "After inserting formulas the worker ran formula recalculation to get evaluated values; the recalc.py/LibreOffice step is required to ensure formula results are computed and verified in the saved file.",
+    "key_point": "Recalculate formulas using LibreOffice (the provided recalc.py script) so formula values are computed and can be verified.",
+    "skill_reference": "LibreOffice Required for Formula Recalculation: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script."
+  },
+  {
+    "reason": "The worker verified and fixed formulas to ensure they produced no Excel errors; the zero-error requirement constrained their testing and verification steps before delivering the file.",
+    "key_point": "Deliver the workbook with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?).",
+    "skill_reference": "Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)"
+  },
+  {
+    "reason": "The worker ensured percentage outputs displayed as one decimal percent (not as a fractional 0.x) and implemented multiplying by 100 / rounding in formulas accordingly; this formatting requirement determined the final arithmetic in their formulas.",
+    "key_point": "Ensure all percentage results in Step 2 and 3 are rounded to one decimal place; you may achieve this by multiplying the final calculation by 100 within your formula.",
+    "skill_reference": "Ensure all the percentage results in step 2 and 3 are rounded to one decimal place. (e.g., if the result is 12.3%, the cell should display 12.3 rather than 0.123). You may achieve this by multiplying the final calculation by 100 within your formula."
+  }
+]

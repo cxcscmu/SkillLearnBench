@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch the PDF processing skill",
+    "why_essential": "Needed to enable the tools and scripts required to inspect and fill the SC-100 PDF form programmatically.",
+    "evidence": "Launching skill: pdf"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Read the PDF forms guide (forms.md)",
+    "why_essential": "Required to follow the prescribed sequence for safely filling PDF form fields and using the skill's scripts.",
+    "evidence": "Read status=success input={\"file_path\": \"/logs/agent/sessions/skills/pdf/forms.md\"}"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Open the blank SC-100 PDF (/root/sc100-blank.pdf)",
+    "why_essential": "Must load the blank form to inspect pages and determine available fillable fields to populate with case data.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/sc100-blank.pdf\"} -> 'PDF pages extracted: 4 page(s) from /root/sc100-blank.pdf'\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Check whether the PDF has fillable form fields using check_fillable_fields.py",
+    "why_essential": "Determines if the form can be programmatically filled; using the appropriate workflow depends on this result.",
+    "evidence": "python3 scripts/check_fillable_fields.py /root/sc100-blank.pdf -> 'This PDF has fillable form fields'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Extract the PDF form field information to /root/sc100-field-info.json",
+    "why_essential": "Provides the list of field IDs and metadata needed to map case data to specific form inputs.",
+    "evidence": "python3 scripts/extract_form_field_info.py /root/sc100-blank.pdf /root/sc100-field-info.json -> 'Wrote 103 fields to /root/sc100-field-info.json'"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Create field values JSON (/root/sc100-field-values.json) mapping case data to form field IDs",
+    "why_essential": "Supplies the specific values (plaintiff/defendant info, dates, amount, venue) required for the automated fill script to populate the PDF.",
+    "evidence": "Write status=success input={\"file_path\": \"/root/sc100-field-values.json\"} -> 'File created successfully at: /root/sc100-field-values.json'"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Run the fill script to generate the filled PDF (/root/sc100-filled.pdf)",
+    "why_essential": "Performs the actual form-filling operation to produce the completed SC-100 PDF using the mapped field values.",
+    "evidence": "python3 scripts/fill_fillable_fields.py /root/sc100-blank.pdf /root/sc100-field-values.json /root/sc100-filled.pdf"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Verify the filled PDF file exists and inspect filled pages by converting to images",
+    "why_essential": "Confirms the output file was created successfully and that key fields (plaintiff/defendant info, dates, amount, venue) are populated correctly before finalizing.",
+    "evidence": "ls -lh /root/sc100-filled.pdf -> '/root/sc100-filled.pdf' and 'Saved page 1 as /root/sc100-filled-images/page_1.png...' / 'Pages 2, 3, and 4 look great.'"
+  }
+]

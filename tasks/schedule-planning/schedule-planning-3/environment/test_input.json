@@ -1,0 +1,14 @@
+[
+  {
+    "email_text": "Hi,\nI am wondering if you could schedule a one-hour meeting with me on March 9th, 2026.\nI am generally available from 14:00 to 17:00 GMT.\n\nLet me know if any time works for you!\n\nBest regards,\nJohn Smith",
+    "from_email": "john.smith@example.com"
+  },
+  {
+    "email_text": "Good morning,\nI'm reaching out to schedule a 2-hour project review meeting sometime on March 9th, 2026.\nI can meet anytime between 1:00 PM and 6:00 PM.\n\nThank you,\nRobert Wilson",
+    "from_email": "rwilson@example.consulting.net"
+  },
+  {
+    "email_text": "Hello,\n\nWould you be available for a 45-minute interview on March 9th, 2026?\nI prefer morning slots between 9:00am and 12:00pm.\n\nBest,\nAmanda Lee",
+    "from_email": "amanda.lee@example.hr-solutions.com"
+  }
+]

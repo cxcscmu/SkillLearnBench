@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker observed that placeholders in the template were split across XML runs and relied on this fact to choose a paragraph-level approach; knowing this exact behavior prevented using a run-level replacement that would fail.",
+    "key_point": "Word can split a single placeholder across multiple XML runs, so replacements must account for split runs.",
+    "skill_reference": "**The #1 issue with Word templates**: Word often splits placeholder text across multiple XML runs."
+  },
+  {
+    "reason": "The worker avoided the naive run-level replacement after seeing it would not catch split placeholders; this rule justified switching strategies.",
+    "key_point": "Do not perform placeholder matching on each run individually because split placeholders won't be found.",
+    "skill_reference": "# DON'T DO THIS - won't find split placeholders"
+  },
+  {
+    "reason": "The worker implemented and used a paragraph-level replacement routine (replace_placeholder_robust) based on this algorithm to correctly locate split placeholders inside paragraphs.",
+    "key_point": "Detect and replace placeholders at the paragraph level (using the paragraph's full text) rather than at the run level.",
+    "skill_reference": "\"\"\"Replace placeholder that may be split across runs.\"\"\""
+  },
+  {
+    "reason": "When the worker rebuilt paragraph text, they needed to preserve formatting and ensure the replacement covered split runs; this exact rebuild pattern was used to write the combined text back safely.",
+    "key_point": "After building the new paragraph text, set it into the first run and clear subsequent runs to preserve the first run's formatting while replacing split placeholders.",
+    "skill_reference": "    # Preserve first run's formatting, clear others\n\n    # Clear all runs and rebuild with replacement\n    new_text = full_text.replace(placeholder, str(value))\n\n    # Preserve first run's formatting, clear others\n    for i, run in enumerate(runs):\n        if i == 0:\n            run.text = new_text\n        else:\n            run.text = ''"
+  },
+  {
+    "reason": "The worker used the same placeholder-detection pattern to find all template variables across the document, so the specific regex used was essential for matching tokens like {{KEY}}.",
+    "key_point": "Use a regex pattern that matches placeholders of the form {{KEY}} (uppercase letters and underscores) to find placeholders in paragraph text.",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "The template contained placeholders inside tables and nested tables; the worker recursively processed table cells to ensure no placeholders were left unfilled.",
+    "key_point": "Recursively process tables (and nested tables) by iterating rows and cells and applying paragraph-level replacements inside each cell.",
+    "skill_reference": "def process_table(table, data):\n    \"\"\"Process table including nested tables.\"\"\""
+  },
+  {
+    "reason": "Placeholders were present in headers/footers as well; the worker inspected and processed each section's header and footer so no tokens remained anywhere in the document.",
+    "key_point": "Process headers and footers by iterating doc.sections and replacing placeholders in section.header.paragraphs and section.footer.paragraphs.",
+    "skill_reference": "for section in doc.sections:\n    # Header\n    header = section.header\n    for para in header.paragraphs:\n        # Process paragraphs\n        pass\n\n    # Footer\n    footer = section.footer\n    for para in footer.paragraphs:\n        # Process paragraphs\n        pass"
+  },
+  {
+    "reason": "The worker had to remove or keep relocation content based on RELOCATION_PACKAGE; recognizing the marker format and how to form start/end markers allowed the script to find conditional blocks.",
+    "key_point": "Identify conditional blocks using start and end markers built as '{{IF_<KEY>}}' and '{{END_IF_<KEY>}}' so code can locate the conditional section in paragraph text.",
+    "skill_reference": "start_marker = '{{IF_' + condition_key + '}}'\n    end_marker = '{{END_IF_' + condition_key + '}}'"
+  },
+  {
+    "reason": "Because RELOCATION_PACKAGE was 'No', the worker removed the entire relocation paragraph; the skill's explicit else-branch showed the required behavior to delete the content rather than leaving markers or partial text.",
+    "key_point": "When the condition is false, remove the entire content between the IF and END_IF markers (i.e., replace that paragraph's text with an empty string).",
+    "skill_reference": "else:\n                # Remove entire content between markers\n                new_text = ''"
+  },
+  {
+    "reason": "To ensure no leftover conditional markers remained after processing, the worker followed this explicit caution which they used to confirm the final document contained no stray {{IF_...}} tokens.",
+    "key_point": "After processing conditionals, remove any leftover '{{IF_...}}' markers to avoid leaving conditional tokens in the final document.",
+    "skill_reference": "Conditional markers left behind - Remove `{{IF_...}}` markers after processing"
+  },
+  {
+    "reason": "The worker wrapped the described steps into a script that loaded the template and data and saved the filled document; this usage example indicated the expected inputs/outputs and save behavior.",
+    "key_point": "Load the template with Document(template_path), perform replacements, and save the result to the desired output path (doc.save(output_path)).",
+    "skill_reference": "fill_template('template.docx', 'data.json', 'output.docx')"
+  }
+]

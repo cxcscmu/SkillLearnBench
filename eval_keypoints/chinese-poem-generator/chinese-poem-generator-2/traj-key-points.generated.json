@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "Establishes which external tool was used to compose the regulated verse",
+    "key_point": "Invoke the regulated-lvshi-composer skill to compose a strict seven-character regulated verse under the modern Mandarin rule set",
+    "trajectory_reference": "Let me use the regulated-lvshi-composer skill for this."
+  },
+  {
+    "reason": "Records the successful use of the composition skill",
+    "key_point": "Call the Skill tool and receive success before composing",
+    "trajectory_reference": "tool_use[1]: tool=Skill; status=success; input_keys=args,skill; output_keys=text"
+  },
+  {
+    "reason": "Chooses the exact canonical tonal/rhyme form required for the poem",
+    "key_point": "Select the Ze-start Ping-end form for 七言律诗 (仄仄平平仄仄平 ...), with rhyme-on-line-1",
+    "trajectory_reference": "I'll use the Ze-start Ping-end rhyme-on-line-1 form: - 仄仄平平仄仄平"
+  },
+  {
+    "reason": "Fixes the rhyme family that all required rhyme lines must share",
+    "key_point": "Choose modern Mandarin final -uan for rhyme lines (lines 1,2,4,6,8) and list rhyme examples 还、欢、关、宽、圆",
+    "trajectory_reference": "Rhyme: modern Mandarin final **-uan** (平声): 还、欢、关、宽、圆\nRhyme lines: 1, 2, 4, 6, 8"
+  },
+  {
+    "reason": "Ensures each of the eight body lines has exactly seven Chinese characters and matches tonal patterns",
+    "key_point": "Compose and verify each of the eight body lines to be 七言 (7 chars) and check their 平仄 patterns position-by-position",
+    "trajectory_reference": "Tone verification (position by position):\n| Line | Text | 平仄 | Pattern | ... Line 1 ... 仄仄平平仄仄平 | ✓"
+  },
+  {
+    "reason": "Drafts the poem content following the required emotional arc and perspective",
+    "key_point": "Write the poem from a village wife's perspective covering reunion, wartime fear and separation, restored quiet family life, and a wish that war never returns",
+    "trajectory_reference": "The opening couplet establishes a poignant reunion... the wife's fearful memories of wartime separation... the prayer that such suffering never returns."
+  },
+  {
+    "reason": "Resolve formal issues found during drafting (character repetition and rhyme accuracy)",
+    "key_point": "Detect and fix repeated characters and incorrect rhyme family choices by revising lines (e.g., avoid -an/-uan mismatch, remove repeated characters like 雁/泪) to preserve formal strictness",
+    "trajectory_reference": "I'm noticing a problem with the rhyme scheme... these are technically different finals... I need to either switch to a different rhyme family... Now I'm ready to draft the poem with these line endings in mind... I'll adjust line 6 to '关山万里望天宽' to resolve this... I need to fix repeated characters."
+  },
+  {
+    "reason": "Organizes the poem's couplet progression to build emotional depth",
+    "key_point": "Plan and realize progression: lines 1–2 set the reunion scene, 3–4 recall wartime anxieties, 5–6 deepen separation imagery, 7–8 conclude with gratitude and prayer for lasting peace",
+    "trajectory_reference": "A strong default progression is: lines 1-2 establish the scene... lines 3-4 deepen... lines 5-6 turn inward... lines 7-8 gather the poem into a conclusion with resonance"
+  },
+  {
+    "reason": "Performs final formal checks before saving",
+    "key_point": "Verify rhyme consistency, tonal patterns, seven characters per line, no repeated characters, and thematic unity across the poem",
+    "trajectory_reference": "Before returning the poem, verify all of the following: - it has a fitting title - it has exactly 8 body lines - every body line has exactly 5 or 7 Chinese characters ... - all required rhyme lines share a valid modern Mandarin final - the poem keeps one coherent theme ... ✓"
+  },
+  {
+    "reason": "Save the finished poem to the required filesystem path",
+    "key_point": "Write the finalized poem (title on first line, blank line, then eight body lines) to /root/poem.txt",
+    "trajectory_reference": "tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text\nThe poem has been saved to `/root/poem.txt`."
+  },
+  {
+    "reason": "Provide the final poem text used and saved",
+    "key_point": "Final poem titled '乱后夫归' with eight seven-character lines reflecting reunion after chaos",
+    "trajectory_reference": "乱后夫归\n\n塞外归人踏雁还，\n相逢握手忆年欢。\n遥思战地愁云起，\n路断书稀几度关。\n夜久孤灯独守泪，\n千山万里望天宽。\n从今但愿干戈止，\n再莫烽烟散梦圆。"
+  }
+]

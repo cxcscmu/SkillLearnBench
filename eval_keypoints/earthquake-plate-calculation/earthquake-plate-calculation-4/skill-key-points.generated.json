@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker needed the decisive rule to avoid computing distances in degrees and instead project to a metric CRS; this underlies their step of projecting data before any distance computation.",
+    "key_point": "Do not compute distances in EPSG:4326; always project data to a metric CRS first.",
+    "skill_reference": "**Critical Rule**: Never calculate distances directly in geographic coordinates (EPSG:4326). Always project to a metric coordinate system first."
+  },
+  {
+    "reason": "The worker selected a metric CRS for projection; the skill's recommendation of EPSG:4087 provided the specific CRS used for distance accuracy.",
+    "key_point": "Use EPSG:4087 (a metric, World Equidistant Cylindrical CRS) for distance calculations.",
+    "skill_reference": "EPSG:4087 (World Equidistant Cylindrical) | Projected | Meters | Distance calculations"
+  },
+  {
+    "reason": "The worker applied geopandas' to_crs to project geometries before measuring distances; this exact method call shows how to perform the projection.",
+    "key_point": "Project GeoDataFrames using gdf.to_crs(\"EPSG:4087\") before computing distances.",
+    "skill_reference": "gdf_projected = gdf.to_crs(\"EPSG:4087\")"
+  },
+  {
+    "reason": "Loading the plate and boundary GeoJSON files was a necessary first step; the worker relied on the recommended function to read these files into GeoDataFrames.",
+    "key_point": "Load GeoJSON spatial files with geopandas using gpd.read_file().",
+    "skill_reference": "1. ✅ Load GeoJSON with `gpd.read_file()`"
+  },
+  {
+    "reason": "The worker converted raw earthquake lat/lon records into a spatial GeoDataFrame with Point geometries and an explicit CRS (EPSG:4326) before any spatial filtering or projection.",
+    "key_point": "Create a GeoDataFrame from lon/lat by building Point geometries and setting crs=\"EPSG:4326\".",
+    "skill_reference": "geometry = [Point(row[\"lon\"], row[\"lat\"]) for row in data]\ngdf = gpd.GeoDataFrame(data, geometry=geometry, crs=\"EPSG:4326\")"
+  },
+  {
+    "reason": "To restrict earthquakes to those inside a plate polygon, the worker used the spatial-within test; this filtering produced the subset they then projected and measured distances for.",
+    "key_point": "Filter points inside a polygon using the GeoDataFrame .within() method.",
+    "skill_reference": "earthquakes_in_plate = gdf_eq[gdf_eq.within(target_plate)]"
+  },
+  {
+    "reason": "The worker combined multiple boundary segments into a single geometry before measuring distances, which is necessary to compute point-to-boundary distances efficiently and correctly.",
+    "key_point": "Combine multiple boundary geometries with .geometry.unary_union before distance calculations.",
+    "skill_reference": "boundary_geom = boundaries_proj.geometry.unary_union"
+  },
+  {
+    "reason": "The core distance computation in the worker's analysis used the .distance() method on projected geometries and converted meters to kilometers; this exact sequence produced the distance_km field required for the answer.",
+    "key_point": "Compute distances with projected.geometry.distance(union_geom) to get meters, then divide by 1000 to obtain kilometers.",
+    "skill_reference": "gdf_points[\"distance_m\"] = points_proj.geometry.distance(boundary_geom)\ngdf_points[\"distance_km\"] = gdf_points[\"distance_m\"] / 1000.0"
+  },
+  {
+    "reason": "To select the single earthquake with the extreme (closest/furthest) distance, the worker relied on the skill's suggestion to use pandas/geopandas selection helpers for extremes.",
+    "key_point": "Use .nlargest() or .nsmallest() to retrieve the top/bottom record(s) by a distance column.",
+    "skill_reference": "6. ✅ Use `.nlargest()` / `.nsmallest()` for finding extreme values"
+  },
+  {
+    "reason": "The worker reduced computation cost by filtering to the plates of interest before projecting large datasets; this performance guideline justified filtering first then projecting.",
+    "key_point": "Filter datasets (e.g., by plate) before projecting them to a metric CRS to reduce computation.",
+    "skill_reference": "1. **Filter before projecting**: Reduce data size before expensive operations"
+  },
+  {
+    "reason": "To extract only the boundary segments relevant to a specific plate pair (e.g., Antarctica vs Caribbean), the worker needed the concrete pattern for filtering boundaries by plate codes.",
+    "key_point": "Filter boundary features involving a plate by checking PlateA or PlateB fields (e.g., (PlateA == code) | (PlateB == code)).",
+    "skill_reference": "pacific_bounds = gdf_boundaries[\n    (gdf_boundaries[\"PlateA\"] == \"PA\") | \n    (gdf_boundaries[\"PlateB\"] == \"PA\")\n]"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker needed a concrete way to open and inspect the PDF pages to discover fields and read content; the PdfReader usage is what enabled reading the document and enumerating pages for inspection.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and iterate over reader.pages to extract text or inspect page contents.",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "After modifying or assembling pages/fields, the worker had to save the result back to disk; the PdfWriter pattern shows how to collect pages and write an output file.",
+    "key_point": "Use pypdf's PdfWriter (writer.add_page / writer.write) to assemble pages and write the filled/merged PDF to a file.",
+    "skill_reference": "from pypdf import PdfWriter, PdfReader\n\nwriter = PdfWriter()\nfor pdf_file in [\"doc1.pdf\", \"doc2.pdf\", \"doc3.pdf\"]:\n    reader = PdfReader(pdf_file)\n    for page in reader.pages:\n        writer.add_page(page)\n\nwith open(\"merged.pdf\", \"wb\") as output:\n    writer.write(output)"
+  },
+  {
+    "reason": "The task required filling form fields; the skill explicitly instructs that filling forms is handled via a dedicated document and points to it as the authoritative procedure the worker followed.",
+    "key_point": "Follow the skill's forms guide (forms.md) for filling out PDF form fields and the specific instructions for form workflows.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The worker converted pages to images and examined page content; pdfplumber's API is the documented way in the skill to open a PDF and extract page text (useful for inspecting form layout and text).",
+    "key_point": "Use pdfplumber.open and iterate pdf.pages with page.extract_text() to extract page text and inspect layout/content.",
+    "skill_reference": "import pdfplumber\n\nwith pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()\n        print(text)"
+  },
+  {
+    "reason": "The worker produced images of the pages to inspect field positions and, if necessary, to OCR content; the skill shows the exact pdf2image + pytesseract pattern for converting PDF pages to images and OCRing them.",
+    "key_point": "For scanned PDFs, convert pages to images with pdf2image.convert_from_path and OCR each image with pytesseract.image_to_string to extract text.",
+    "skill_reference": "# Requires: pip install pytesseract pdf2image\nimport pytesseract\nfrom pdf2image import convert_from_path\n\n# Convert PDF to images\nimages = convert_from_path('scanned.pdf')\n\n# OCR each page\ntext = \"\"\nfor i, image in enumerate(images):\n    text += f\"Page {i+1}:\\n\"\n    text += pytesseract.image_to_string(image)\n    text += \"\\n\\n\"\n\nprint(text)"
+  },
+  {
+    "reason": "The worker used command-line checks and conversions; pdftotext is the documented quick tool for extracting text from PDFs and preserving layout, which supports inspecting forms or verifying output.",
+    "key_point": "Use the pdftotext command-line tool (e.g., pdftotext input.pdf output.txt or pdftotext -layout input.pdf output.txt) to extract PDF text for inspection.",
+    "skill_reference": "# Extract text\npdftotext input.pdf output.txt\n\n# Extract text preserving layout\npdftotext -layout input.pdf output.txt\n\n# Extract specific pages\npdftotext -f 1 -l 5 input.pdf output.txt  # Pages 1-5"
+  },
+  {
+    "reason": "The skill explicitly names the libraries recommended for filling PDF forms, which guided the worker to use pypdf as the chosen library to set form field values.",
+    "key_point": "For filling PDF forms prefer pdf-lib or pypdf (the skill recommends pypdf and refers to forms.md for details).",
+    "skill_reference": "| Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md"
+  }
+]

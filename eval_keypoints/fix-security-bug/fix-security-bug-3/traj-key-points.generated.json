@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Identifies the core vulnerability vector that must be blocked.",
+    "key_point": "The exploit uses an empty JSON key \"\" (e.g. \"\": {\"enabled\": true}) to override Jackson @JacksonInject JavaScriptConfig and bypass config.isEnabled().",
+    "trajectory_reference": "The empty key `\"\"` with `{\"enabled\": true}` is the bypass. This is being deserialized by Jackson for the `JavaScriptDimFilter`. The `@JacksonInject JavaScriptConfig config` is being overridden/bypassed by the empty key."
+  },
+  {
+    "reason": "Pinpoints where in the code the dangerous deserialization happens and where to place a fix.",
+    "key_point": "The vulnerability occurs during deserialization of sampler requests in SamplerResource.post(), so the sampler endpoint should validate input before Jackson deserializes it.",
+    "trajectory_reference": "The attack happens during Jackson deserialization in `SamplerResource.post()`, so I need to intercept it either before deserialization by validating the raw JSON for empty keys, or during deserialization by validating the `JavaScriptConfig` object itself."
+  },
+  {
+    "reason": "Chooses a mitigation approach that blocks the attack before code execution occurs during deserialization.",
+    "key_point": "Decide to implement pre-deserialization validation in SamplerResource to reject any JSON containing empty string keys rather than relying on post-deserialization checks.",
+    "trajectory_reference": "Since post-deserialization validation is too late, the best approach is to validate at the entry point before Jackson processes the request. I should add this validation in `SamplerResource.post()` by checking the raw request body before passing it to Jackson."
+  },
+  {
+    "reason": "Concrete input-handling change required to enable pre-deserialization validation.",
+    "key_point": "Modify SamplerResource to accept the raw request body (InputStream or String) and inject the ObjectMapper so the code can parse the raw JSON into a JsonNode and validate it before treeToValue() deserialization.",
+    "trajectory_reference": "I'll: 1) Change `SamplerResource` to inject `@Json ObjectMapper jsonMapper` via `@Inject` 2) Accept `InputStream` body 3) Read the body, parse as `JsonNode`, validate for empty keys 4) Then deserialize to `SamplerSpec`"
+  },
+  {
+    "reason": "Exact validation logic that blocks the exploit while preserving legitimate requests.",
+    "key_point": "Implement a recursive rejectEmptyKeys(JsonNode) that traverses the JSON tree and throws SamplerException (resulting in HTTP 400) if any object node contains an empty string key.",
+    "trajectory_reference": "Parse the incoming body as a `JsonNode`, recursively scan for empty keys, and throw an exception if any are found before attempting deserialization."
+  },
+  {
+    "reason": "How to signal invalid payloads to callers and ensure correct HTTP semantics.",
+    "key_point": "When validation finds an empty key, throw SamplerException with an explanatory message so the existing SamplerExceptionMapper converts it to a 400 Bad Request.",
+    "trajectory_reference": "I can throw new SamplerException(null, \"Request contains an empty string key which is not allowed\"); ... The `SamplerExceptionMapper` is registered ... and returns a `BAD_REQUEST` status, so that should work as expected."
+  },
+  {
+    "reason": "Shows the actual code-change step was applied to source files.",
+    "key_point": "Applied a source patch: updated SamplerResource.java to perform manual deserialization and empty-key rejection, and wrote the patch files to the source tree.",
+    "trajectory_reference": "Now let me apply the patch to the actual source file: [tool write calls] ... Now let's verify the patch looks correct and then build:"
+  },
+  {
+    "reason": "Build step needed to produce the patched artifact for deployment to the verifier.",
+    "key_point": "Rebuilt the indexing-service module with Maven, producing a patched JAR at /root/druid/indexing-service/target/druid-indexing-service-0.20.0.jar for deployment.",
+    "trajectory_reference": "Build succeeded. The patched JAR is at `/root/druid/indexing-service/target/druid-indexing-service-0.20.0.jar` and is ready for the verifier to deploy."
+  },
+  {
+    "reason": "Confirms design consideration that legitimate functionality remains intact while blocking exploit.",
+    "key_point": "The fix blocks any request containing \"\" keys (exploit vector) while allowing legitimate sampler requests to be deserialized and processed normally via treeToValue() after validation.",
+    "trajectory_reference": "Security vs. Functionality: - Blocked: Any request with `\"\"` keys (the exploit vector) → 400 Bad Request - Allowed: All legitimate sampler requests with proper property names continue to work normally"
+  },
+  {
+    "reason": "Recorded exploratory and file-inspection actions that informed the patch location and approach.",
+    "key_point": "Read the relevant source files and examined SamplerResource, JavaScriptDimFilter, JavaScriptConfig, and SamplerException to understand injection and exception handling before implementing the change.",
+    "trajectory_reference": "Let me look at the JavaScriptConfig ... Now let me look at the SamplerResource ... The `JavaScriptDimFilter` has an injected `JavaScriptConfig` ... Now I also need to check the existing test files ... Let me also check how the `SamplerExceptionMapper` is registered ..."
+  }
+]

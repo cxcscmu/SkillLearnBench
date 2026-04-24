@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read the GLM configuration file /root/glm3.nml",
+    "why_essential": "To inspect and later modify only the allowed calibration parameters while leaving other settings unchanged",
+    "evidence": "\"Read status=success ... input={\\\"file_path\\\": \\\"/root/glm3.nml\\\"}\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "List available forcing files and preview field observations (/root/bcs/ and /root/field_temp_oxy.csv)",
+    "why_essential": "To confirm required meteorological/hydrological forcing and observation data are present for running and evaluating GLM",
+    "evidence": "\"ls /root/bcs/ && head -5 /root/field_temp_oxy.csv\" -> \"meteo.csv ... datetime,depth,temp,OXY_oxy\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Run GLM with the existing configuration to produce initial output (/root/output/output.nc)",
+    "why_essential": "A baseline model run is required to produce simulation output for computing baseline metrics and to ensure runnable workflow",
+    "evidence": "\"glm ... ls output/\" -> \"output.nc\" and \"GLM ran successfully.\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Compute baseline RMSE metrics by comparing GLM output to observations",
+    "why_essential": "To quantify starting performance and guide calibration adjustments against the three required RMSE thresholds",
+    "evidence": "\"python3 << 'EOF' ... overall_rmse: 1.9197994991764489 ... overall_n_pairs: 2817\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Run a calibration/search procedure to find optimal values for Kw, coef_mix_hyp, wind_factor, lw_factor, and ch",
+    "why_essential": "Automated parameter search is needed to identify a parameter set that meets all three RMSE thresholds while respecting allowed parameter ranges",
+    "evidence": "\"Launching skill: glm-calibration\" and calibration script outputs such as \"Kw=0.5, cmh=0.5, wf=0.9, lwf=0.92, ch=0.0013 ... overall: 1.589\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Apply the selected calibrated parameters to /root/glm3.nml",
+    "why_essential": "To persist the final calibrated parameter values so the final GLM run uses them and to ensure only allowed parameters were changed",
+    "evidence": "\"Parameters written.\" after running the modification script"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Run GLM again with the calibrated configuration to generate final simulation output",
+    "why_essential": "A final model run is necessary to produce the simulation used for the final evaluation against observations and to ensure output.nc is written",
+    "evidence": "\"GLM run OK ... output.nc\" (command output showing files: \"lake.csv ... output.nc ... overflow.csv\")"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Compute final RMSE metrics (overall, annual_deep, summer_deep) and counts of matched pairs, then save results to /root/metrics.json",
+    "why_essential": "To verify that the calibrated model meets the required RMSE thresholds and to produce the required metrics.json file for evaluation",
+    "evidence": "\"overall_rmse: 1.588994404408621 ... annual_deep_rmse: 1.1959095891018072 ...\" and earlier note to write metrics.json"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Confirm final parameter values are within published calibration ranges and that only allowed parameters were changed",
+    "why_essential": "To satisfy the task constraints that limit which parameters may be modified and the allowable bounds for each",
+    "evidence": "\"Final calibrated parameters: ... `Kw` 0.5 ... `coef_mix_hyp` 0.5 ... `wind_...` 0.9 ... `ch` 0.0013\" and \"All thresholds are satisfied.\""
+  }
+]

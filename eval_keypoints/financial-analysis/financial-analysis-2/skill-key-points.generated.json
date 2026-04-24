@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker needed a concrete command to run the fuzzy fund search to discover accession numbers (e.g., for Bridgewater and Soros); this exact usage pattern shows which flags to provide (keywords, quarter, topk) and was used to obtain accession numbers.",
+    "key_point": "How to run the fuzzy fund search: provide --keywords, --quarter, and --topk to get top-K matching funds and their ACCESSION_NUMBERs.",
+    "skill_reference": "```bash\npython3 scripts/search_fund.py --keywords \"bridgewater\" --quarter 2025-q2 --topk 10\n```"
+  },
+  {
+    "reason": "Once an accession number is known, the worker used the skill's exact-search mode to get a precise single match; the example shows the --accession_number flag and quarter usage that the worker relied on.",
+    "key_point": "You can do an exact fund lookup by passing --accession_number (and --quarter) to return the precise matching fund record.",
+    "skill_reference": "```python\npython3 scripts/search_fund.py \\\n    --accession_number 0001172661-25-003151 \\\n    --quarter 2025-q2\n```"
+  },
+  {
+    "reason": "To obtain Palantir's CUSIP the worker ran the stock fuzzy search; the skill documents the command and flags to retrieve CUSIPs by name.",
+    "key_point": "Use the stock CUSIP fuzzy search script with --keywords and --topk to find a stock's CUSIP from its name.",
+    "skill_reference": "```python\npython3 scripts/search_stock_cusip.py \\\n    --keywords palantir \\\n    --topk 10\n```"
+  },
+  {
+    "reason": "The worker chose short or partial search terms like 'soros' because the skill explicitly states fuzzy matching is supported; this justification allowed use of inexact keywords.",
+    "key_point": "The fund/stock search accepts inexact names because it performs fuzzy string matching (Levenshtein-based), so approximate keywords are acceptable.",
+    "skill_reference": "Note that you don't have to provide the accurate name since this tool has built-in fuzzy string search algorithms based on Levinsteins."
+  },
+  {
+    "reason": "To get Bridgewater's AUM and holding counts the worker ran the one-fund analysis script; this shows the exact invocation pattern (accession_number + quarter) the worker executed.",
+    "key_point": "Run one_fund_analysis.py with --accession_number and --quarter to analyze a single fund for that quarter (returns its summary).",
+    "skill_reference": "```bash\npython3 scripts/one_fund_analysis.py \\\n    --accession_number ... \\\n    --quarter 2025-q2 \\\n```"
+  },
+  {
+    "reason": "Interpreting the output (AUM, total holdings, stock holdings) required knowing what the one-fund analysis prints; the worker used these specific outputs to answer Q1 and Q2.",
+    "key_point": "The one-fund analysis script prints basic information including total number of holdings, AUM, and total number of stock holdings.",
+    "skill_reference": "This script will print out several basic information of a given fund on 2025-q2, including total number of holdings, AUM, total number of stock holdings, etc."
+  },
+  {
+    "reason": "To compute Soros Fund Management's Q2→Q3 changes the worker invoked the two-quarter comparison mode; the skill shows the required flags including baseline quarter and accession number.",
+    "key_point": "Compare a fund between two quarters by running one_fund_analysis.py with --quarter (current) plus --baseline_quarter and --baseline_accession_number to supply the prior-quarter accession.",
+    "skill_reference": "```python\npython scripts/one_fund_analysis.py \\\n    --quarter 2025-q3 \\\n    --accession_number <accession number assigned in q3> \\\n    --baseline_quarter 2025-q2 \\\n    --baseline_accession_number <accession number assigned in q2>\n```"
+  },
+  {
+    "reason": "Selecting the top increases required knowing that the comparison output includes ranked changes (new buys/sells) by notional value; the worker relied on this to extract top-5 dollar increases.",
+    "key_point": "The two-quarter comparison prints dynamic changes, such as newly purchased or sold stocks ranked by notional (dollar) value, which enables identifying top increases.",
+    "skill_reference": "This script will print out the dynamic changes of holdings from 2025-q2 to 2025-q3. Such as newly purchased stocks ranked by notional value, and newly sold stocks ranked by notional value."
+  },
+  {
+    "reason": "To find the top fund managers holding Palantir the worker used the holding-analysis script; this usage shows the exact flags (cusip, quarter, topk) to retrieve top holders.",
+    "key_point": "Use holding_analysis.py with --cusip, --quarter, and --topk to list top funds holding a given stock by notional value.",
+    "skill_reference": "```python\npython scripts/holding_analysis.py \\\n    --cusip <stock cusip> \\\n    --quarter 2025-q3 \\\n    --topk 10\n```"
+  },
+  {
+    "reason": "The worker interpreted the holding-analysis output to get the top holders; the skill explicitly states the script returns the top funds by notional value, which is what the worker used to answer Q4.",
+    "key_point": "The holding-analysis script prints the top hedge funds that hold a specified stock ranked by highest notional value (top K).",
+    "skill_reference": "This script will print out the top 10 hedge funds who hold a particular stock with highest notional value."
+  }
+]

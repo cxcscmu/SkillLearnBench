@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker needed to know that placeholders can be split across multiple XML runs so they would not search/replace at the run level (which would fail). The agent's summary and script explicitly handled split runs, so this fact was essential to choose a paragraph-level replacement strategy used in the trajectory.",
+    "key_point": "Word can split a single placeholder across multiple XML runs, so run-level string matching can miss placeholders.",
+    "skill_reference": "**The #1 issue with Word templates**: Word often splits placeholder text across multiple XML runs."
+  },
+  {
+    "reason": "The worker implemented a paragraph-level replacement function rather than operating on individual runs; the skill's robust replace function docstring captures this core approach that the agent relied on when writing the script.",
+    "key_point": "Replace placeholders at the paragraph level with a routine that can locate and replace placeholder text even if it is split across runs.",
+    "skill_reference": "\"\"\"Replace placeholder that may be split across runs.\"\"\""
+  },
+  {
+    "reason": "When the worker rebuilt paragraph text they preserved the existing formatting by putting the new text in the first run and clearing others; preserving first-run formatting was applied in the agent's implementation to avoid losing styling.",
+    "key_point": "When rebuilding paragraph text after replacement, put the replaced text into the first run and clear subsequent runs so the first run's formatting is preserved.",
+    "skill_reference": "# Preserve first run's formatting, clear others"
+  },
+  {
+    "reason": "The worker used a regex to find placeholder keys like {{KEY}} across paragraphs and replace them from the data dict; the exact regex pattern from the skill was used to detect placeholders reliably.",
+    "key_point": "Detect placeholders using the pattern for {{KEY}} tokens (uppercase letters and underscores) and replace matches from the data dict.",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "The template contained information in tables (including nested tables). The worker recursively processed table cells to ensure placeholders inside nested tables were replaced, following the skill's table recursion guidance.",
+    "key_point": "Recursively process tables and any nested tables by iterating rows → cells → cell.paragraphs and recursing into cell.tables so placeholders inside nested tables are replaced.",
+    "skill_reference": "Tables can contain other tables. Must recurse:"
+  },
+  {
+    "reason": "Headers and footers are not part of doc.paragraphs and therefore must be processed separately; the worker checked and replaced placeholders in headers/footers per the skill guidance.",
+    "key_point": "Process headers and footers separately (iterate doc.sections and handle section.header.paragraphs and section.footer.paragraphs) because they are not in the main document paragraphs.",
+    "skill_reference": "Headers/footers are separate from main document body:"
+  },
+  {
+    "reason": "The offer letter required conditional inclusion of the relocation section. The worker relied on the skill's conditional-marker convention and code to either remove the markers (when including) or remove the whole section (when excluding).",
+    "key_point": "Recognize conditional blocks using start and end markers '{{IF_<KEY>}}' and '{{END_IF_<KEY>}}' and either remove the markers (if included) or remove the whole content between them (if excluded).",
+    "skill_reference": "start_marker = '{{IF_' + condition_key + '}}'\n    end_marker = '{{END_IF_' + condition_key + '}}'"
+  },
+  {
+    "reason": "After making replacements and conditional edits the worker saved the changed document to the required output path; the skill's final code explicitly calls the save operation, which the agent executed.",
+    "key_point": "After performing replacements and conditional edits, save the modified Document object to the desired output path using doc.save(output_path).",
+    "skill_reference": "doc.save(output_path)"
+  }
+]

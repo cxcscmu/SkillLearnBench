@@ -1,0 +1,12 @@
+# Method configuration for b2-self-evolved.
+# Read by core/skill_runner.py; controls runtime execution behaviour.
+
+# "skip_verifier": let the agent run to completion, then skip the verifier.
+# The method prompt drives multi-round self-evolution internally.
+skills_only_mode = "skip_verifier"
+
+# Number of rounds for this method. Two effects:
+#   1. Used as the default max_rounds passed to run_task().
+#   2. Triggers substitution of {max_rounds} in method.md (a minimum of 2 is enforced).
+# Omit this field entirely for single-pass methods (b1, b4) that have no rounds concept.
+max_rounds = 2

@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Extract key frames (I-frames) from /root/super-mario.mp4 and save as /root/keyframes_%03d.png using ffmpeg",
+    "why_essential": "Key frames are the required inputs for subsequent grayscale conversion, object counting, and CSV reporting; without extraction there are no frames to process.",
+    "evidence": "ffmpeg -i /root/super-mario.mp4 -vf \"select='eq(pict_type,I)'\" -vsync vfr /root/keyframes_%03d.png; \"4 key frames were extracted.\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Convert all extracted key frames (/root/keyframes_001.png .. /root/keyframes_004.png) to grayscale inplace using ImageMagick",
+    "why_essential": "The task requires frames be edited in-place to grayscale before counting; this state change is mandatory for following object detection steps.",
+    "evidence": "for f in /root/keyframes_001.png /root/keyframes_002.png /root/keyframes_003.png /root/keyframes_004.png; do convert \"$f\" -colorspace Gray \"$f\"; done && echo \"Done\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Count coins in /root/keyframes_001.png using template /root/coin.png with object_counter",
+    "why_essential": "Counting coins per frame is required for the CSV; each frame's object_count must be obtained via the object_counter tool.",
+    "evidence": "There are 0 objects (`/root/coin.png`) in file: `/root/keyframes_001.png`"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Count coins in /root/keyframes_002.png using template /root/coin.png with object_counter",
+    "why_essential": "Obtain the coin count for the second key frame to include in the final CSV.",
+    "evidence": "There are 0 objects (`/root/coin.png`) in file: `/root/keyframes_002.png`"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Count coins in /root/keyframes_003.png using template /root/coin.png with object_counter",
+    "why_essential": "Obtain the coin count for the third key frame to include in the final CSV.",
+    "evidence": "There are 3 objects (`/root/coin.png`) in file: `/root/keyframes_003.png`"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Count coins in /root/keyframes_004.png using template /root/coin.png with object_counter",
+    "why_essential": "Obtain the coin count for the fourth key frame to include in the final CSV.",
+    "evidence": "There are 4 objects (`/root/coin.png`) in file: `/root/keyframes_004.png`"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write CSV /root/counting_results.csv with columns frame_id,coins,turtles and rows for each keyframe (turtles=0)",
+    "why_essential": "Summarizes per-frame coin and turtle counts in the required output file and fulfills the task deliverable.",
+    "evidence": "File created successfully at: /root/counting_results.csv; content: \"frame_id,coins,turtles\\n/root/keyframes_001.png,0,0\\n...\""
+  }
+]

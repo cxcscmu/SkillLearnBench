@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker relied on the fact that Jackson does all parsing and instantiation inside readValue(), which means the attack surface exists during deserialization and cannot be observed later; this motivated intercepting raw JSON before Jackson runs.",
+    "key_point": "Jackson performs parsing and object instantiation during a single readValue() call, so attacks can execute during deserialization rather than after.",
+    "skill_reference": "Jackson transforms JSON text into Java objects during a single `readValue()` call."
+  },
+  {
+    "reason": "The worker used this rule to conclude that validating the Java object after deserialization is insufficient and therefore implemented pre-deserialization checks.",
+    "key_point": "Validating only the deserialized Java object is insufficient because such validation examines the result, not the parsing process that may have already executed malicious behavior.",
+    "skill_reference": "Validation at step 4 examines the **result** of deserialization, not the **process**."
+  },
+  {
+    "reason": "The worker used the fact that empty-string keys are legal JSON and parsed by Jackson to justify scanning for and rejecting such keys in incoming payloads.",
+    "key_point": "JSON allows empty-string keys and Jackson will parse them without error, so payloads can legally include a \"\" key.",
+    "skill_reference": "This is valid JSON per RFC 8259. Jackson parses it without error."
+  },
+  {
+    "reason": "To explain how an empty key can influence server behavior, the worker used this precise mechanism (empty keys can set root-level or special properties) to reason that injected configs could be overridden during parsing.",
+    "key_point": "Some frameworks/configurations treat the empty key specially (e.g., to set values on the root object or trigger special handling), so an attacker can leverage \"\" to inject or override values.",
+    "skill_reference": "- **Injection points**: Certain Jackson configurations use `\"\"` to set values on the root object or trigger special handling"
+  },
+  {
+    "reason": "This sentence is the actionable mitigation the worker applied to the sampler endpoint: block malicious payloads before Jackson deserializes them.",
+    "key_point": "Introduce a pre-deserialization validation step at the sampler entry point to intercept and reject malicious raw JSON payloads (e.g., payloads containing empty keys).",
+    "skill_reference": "To robustly mitigate this issue, a pre-deserialization validation step should be introduced at the sampler entry point to intercept and reject malicious raw JSON payloads."
+  },
+  {
+    "reason": "The worker used this concrete example to justify that after mapper.readValue() there is no way to tell whether an empty key was present, so only raw-JSON inspection can detect it.",
+    "key_point": "After deserialization there is no reliable way to detect that an empty key was present in the original JSON, so post-deserialization checks cannot determine the attack.",
+    "skill_reference": "    // Original JSON: {\"name\": \"test\", \"\": \"malicious\"}\n    MyObject obj = mapper.readValue(json, MyObject.class);\n    // obj.getName() returns \"test\"\n    // Where did \"\" go? Depends on configuration. You cannot tell from obj."
+  }
+]

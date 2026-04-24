@@ -1,0 +1,92 @@
+[
+  {
+    "reason": "The worker first needed to decide which regulated-verse length to write (five- or seven-character) because the skill requires choosing the correct form early; the worker used this rule to pick seven-character regulated verse.",
+    "key_point": "Determine whether the user requested five-character or seven-character regulated verse and choose accordingly.",
+    "skill_reference": "First identify:\n- whether the user wants five-character regulated verse or seven-character regulated verse"
+  },
+  {
+    "reason": "The poem had to meet the strict structural counts for seven-character regulated verse; the worker enforced exactly eight lines of seven characters each.",
+    "key_point": "Seven-character regulated verse must have exactly 8 lines and exactly 7 Chinese characters per line.",
+    "skill_reference": "For seven-character regulated verse:\n- exactly 8 lines\n- exactly 7 Chinese characters per line"
+  },
+  {
+    "reason": "The worker formatted the output file according to the skill's required layout (title line, blank line, then body lines) when preparing the final saved poem.",
+    "key_point": "Use the specified output format: line 1 the title, line 2 a blank line, and lines 3–10 the poem's eight body lines.",
+    "skill_reference": "Output format:\n- line 1: title\n- line 2: blank line\n- lines 3-10: the 8 body lines of the poem"
+  },
+  {
+    "reason": "The worker repeatedly mapped characters to 平/仄 while composing; knowing which Mandarin tones count as 平 or 仄 was essential to check each character's position.",
+    "key_point": "Map modern Mandarin tones to 平/仄: 1st and 2nd tones = 平; 3rd and 4th tones = 仄; neutral tone does not count.",
+    "skill_reference": "Apply the following conventions consistently:\n- 1st and 2nd tones = 平\n- 3rd and 4th tones = 仄\n- neutral tone does not count"
+  },
+  {
+    "reason": "The worker selected readings for characters and allowed some polyphonic characters only when a non-neutral reading fit the required metric; this rule guided which pronunciations were acceptable.",
+    "key_point": "If a character has a non-neutral reading, use only its non-neutral reading(s); a polyphonic character is acceptable if any non-neutral reading satisfies the required 平仄 or rhyme condition.",
+    "skill_reference": "- if a character has at least one non-neutral reading, use only its non-neutral readings\n- a polyphonic character is acceptable if any non-neutral reading satisfies the required 平仄 or rhyme condition"
+  },
+  {
+    "reason": "The worker enforced rhyme using modern Mandarin finals rather than historical rhyme categories when choosing line-end characters to rhyme together.",
+    "key_point": "Judge rhyme by modern Mandarin finals (not historical rhyme books).",
+    "skill_reference": "- rhyme is judged by modern Mandarin finals, not historical rhyme books"
+  },
+  {
+    "reason": "To produce a correct regulated poem, the worker had to select and then stick to exactly one canonical metrical form; this rule constrained the allowed tonal patterns the poem must follow.",
+    "key_point": "Choose one exact canonical regulated-verse form and follow it strictly; the poem must follow one and only one of the basic forms.",
+    "skill_reference": "The poem must follow one and only one of the basic forms below."
+  },
+  {
+    "reason": "The worker chose the Ze-start / Ping-end form with rhyme on line 1; knowing which line positions must rhyme for rhyme-on-line-1 forms was necessary to make the rhyme-plan and pick line-ending characters.",
+    "key_point": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8.",
+    "skill_reference": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8."
+  },
+  {
+    "reason": "When assigning rhyme endings, the worker needed the rule that all required rhyme lines must share the same modern Mandarin final; this determined which characters could be used as line endings.",
+    "key_point": "All required rhyme lines must share a common modern Mandarin final across their line-ending characters.",
+    "skill_reference": "All required rhyme lines must share a common modern Mandarin final across their line-ending characters."
+  },
+  {
+    "reason": "The worker repeatedly evaluated candidate rhyme characters and avoided choices that might break the rhyme or metric; this guidance restricted unsafe rhyme choices.",
+    "key_point": "Prefer common, stable, unambiguous rhyme characters and avoid risky polyphonic or tonally unstable line-ending characters; prefer rhyme characters that also fit the poem's meaning.",
+    "skill_reference": "When choosing rhyme characters:\n- prefer common, stable, unambiguous characters\n- avoid risky polyphonic line endings\n- avoid line-ending characters that are weak, colloquial, or tonally unstable\n- prefer rhyme characters that also contribute to atmosphere and meaning rather than serving as empty placeholders"
+  },
+  {
+    "reason": "The worker built rhyme-line endings before filling whole lines and used that to draft compatible lines that fit the rhyme and tone pattern.",
+    "key_point": "Draft process step: build the line endings first, especially the rhyme lines.",
+    "skill_reference": "7. build the line endings first, especially the rhyme lines"
+  },
+  {
+    "reason": "After fixing line endings, the worker composed each line to meet the exact character count; this was necessary to satisfy the seven-character requirement for every body line.",
+    "key_point": "Draft process step: draft each body line to fit the exact character count.",
+    "skill_reference": "8. draft each body line to fit the exact character count"
+  },
+  {
+    "reason": "The worker checked individual character positions against the required 平仄 pattern for each line during revision; this verification prevented metrical errors.",
+    "key_point": "Draft process step: check every character position against the target 平仄 pattern.",
+    "skill_reference": "9. check every position against the target 平仄 pattern"
+  },
+  {
+    "reason": "Before finalizing the poem and saving it, the worker ran the final checklist items; confirming exact line count would catch gross structural errors.",
+    "key_point": "Before returning the poem, verify it has exactly 8 body lines.",
+    "skill_reference": "- it has exactly 8 body lines"
+  },
+  {
+    "reason": "The seven-character requirement was enforced by checking each body's character counts; the worker used this to confirm every line had seven characters.",
+    "key_point": "Before returning the poem, verify every body line has exactly 5 or 7 Chinese characters as required (seven characters for this task).",
+    "skill_reference": "- every body line has exactly 5 or 7 Chinese characters as required"
+  },
+  {
+    "reason": "The worker ensured the poem matched one of the canonical forms under the modern Mandarin rule set; this check validated both tonal patterning and overall form conformity.",
+    "key_point": "Before returning the poem, verify it follows one of the canonical forms under the modern Mandarin rule set.",
+    "skill_reference": "- it follows one of the canonical forms under the modern Mandarin rule set"
+  },
+  {
+    "reason": "The worker confirmed the rhyme consistency across required rhyme lines as part of final verification (ensuring the chosen final was used consistently).",
+    "key_point": "Before returning the poem, verify all required rhyme lines share a valid modern Mandarin final.",
+    "skill_reference": "- all required rhyme lines share a valid modern Mandarin final"
+  },
+  {
+    "reason": "To avoid accidental metric changes, the worker needed the rule about punctuation not affecting character counts when adding punctuation to lines.",
+    "key_point": "Punctuation is optional but must not alter the character count of the body lines.",
+    "skill_reference": "Punctuation is optional. If punctuation is used, it must not alter the character count of the body lines."
+  }
+]

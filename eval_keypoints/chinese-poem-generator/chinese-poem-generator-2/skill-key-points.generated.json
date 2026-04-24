@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker explicitly invoked the skill’s domain restriction to choose the correct form (七言律诗) and to avoid other verse types; this rule determined using the regulated-lvshi-composer rather than a general poetry tool.",
+    "key_point": "This skill is only for strict five-character or seven-character regulated verse under a modern Mandarin rule set (so choose the correct regulated form before composing).",
+    "skill_reference": "Use this Skill only for strict five-character regulated verse and seven-character regulated verse under a modern Mandarin rule set."
+  },
+  {
+    "reason": "The worker began by deciding which regulated form to write (seven-character) as required by the skill’s initial identification step; this line guided that first decision.",
+    "key_point": "First identify whether the user wants five-character regulated verse or seven-character regulated verse.",
+    "skill_reference": "- whether the user wants five-character regulated verse or seven-character regulated verse"
+  },
+  {
+    "reason": "The worker checked and applied tone-to-平/仄 mapping repeatedly when constructing each line to match the required 平仄 patterns.",
+    "key_point": "Map modern Mandarin tones into 平/仄: 1st and 2nd tones count as 平; 3rd and 4th tones count as 仄.",
+    "skill_reference": "- 1st and 2nd tones = 平\n- 3rd and 4th tones = 仄"
+  },
+  {
+    "reason": "The worker had to produce exactly 8 lines of seven characters each; this structural rule determined line counts and per-line character counts and was checked at the end.",
+    "key_point": "For seven-character regulated verse, the poem must have exactly 8 lines and exactly 7 Chinese characters per line.",
+    "skill_reference": "For seven-character regulated verse:\n- exactly 8 lines\n- exactly 7 Chinese characters per line"
+  },
+  {
+    "reason": "The worker formatted output with title, blank line, then eight body lines (and wrote the file accordingly); this output layout was required by the skill.",
+    "key_point": "Output format must put the title on line 1, a blank line on line 2, and the eight body lines in lines 3–10.",
+    "skill_reference": "Output format:\n- line 1: title\n- line 2: blank line\n- lines 3-10: the 8 body lines of the poem"
+  },
+  {
+    "reason": "The worker deliberately selected one canonical metrical form (Ze-start Ping-end rhyme-on-line-1) and kept all lines consistent with that choice; the skill mandates choosing exactly one form.",
+    "key_point": "Choose one exact canonical form and follow it strictly: the poem must follow one and only one of the basic forms listed by the skill.",
+    "skill_reference": "The poem must follow one and only one of the basic forms below."
+  },
+  {
+    "reason": "When the worker picked the Ze-start Ping-end (rhyme-on-line-1) pattern, they used this rule to determine which line endings must rhyme (and ensured the -uan family was used on those lines).",
+    "key_point": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8 (these line positions must share a common rhyme).",
+    "skill_reference": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8."
+  },
+  {
+    "reason": "The worker explicitly checked that chosen line-ending characters belonged to a single modern Mandarin final and switched rhyme-family (-an vs -uan) when detecting a mismatch; the skill defines rhyme evaluation by modern Mandarin finals.",
+    "key_point": "Rhyme is judged by modern Mandarin finals (not historical rhyme books); use a single modern-Mandarin final across required rhyme lines.",
+    "skill_reference": "- rhyme is judged by modern Mandarin finals, not historical rhyme books"
+  },
+  {
+    "reason": "The worker selected rhyme characters deliberately (chose common -uan endings and avoided mixing -an/-uan or polyphonic endings) following this guidance to prevent tonal/rhyme errors.",
+    "key_point": "When choosing rhyme characters, prefer common, stable, unambiguous characters and avoid risky polyphonic or tonally unstable line endings; prefer rhyme characters that contribute meaning.",
+    "skill_reference": "When choosing rhyme characters:\n- prefer common, stable, unambiguous characters\n- avoid risky polyphonic line endings\n- avoid line-ending characters that are weak, colloquial, or tonally unstable\n- prefer rhyme characters that also contribute to atmosphere and meaning rather than serving as empty placeholders"
+  },
+  {
+    "reason": "The worker followed the skill’s output convention (only the poem by default) and performed the skill’s final checks (title, line counts, character counts, canonical form, rhyme) before saving the file.",
+    "key_point": "By default, output only the title and the 8 body lines of the poem; before returning the poem, verify required items such as a fitting title, exactly 8 body lines, and that every body line has the required 5 or 7 Chinese characters and follows a canonical form with correct rhyme.",
+    "skill_reference": "By default, output only the title and the 8 body lines of the poem.\n\n... \n\nBefore returning the poem, verify all of the following:\n- it has a fitting title\n- it has exactly 8 body lines\n- every body line has exactly 5 or 7 Chinese characters as required\n- it follows one of the canonical forms under the modern Mandarin rule set\n- all required rhyme lines share a valid modern Mandarin final"
+  },
+  {
+    "reason": "The worker avoided punctuation or ensured it wouldn't change character counts (they produced pure-character lines); this rule guided how punctuation could be used without breaking the line-length constraint.",
+    "key_point": "Punctuation is optional but, if used, must not alter the character count of the body lines.",
+    "skill_reference": "Punctuation is optional. If punctuation is used, it must not alter the character count of the body lines."
+  }
+]

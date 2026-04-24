@@ -1,0 +1,72 @@
+[
+  {
+    "reason": "The worker needed the explicit rule to avoid computing distances in degrees and instead project data before measuring distances; the trajectory shows they projected to a metric CRS (EPSG:4087) before distance calculations.",
+    "key_point": "Do not compute distances in EPSG:4326; always project geographic data to a metric CRS before measuring Euclidean distances.",
+    "skill_reference": "**Critical Rule**: Never calculate distances directly in geographic coordinates (EPSG:4326). Always project to a metric coordinate system first."
+  },
+  {
+    "reason": "The worker used EPSG:4087 as the metric CRS for projecting both points and boundaries, so the skill's specific CRS recommendation was required to choose an appropriate projection.",
+    "key_point": "Use EPSG:4087 (World Equidistant Cylindrical) as a metric/projected CRS suitable for distance calculations.",
+    "skill_reference": "| EPSG:4087 (World Equidistant Cylindrical) | Projected | Meters | Distance calculations |"
+  },
+  {
+    "reason": "The worker implemented projection then measured distances in meters and converted to kilometers; the code snippet shows the correct sequence and conversion used.",
+    "key_point": "Project geometries to a metric CRS then compute distances (returns meters) and convert to kilometers by dividing by 1000.",
+    "skill_reference": "gdf_projected = gdf.to_crs(\"EPSG:4087\")\ndistance_meters = point1_proj.distance(point2_proj)  # Correct! Returns meters\n\ndistance_km = distance_meters / 1000.0"
+  },
+  {
+    "reason": "The worker loaded the plates and boundaries GeoJSON files; these gpd.read_file calls are the concrete commands used to load the spatial layers.",
+    "key_point": "Load GeoJSON plate and boundary files using geopandas read_file (gpd.read_file).",
+    "skill_reference": "gdf_plates = gpd.read_file(\"plates.json\")\ngdf_boundaries = gpd.read_file(\"boundaries.json\")"
+  },
+  {
+    "reason": "To build the earthquake GeoDataFrame from coordinates the worker needed to create Point geometries and set CRS to EPSG:4326 before spatial operations.",
+    "key_point": "Create a GeoDataFrame of point events with geometry=Point(lon, lat) and crs=\"EPSG:4326\".",
+    "skill_reference": "gdf_eq = gpd.GeoDataFrame(earthquakes_data, geometry=geometry, crs=\"EPSG:4326\")"
+  },
+  {
+    "reason": "The worker filtered events to those inside the Pacific plate polygon; the .within() usage is the exact spatial test applied.",
+    "key_point": "Filter point events inside a polygon using the GeoDataFrame .within(target_poly) operation.",
+    "skill_reference": "points_inside = gdf_points[gdf_points.within(target_poly)]"
+  },
+  {
+    "reason": "The worker identified the Pacific plate polygon by code 'PA' and combined its geometries; this exact selection and unary_union step was necessary to produce the polygon used for .within().",
+    "key_point": "Select the Pacific plate polygon with gdf_plates[\"Code\"] == \"PA\" and combine geometries with .geometry.unary_union to get a single polygon.",
+    "skill_reference": "target_plate = gdf_plates[gdf_plates[\"Code\"] == \"PA\"].geometry.unary_union"
+  },
+  {
+    "reason": "The worker projected both points and boundaries to the chosen metric CRS before computing distances; the .to_crs usage shows how to perform that projection.",
+    "key_point": "Project GeoDataFrames to the metric CRS using .to_crs(METRIC_CRS) for both points and boundaries.",
+    "skill_reference": "METRIC_CRS = \"EPSG:4087\"\npoints_proj = gdf_points.to_crs(METRIC_CRS)\nboundaries_proj = gdf_boundaries.to_crs(METRIC_CRS)"
+  },
+  {
+    "reason": "Before computing point-to-boundary distances the worker combined boundary segments into a single geometry; the unary_union line is the exact operation used.",
+    "key_point": "Combine multiple boundary line features into a single geometry with .geometry.unary_union before distance calculations.",
+    "skill_reference": "boundary_geom = boundaries_proj.geometry.unary_union"
+  },
+  {
+    "reason": "The worker computed the actual point-to-boundary distances using the GeoSeries .distance() method; this is the direct command that produced metric distances.",
+    "key_point": "Compute point-to-geometry distances with points_proj.geometry.distance(boundary_geom) to obtain distances in the projected units (meters).",
+    "skill_reference": "gdf_points[\"distance_m\"] = points_proj.geometry.distance(boundary_geom)"
+  },
+  {
+    "reason": "After obtaining distances in meters the worker converted them to kilometers; the code dividing by 1000.0 is the concrete conversion applied.",
+    "key_point": "Convert distance from meters to kilometers by dividing the meter values by 1000.0.",
+    "skill_reference": "gdf_points[\"distance_km\"] = gdf_points[\"distance_m\"] / 1000.0"
+  },
+  {
+    "reason": "To identify the single outlier (furthest earthquake) the worker used a method to get the largest distance row; the .nlargest pattern was used to select the extreme.",
+    "key_point": "Select the furthest event by using .nlargest(1, \"distance_km\").iloc[0] to retrieve the row with the maximum distance_km.",
+    "skill_reference": "furthest = gdf_points.nlargest(1, \"distance_km\").iloc[0]"
+  },
+  {
+    "reason": "The task required the distance rounded to two decimals; the skill's print formatting shows the .2f formatting used for two-decimal output.",
+    "key_point": "Format the distance output to two decimal places (e.g., with f-string format specifier ':.2f').",
+    "skill_reference": "print(f\"Furthest point: {furthest['id']}\")\nprint(f\"Distance: {furthest['distance_km']:.2f} km\")"
+  },
+  {
+    "reason": "The worker filtered earthquakes to the plate before projecting to reduce work; the explicit performance tip to filter before projecting justifies that ordering the worker followed.",
+    "key_point": "Filter your dataset (e.g., by plate) before projecting to a metric CRS to reduce the amount of data needing expensive projection operations.",
+    "skill_reference": "1. **Filter before projecting**: Reduce data size before expensive operations"
+  }
+]

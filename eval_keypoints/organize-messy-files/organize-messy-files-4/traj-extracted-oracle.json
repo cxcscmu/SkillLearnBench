@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List files in the working directory and target 'all' folder",
+    "why_essential": "To discover the repository structure and locate the folder containing the 103 unorganized files to be classified.",
+    "evidence": "ls /root/ -> papers ; ls /root/papers/ | head -50 -> all"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Count and list filenames in /root/papers/all to get the complete file inventory",
+    "why_essential": "A complete inventory is required to ensure every file is examined and ultimately moved into one of the five subject folders.",
+    "evidence": "ls /root/papers/all/ | wc -l && ls /root/papers/all/ -> 103 and list of filenames"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Extract first-page text from each PDF using pdftotext to identify subject matter",
+    "why_essential": "Reading the first page of each PDF provides the title/abstract keywords needed to classify each paper into the correct subject folder.",
+    "evidence": "pdftotext -l 1 \"$f\" - 2>/dev/null | head -20 ... showed content e.g. 'Tight-binding modeling of charge migration in DNA devices'"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Extract textual content from .docx files by reading document.xml inside the docx ZIP",
+    "why_essential": "Docx files don't respond to pdftotext; extracting document.xml is required to read their content and classify them correctly.",
+    "evidence": "python3 ... with zipfile.ZipFile(fname, 'r') as z: ... printed 'Dear Editor, We are submitting our manuscript titled \"Temporally multiplexed ion-photon quantum interface via fast ion-chain transport\"'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Extract slide text from DAMOP.pptx by reading slide XML inside the pptx ZIP",
+    "why_essential": "PPTX files must be inspected by unpacking slide XML to determine the subject (e.g., trapped-ion quantum interface) for correct folder placement.",
+    "evidence": "with zipfile.ZipFile('DAMOP.pptx', 'r') ... showed 'Temporally multiplexed ion-photon quantum interface Bingran You ...'"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Create the five destination folders: LLM, trapped_ion_and_qc, black_hole, DNA, music_history",
+    "why_essential": "Destination folders must exist to move each file into its appropriate subject folder without renaming or altering files.",
+    "evidence": "mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Move each file into the appropriate subject folder based on extracted content",
+    "why_essential": "Physically relocating files into the subject folders completes the organization task; each file must be placed in exactly one folder.",
+    "evidence": "mv ... (commands moving groups of filenames) resulted in folder counts shown below"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Verify that all files have been moved and report counts per folder",
+    "why_essential": "Verification confirms that no files remain in the source folder and that the total number of files equals the original inventory.",
+    "evidence": "echo \"=== Counts per folder ===\" && for f in LLM ...; do ls -1 /root/papers/$f | wc -l; done -> LLM: 20 ... Total: 103"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Provide a summary confirmation that all 103 files were organized into the five folders",
+    "why_essential": "A final confirmation ensures the task is complete and communicates the successful organization result.",
+    "evidence": "All 103 files have been organized successfully. Here's a summary: ... Total: 103"
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "reason": "The worker used this instruction to remember to run a final validation pass and refine the itinerary before output; it justifies the explicit final validation step they performed near the end of the trajectory.",
+    "key_point": "Always perform a final validation and refinement pass on the itinerary before returning it.",
+    "skill_reference": "**IMPORTANT:Do not forget to perform final validation and refinement.**"
+  },
+  {
+    "reason": "The worker extracted and recorded user constraints (dates, travelers, budget, origin, transport, cuisines) at the start of planning using this directive.",
+    "key_point": "Extract the user's explicit requirements and implicit preferences (trip duration, number of travelers, budget, transportation constraints, special requirements, food preferences) before planning.",
+    "skill_reference": "Extract the user's requirements and implicit preferences, including: Trip duration, Number of travelers, Budget constraints, Transportation constraints (e.g., no flights), Special requirements (e.g., pet-friendly accommodations), Food preferences (e.g., American, Mediterranean, Chinese, Italian)"
+  },
+  {
+    "reason": "The worker relied on this default to ensure no empty days were produced and to assign attractions to each day.",
+    "key_point": "If not specified, assume each day should include at least one activity (no empty days).",
+    "skill_reference": "If not explicitly specified, each day should include at least one activity (i.e., no empty days)."
+  },
+  {
+    "reason": "The worker selected which Ohio cities to include based on dataset availability and user constraints using this guideline.",
+    "key_point": "Select candidate cities based on the user's constraints and the datasets available.",
+    "skill_reference": "- Select candidate cities based on user constraints and dataset availability"
+  },
+  {
+    "reason": "The worker built the road-trip order and timings using this directive to create a preliminary route considering distances and feasibility.",
+    "key_point": "Construct a preliminary travel route while considering driving distance and feasibility between cities.",
+    "skill_reference": "- Construct a preliminary travel route (considering distance and feasibility)"
+  },
+  {
+    "reason": "The worker followed this per-day rule when assigning at least one attraction to each day (they cited attractions each day in the itinerary).",
+    "key_point": "For each day, assign one attraction per day unless the user explicitly opts out.",
+    "skill_reference": "- **Assign one attraction per day**, unless the user explicitly indicates that they do not want to go out."
+  },
+  {
+    "reason": "The worker used the user's cuisine preferences to pick restaurants for breakfast/lunch/dinner according to this instruction.",
+    "key_point": "For each day, assign meals based on the user's cuisine preferences.",
+    "skill_reference": "- **Assign meals** based on cuisine preferences"
+  },
+  {
+    "reason": "The worker selected specific accommodations and ensured they met constraints (e.g., pet-friendly if required) following this rule.",
+    "key_point": "For each day, assign accommodations and ensure they satisfy any special constraints (for example, pet-friendly when required).",
+    "skill_reference": "- **Assign accommodation** (must satisfy constraints such as pet-friendly)"
+  },
+  {
+    "reason": "The worker used these explicit validation checks (no flights, food preferences, attractions present, travel feasibility, format consistency) when verifying the final itinerary.",
+    "key_point": "Before returning the itinerary, explicitly validate that all user constraints are satisfied, each day has an attraction (including first and last days), travel transitions are feasible, and the output format is complete and consistent.",
+    "skill_reference": "Before returning the final itinerary, the agent must perform an explicit final validation pass. The validation should check:\n- **All user constraints must be satisfied**, including transportation constraints (e.g., no flights), special requirements (e.g., pet-friendly accommodations, which should be explicitly reflected using keywords such as pet or animal), and food preferences (e.g., American, Mediterranean, Chinese, and Italian cuisines).\n- **Each day includes at least one attraction, including both the first day and last day** (unless the user explicitly indicates that they do not want to go out.)\n- **Travel transitions between cities are feasible**\n- **The itinerary format is complete and consistent**, with no missing or contradictory information."
+  },
+  {
+    "reason": "The worker adhered to the instruction to prefer using bundled tool scripts first and did use those provided scripts rather than writing ad-hoc code.",
+    "key_point": "Always use the provided bundled tool scripts first rather than writing custom code.",
+    "skill_reference": "This skill provides six tools for searching the bundled dataset, always first use these tool scripts than writing code by yourself."
+  },
+  {
+    "reason": "The worker installed the required Python packages before running the bundled search scripts (they ran bash install steps).",
+    "key_point": "Install the required packages pip install pandas numpy requests before using the bundled dataset tools.",
+    "skill_reference": "pip install pandas numpy requests"
+  },
+  {
+    "reason": "The worker used the cities search tool to enumerate Ohio cities available in the dataset (they listed Toledo, Cleveland, Dayton, Columbus, Akron, Cincinnati).",
+    "key_point": "Use the search_cities script to map a state name to the cities available in the bundled background file.",
+    "skill_reference": "Tool 3: Search Cities\n\nMap states to their cities from the background text file.  The bundled script is located at scripts/search_cities.py."
+  },
+  {
+    "reason": "The worker computed driving times/distances between Minneapolis and Ohio cities and between Ohio cities using this tool instruction and its driving mode argument.",
+    "key_point": "Use the search_driving_distance script (GoogleDistanceMatrix) to look up distance and duration between origin and destination using mode=\"driving\".",
+    "skill_reference": "Tool 4: Search Driving Distance\n\nLook up distance/duration between an origin and destination. The bundled script is located at scripts/search_driving_distance.py. An Example:\n\n```python\nfrom search_driving_distance import GoogleDistanceMatrix\n\nmatrix = GoogleDistanceMatrix()\nprint(matrix.run(\"Seattle\", \"Portland\", mode=\"driving\"))\n```"
+  },
+  {
+    "reason": "The worker queried accommodations for each city to pick nightly rates and choices (they selected specific apartments and computed nightly totals).",
+    "key_point": "Use the search_accommodations script (scripts/search_accommodations.py) to find accommodations for a specific city and obtain nightly price details.",
+    "skill_reference": "Tool 1 :Search Accommodations\n\nFind accommodations for a specific city. The bundled script is located at scripts/search_accommodations.py. An Example:\n\n```python\nfrom search_accommodations import Accommodations\n\nacc = Accommodations()\nresult = acc.run(\"Seattle\")\nprint(result)\n```"
+  },
+  {
+    "reason": "The worker looked up restaurants in each city to match cuisine preferences (BBQ, Seafood, Chinese, Mexican) and price ranges using this tool.",
+    "key_point": "Use the search_restaurants script (scripts/search_restaurants.py) to query restaurants for a given city and filter by cuisine/price.",
+    "skill_reference": "## Tool 6: Search Restaurants\n\nQuery restaurants for a given city. The bundled script is located at scripts/search_restaurants.py."
+  }
+]

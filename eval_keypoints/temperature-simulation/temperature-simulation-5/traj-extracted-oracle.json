@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read the GLM configuration file /root/glm3.nml",
+    "why_essential": "To know the current model settings and which calibration parameters can be safely changed",
+    "evidence": "\"Read status=success input={\\\"file_path\\\": \\\"/root/glm3.nml\\\"}\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "List available meteorological/hydrological forcing files in /root/bcs/",
+    "why_essential": "To confirm the forcing data files that the model run will use",
+    "evidence": "\"/root/bcs/pheasant.csv\\n/root/bcs/meteo.csv\\n/root/bcs/outflow.csv\\n/root/bcs/yahara.csv\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Inspect the observations file /root/field_temp_oxy.csv (peek header)",
+    "why_essential": "To confirm the observation datetime/depth/temp layout required for metric matching",
+    "evidence": "\"head -5 /root/field_temp_oxy.csv\" -> \"datetime,depth,temp,OXY_oxy\\n2009-01-21 12:00:00,0,0.1,16.3...\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run GLM with the current configuration to produce baseline output (/root/output/output.nc)",
+    "why_essential": "A baseline simulation is needed to compute initial RMSEs and to ensure the model runs successfully with the configuration",
+    "evidence": "\"glm 2>&1; echo \\\"Exit: $?\\\"\" -> \"Exit: 0\" and \"ls /root/output/\" -> \"output.nc\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Compute baseline metrics by extracting simulated profiles and matching to observations",
+    "why_essential": "To quantify initial model performance (overall, annual_deep, summer_deep) and guide calibration",
+    "evidence": "\"Baseline metrics:\\n overall_rmse: 3.1337\\n ... annual_deep_rmse: 3.5813\\n summer_deep_rmse: 4.5516\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run an automated parameter sweep/calibration script that modifies allowed parameters, runs GLM for each candidate, and reports metrics",
+    "why_essential": "To find parameter values (Kw, coef_mix_hyp, wind_factor, lw_factor, ch) that satisfy the three RMSE thresholds",
+    "evidence": "\"Kw=0.35, hyp=0.3, wf=1.0, lwf=1.0, ch=0.0013\\n overall=2.109...\\nKw=0.4, hyp=0.3, wf=1.0, lwf=1.0, ch=0.0013\\n overall=1.817...\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the final calibrated parameters into /root/glm3.nml (Kw=0.4, coef_mix_hyp=0.32, wind_factor=0.9, lw_factor=0.95, ch=0.0013)",
+    "why_essential": "To persist the chosen calibration so the final GLM run uses those exact parameters",
+    "evidence": "\"Parameters written.\" and later grep showing: \\\"Kw = 0.4\\n coef_mix_hyp = 0.32\\n wind_factor = 0.9\\n lw_factor = 0.95\\n ch = 0.0013\\\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Run GLM once with the final configuration and generate /root/output/output.nc",
+    "why_essential": "To produce the final simulation output that will be used to compute the verified metrics",
+    "evidence": "\"glm 2>&1; echo \\\"Exit: $?\\\"\" -> \"Exit: 0\" and \"ls -la /root/output/output.nc\" shows the output file"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Compute final matched RMSE metrics and save them to /root/metrics.json",
+    "why_essential": "To produce the required exact evaluation (overall_rmse, annual_deep_rmse, summer_deep_rmse and pair counts) for verification",
+    "evidence": "\"Final metrics:\\n overall_rmse: 1.4511\\n annual_deep_rmse: 1.2910\\n summer_deep_rmse: 1.3942\\n overall_n_pairs: 2818...\" and \"cat /root/metrics.json\""
+  }
+]

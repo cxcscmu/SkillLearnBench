@@ -1,0 +1,107 @@
+[
+  {
+    "reason": "The worker ran GLM to produce simulation output; they needed the exact command and working directory to execute the model, which they used early in the trajectory to run and verify the default run.",
+    "key_point": "Run GLM from /root using: change directory to /root and run the 'glm' command.",
+    "skill_reference": "```bash\ncd /root\nglm\n```"
+  },
+  {
+    "reason": "The worker relied on knowing which input file GLM reads and where GLM will write output so they could find and use the produced NetCDF for evaluation.",
+    "key_point": "GLM reads glm3.nml in the current directory and writes output to output/output.nc.",
+    "skill_reference": "GLM reads `glm3.nml` in the current directory and produces output in `output/output.nc`."
+  },
+  {
+    "reason": "The worker obeyed the task constraint to only change certain calibration knobs; knowing the exact parameter name and section was necessary to edit the correct lines in glm3.nml.",
+    "key_point": "Kw (in &light) is an allowed calibration parameter (light extinction coefficient).",
+    "skill_reference": "| `Kw`           | `&light`       | Light extinction coefficient (m⁻¹) | 0.3     | 0.1 - 0.5      |"
+  },
+  {
+    "reason": "The worker needed to know the hypolimnetic mixing parameter to consider but ultimately not change it; the name and section are required to find and edit it if needed.",
+    "key_point": "coef_mix_hyp (in &mixing) is an allowed calibration parameter (hypolimnetic mixing coefficient).",
+    "skill_reference": "| `coef_mix_hyp` | `&mixing`      | Hypolimnetic mixing coefficient      | 0.5     | 0.3 - 0.7      |"
+  },
+  {
+    "reason": "The worker considered wind scaling as a possible knob and relied on the exact parameter name and location to adjust or leave it unchanged.",
+    "key_point": "wind_factor (in &meteorology) is an allowed calibration parameter (wind speed scaling factor).",
+    "skill_reference": "| `wind_factor`  | `&meteorology` | Wind speed scaling factor            | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker might adjust longwave scaling to tune heat input; they needed the exact parameter and its allowed range.",
+    "key_point": "lw_factor (in &meteorology) is an allowed calibration parameter (longwave radiation scaling).",
+    "skill_reference": "| `lw_factor`    | `&meteorology` | Longwave radiation scaling           | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker considered sensible heat transfer for fine-tuning; the exact parameter name and allowable range were required to keep changes valid.",
+    "key_point": "ch (in &meteorology) is an allowed calibration parameter (sensible heat transfer coefficient).",
+    "skill_reference": "| `ch`           | `&meteorology` | Sensible heat transfer coefficient   | 0.0013  | 0.0005 - 0.002 |"
+  },
+  {
+    "reason": "The worker enforced the task rule to only touch allowed parameters and not other configuration items, which determined their calibration actions.",
+    "key_point": "Only adjust the parameters explicitly allowed by the task; do not change other protected settings.",
+    "skill_reference": "- Only adjust the parameters explicitly allowed by the task"
+  },
+  {
+    "reason": "The worker used the guidance to stop calibration once a candidate passed and then switch to output processing to compute exact final metrics instead of continuing to optimize.",
+    "key_point": "If a candidate parameter set appears to pass all required metrics, stop calibration and hand off immediately to glm-output for exact metrics and /root/metrics.json.",
+    "skill_reference": "Once a candidate setting appears to pass, stop calibration and hand off immediately to `glm-output` for the final verifier-matching metrics and `/root/metrics.json`."
+  },
+  {
+    "reason": "The worker followed the explicit instruction to rerun GLM once at the chosen configuration and then have glm-output write the verified metrics.json file before ending the task.",
+    "key_point": "After finding a passing configuration, rerun GLM once at that setting, then switch to glm-output and write /root/metrics.json as the final step.",
+    "skill_reference": "After the first passing configuration is found, rerun GLM once at that setting, switch to `glm-output`, write `/root/metrics.json`, and end the task if the exact final metrics also pass."
+  },
+  {
+    "reason": "The worker needed the correct coordinate conversion to compute depths from the GLM output z variable; they used lake_depth - z to compute depth from surface.",
+    "key_point": "Convert GLM z (height from bottom) to depth-from-surface with: depth_from_surface = LAKE_DEPTH - z.",
+    "skill_reference": "**Important**: GLM `z` is height from lake bottom, not depth from surface.\n```python\nLAKE_DEPTH = <lake_depth_from_nml>\ndepth_from_surface = LAKE_DEPTH - z\n```"
+  },
+  {
+    "reason": "The worker had to merge simulation and observation tables exactly by datetime and rounded depth; the skill explicitly forbids nearest-time or interpolation and prescribes the exact merge method.",
+    "key_point": "Do not use nearest-time approximations or vertical interpolation for the final reported metrics; use the exact datetime + rounded-depth merge.",
+    "skill_reference": "Do not use nearest-time approximations or vertical interpolation for the final reported metrics. Use the exact `datetime`/rounded-depth merge shown below, then compute any task-specific subsets from that merged table."
+  },
+  {
+    "reason": "To produce the simulation table suitable for exact merging, the worker rounded simulated depths to integers and grouped by datetime+depth; the code snippet shows how simulated records were created with rounded depth.",
+    "key_point": "When extracting sim records, record depth as round(depth) and append entries with keys datetime, depth, and temp_sim.",
+    "skill_reference": "records.append({\n            'datetime': date,\n            'depth': round(depth),\n            'temp_sim': float(t_val)\n        })"
+  },
+  {
+    "reason": "The worker grouped simulation data by datetime and depth to handle duplicate layers before merging with observations; this aggregation was used in their evaluation script.",
+    "key_point": "Group simulation rows by ['datetime','depth'] and take mean(temp_sim) to collapse duplicates before merging with observations.",
+    "skill_reference": "df = df.groupby(['datetime', 'depth']).agg({'temp_sim': 'mean'}).reset_index()"
+  },
+  {
+    "reason": "The worker prepared observations by rounding observation depths to integers to match the sim depths for exact merging; they applied the same rounding to obs depths in their eval.",
+    "key_point": "Round observation depths to integers with df['depth'] = df['depth'].round().astype(int] before merging.",
+    "skill_reference": "df['depth'] = df['depth'].round().astype(int)"
+  },
+  {
+    "reason": "The worker computed the exact RMSE from the merged pairs using this RMSE routine; the function defines how RMSE is calculated and the fallback for empty merges.",
+    "key_point": "Compute RMSE from merged pairs as sqrt(mean((temp_sim - temp_obs)**2)), with an empty-merge fallback returning 999.0.",
+    "skill_reference": "def rmse_from_merged(merged):\n    if len(merged) == 0:\n        return 999.0\n    errors = merged['temp_sim'] - merged['temp_obs']\n    return float(np.sqrt(np.mean(errors ** 2)))"
+  },
+  {
+    "reason": "The worker used the exact subset definitions for the task metrics: 'deep' pairs are depth >= 13 and 'summer' is months 6–9; these conditions were used to compute the annual_deep and summer_deep RMSEs.",
+    "key_point": "Define summer months as 6–9 and deep records as depth >= 13; compute annual_deep and summer_deep from those filters on the merged table.",
+    "skill_reference": "summer_mask = merged['datetime'].dt.month.isin([6, 7, 8, 9])\n    annual_deep = merged[merged['depth'] >= 13]\n    summer_deep = merged[summer_mask & (merged['depth'] >= 13)]"
+  },
+  {
+    "reason": "The worker had to produce the final metrics file with exactly the required keys (including pair counts); the skill lists the required JSON keys which the worker wrote to /root/metrics.json.",
+    "key_point": "The final /root/metrics.json must contain these exact keys: overall_rmse, annual_deep_rmse, summer_deep_rmse, overall_n_pairs, annual_deep_n_pairs, summer_deep_n_pairs.",
+    "skill_reference": "- `overall_rmse`\n- `annual_deep_rmse`\n- `summer_deep_rmse`\n- `overall_n_pairs`\n- `annual_deep_n_pairs`\n- `summer_deep_n_pairs`"
+  },
+  {
+    "reason": "The worker had to ensure parameter adjustments stayed within allowed bounds; the skill explicitly instructs to keep parameter values inside published ranges.",
+    "key_point": "Keep calibration parameter values within the published ranges (do not exceed the stated min/max for each parameter).",
+    "skill_reference": "Keep parameters within the published ranges"
+  },
+  {
+    "reason": "The worker followed the calibration checklist that required stopping only when every required task metric passes (not just global RMSE), which justified halting calibration when defaults already passed.",
+    "key_point": "Stop only when every required task metric passes; do not use global RMSE alone as the stopping condition.",
+    "skill_reference": "- Stop only when every required task metric passes; do not use global RMSE alone as the stopping condition"
+  },
+  {
+    "reason": "The worker used the recommended skill flow (basics -> calibration -> output) to structure their steps and handoffs, matching how they proceeded in the trajectory.",
+    "key_point": "Follow the skill flow: run glm-basics to inspect files, glm-calibration to search parameters, then glm-output to compute the final exact metrics and write /root/metrics.json.",
+    "skill_reference": "For benchmark calibration tasks, use the GLM skills in this order:\n\n1. `glm-basics`: inspect files, confirm run mechanics, and identify the task's editable/configuration surface\n2. `glm-calibration`: search for a physically passing parameter set within the allowed scope\n3. `glm-output`: compute the final exact task metrics and write `/root/metrics.json`"
+  }
+]

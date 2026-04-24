@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker needed to know that this skill applies to modern regulated verse forms so they would select seven-character regulated verse (not other forms) and apply the modern-Mandarin rules. This guided the choice of form at the start of composition.",
+    "key_point": "Skill applies only to strict five-character or seven-character regulated verse under a modern Mandarin rule set.",
+    "skill_reference": "Use this Skill only for strict five-character regulated verse and seven-character regulated verse under a modern Mandarin rule set."
+  },
+  {
+    "reason": "The worker had to enforce the exact line count required by a seven-character regulated verse; they used this constraint when composing and when finalizing the file.",
+    "key_point": "A seven-character regulated verse must have exactly eight body lines.",
+    "skill_reference": "- exactly 8 lines"
+  },
+  {
+    "reason": "The worker repeatedly checked and ensured each poem line had the required character count (seven characters per line) while drafting and revising.",
+    "key_point": "Each line of a seven-character regulated verse must contain exactly seven Chinese characters.",
+    "skill_reference": "- exactly 7 Chinese characters per line"
+  },
+  {
+    "reason": "The worker followed this output layout when saving the poem (title, blank line, then eight body lines); it determined the exact file format they produced.",
+    "key_point": "The poem must be output with the title on line 1, a blank line on line 2, and the eight body lines on lines 3–10.",
+    "skill_reference": "Output format:\n- line 1: title\n- line 2: blank line\n- lines 3-10: the 8 body lines of the poem"
+  },
+  {
+    "reason": "Tonal classification guided every tonal check the worker performed (mapping characters to 平/仄) when verifying positions in each line.",
+    "key_point": "Map modern Mandarin tones to 平/仄 with 1st and 2nd tones = 平, 3rd and 4th tones = 仄, and ignore neutral tone.",
+    "skill_reference": "- 1st and 2nd tones = 平\n- 3rd and 4th tones = 仄\n- neutral tone does not count"
+  },
+  {
+    "reason": "The worker explicitly chose a rhyme plan whose rhyming positions matched this rule and checked endings accordingly (they used rhyme-on-line-1 and verified lines 1,2,4,6,8).",
+    "key_point": "For forms marked rhyme-on-line-1, the rhyme lines are lines 1, 2, 4, 6, and 8 (these must share the same modern-Mandarin final).",
+    "skill_reference": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8."
+  },
+  {
+    "reason": "The worker selected a specific canonical tonal pattern for the chosen form and used it to build and check line-level 平仄; this specific pattern ('仄仄平平仄仄平') was the tonal template used for lines like line 1 and line 4.",
+    "key_point": "One canonical seven-character tonal pattern available for Ze-start Ping-end rhyme-on-line-1 is '仄仄平平仄仄平' (use the exact canonical pattern you pick for all checks).",
+    "skill_reference": "- 仄仄平平仄仄平"
+  },
+  {
+    "reason": "The worker explicitly built rhyme-line endings first and used them to anchor the poem's rhyme and tonal checks, following this drafting order.",
+    "key_point": "When drafting, build the line endings first—especially the rhyme lines—before filling other positions.",
+    "skill_reference": "7. build the line endings first, especially the rhyme lines"
+  },
+  {
+    "reason": "Before saving, the worker ran final checks on rhyme consistency across required rhyme lines; this verification rule directed that final validation.",
+    "key_point": "Before returning the poem, verify that all required rhyme lines share a valid modern Mandarin final.",
+    "skill_reference": "- all required rhyme lines share a valid modern Mandarin final"
+  },
+  {
+    "reason": "The worker relied on the final-check checklist to ensure the poem met deliverable format and structural constraints (title, body-line count, character counts) when saving the file.",
+    "key_point": "As a final check, verify the poem has a fitting title and that every body line has exactly the required number of characters (5 or 7 as appropriate).",
+    "skill_reference": "- it has a fitting title\n- it has exactly 8 body lines\n- every body line has exactly 5 or 7 Chinese characters as required"
+  }
+]

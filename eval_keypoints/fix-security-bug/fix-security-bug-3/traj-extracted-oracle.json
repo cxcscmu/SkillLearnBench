@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Search the Druid source for JavaScript- and sampler-related Java files",
+    "why_essential": "Locate the code paths that handle JavaScript transforms/filters and the sampler endpoint so the vulnerability root cause can be identified and patched",
+    "evidence": "find ... | xargs grep -l \"javascript\" ... -> returned JavaScriptParserTest.java and other JS-related files; later used find to locate sampler files"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Open the JavaScript configuration/handling code (JavaScriptConfig.java and JavaScriptDimFilter.java)",
+    "why_essential": "Understand how JavaScript transform/filter configuration and security are represented so the bypass via an empty JSON key can be reasoned about",
+    "evidence": "Read /root/druid/core/src/main/java/org/apache/druid/js/JavaScriptConfig.java and /root/druid/processing/src/main/java/org/apache/druid/query/filter/JavaScriptDimFilter.java"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Open the sampler endpoint and related sampler specs (SamplerResource.java and IndexTaskSamplerSpec.java)",
+    "why_essential": "Identify where the sampler deserializes incoming JSON so the empty-key bypass (which occurs during deserialization) can be blocked",
+    "evidence": "Read /root/druid/indexing-service/src/main/java/org/apache/druid/indexing/overlord/sampler/SamplerResource.java and IndexTaskSamplerSpec.java"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Determine the deserialization bypass mechanism (empty key overrides injected JavaScriptConfig)",
+    "why_essential": "Pinpoint the exact vulnerability: Jackson/Json deserialization using an empty string key can override injected config and enable JS execution",
+    "evidence": "Analysis: 'Jackson's @JacksonInject uses an empty string \"\" as the default inject key ... sending JSON like \"\":{\"enabled\":true} overrides the Guice-injected JavaScriptConfig'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Create a patch file in /root/patches/ implementing the fix to sanitize/validate the sampler request body before deserialization",
+    "why_essential": "Prepare the surgical code change that blocks the empty-key bypass while preserving legitimate behavior; deliverable 1 requires patch files in /root/patches/",
+    "evidence": "File created successfully at: /root/patches/CVE-druid-js-empty-key-bypass.patch"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Apply the patch by updating /root/druid/indexing-service/src/main/java/.../SamplerResource.java with the safe deserialization logic",
+    "why_essential": "Modify the actual Druid source so the server will reject or sanitize exploit payloads at the sampler endpoint when rebuilt",
+    "evidence": "The file /root/druid/indexing-service/src/main/java/.../SamplerResource.java has been updated successfully."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Run the Maven build of Druid with tests skipped and web-console excluded",
+    "why_essential": "Rebuild the patched code into artifacts that the verifier will deploy; required deliverable is to rebuild Druid with fixes",
+    "evidence": "cd /root/druid && mvn clean package -DskipTests ... -pl '!web-console' -pl indexing-service -am (build started and ran)"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Wait for and confirm the Maven build completed successfully",
+    "why_essential": "Ensure the patched code compiles and produces the expected JAR for deployment and verification",
+    "evidence": "TaskOutput shows build status completed with exit_code 0 and 'Build succeeded.'"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Verify the patched JAR exists and contains the updated SamplerResource class",
+    "why_essential": "Confirm the produced artifact includes the patched resource so the verifier can deploy the fixed binary",
+    "evidence": "ls -lh /root/druid/indexing-service/target/druid-indexing-service-0.20.0.jar and jar tf ... | grep SamplerResource -> class present"
+  }
+]

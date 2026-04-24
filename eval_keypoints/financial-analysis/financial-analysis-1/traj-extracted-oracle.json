@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Fuzzy-search COVERPAGE for 'renaissance technologies' in Q3 2025 to obtain accession_number",
+    "why_essential": "You must find the fund's accession_number to load its Q3 filing and extract AUM and holdings.",
+    "evidence": "search_fund.py --keywords \"renaissance technologies\" --quarter 2025-q3 -> found accession number 0001037389-25-000064"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Run 13f-analyzer one_fund_analysis on accession_number 0001037389-25-000064 for quarter 2025-q3 to get AUM and holdings count",
+    "why_essential": "This tool returns the fund's Total AUM and total number of holdings (answers for Q1 and Q2 require these values).",
+    "evidence": "one_fund_analysis.py --accession_number 0001037389-25-000064 --quarter 2025-q3 -> Total number of holdings: 3457; Total AUM: 75753182516.00"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Fuzzy-search COVERPAGE for 'berkshire hathaway' in Q3 2025 to obtain Q3 accession_number",
+    "why_essential": "To compare Berkshire Hathaway holdings between quarters, we need the specific Q3 accession_number to load Q3 holdings.",
+    "evidence": "search_fund.py --keywords \"berkshire hathaway\" --quarter 2025-q3 -> ACCESSION_NUMBER: 0001193125-25-282930 (and similar hit 0001193125-25-282901 returned by analyzer)"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Fuzzy-search COVERPAGE for 'berkshire hathaway' in Q2 2025 to obtain Q2 accession_number",
+    "why_essential": "Comparing Q2 and Q3 requires the Q2 accession_number so holdings from both quarters can be loaded and differences computed.",
+    "evidence": "search_fund.py --keywords \"berkshire hathaway\" --quarter 2025-q2 -> ACCESSION_NUMBER: 0000950123-25-008372"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Run 13f-analyzer holding comparison (baseline_quarter) between Berkshire's Q2 and Q3 filings to compute per-stock dollar changes and rank top 5 increases",
+    "why_essential": "Directly computes the change in dollar holdings between the two quarters so we can list top-5 stocks by dollar-value increase (CUSIPs).",
+    "evidence": "one_fund_analysis.py --quarter 2025-q3 --accession_number 0001193125-25-282901 --baseline_quarter 2025-q2 -> used for holdings change analysis"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Fuzzy-search stock CUSIP for 'palantir' to get Palantir's CUSIP (69608A108)",
+    "why_essential": "To find which funds hold Palantir in Q3 and their share values, we must search by the stock's CUSIP to query the holdings table.",
+    "evidence": "search_stock_cusip.py --keywords \"palantir\" -> CUSIP: 69608A108"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Load Q3 INFOTABLE.tsv and COVERPAGE.tsv, filter holdings by CUSIP 69608A108, join to COVERPAGE to get manager names and values, and rank top-3 by value",
+    "why_essential": "This extracts which fund managers held Palantir in Q3 and their share values so we can list the top-3 fund managers by share value.",
+    "evidence": "Script read /root/2025-q3/INFOTABLE.tsv and /root/2025-q3/COVERPAGE.tsv -> \"Top-10 fund managers holding Palantir (CUSIP 69608A108): Rank 1: VANGUARD GROUP INC | Value: 39017133374.00 ...\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write answers.json to /root with q1,q2,q3,q4 answers in the required schema",
+    "why_essential": "The task requires producing a single answers.json file in /root with the specified schema containing the computed answers.",
+    "evidence": "File created successfully at: /root/answers.json with content including \"q1_answer\": 75753182516 and other answers"
+  }
+]

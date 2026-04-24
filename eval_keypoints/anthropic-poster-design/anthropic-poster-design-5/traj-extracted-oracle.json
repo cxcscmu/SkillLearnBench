@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke brand-guidelines skill to retrieve Anthropic official colors and typography",
+    "why_essential": "You must use Anthropic’s official brand tokens (colors and typography) to create a correctly branded artifact.",
+    "evidence": "Skill status=success input={\"skill\": \"brand-guidelines\"} ... Launching skill: brand-guidelines"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Locate available system fonts to determine fallback options",
+    "why_essential": "Knowing available fonts ensures the script can select an appropriate heading font if the preferred brand font is not preinstalled.",
+    "evidence": "find /usr/share/fonts ... | grep -i -E \"poppins|lora|liberation|dejavu|free\" returned DejaVu fonts"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Install Pillow (image library) in the environment",
+    "why_essential": "Pillow is required to programmatically generate and save the PNG packaging-front image.",
+    "evidence": "pip install Pillow ... WARNING ... then later python3 -c \"from PIL import Image; print('OK')\" reported Pillow OK"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Download Poppins font files (heading font) to local filesystem",
+    "why_essential": "Poppins-Bold is the chosen heading font from the brand guidelines and must be available locally to render the primary title correctly.",
+    "evidence": "Downloaded Poppins-Bold\\nDownloaded Poppins-Regular\\nDownloaded Poppins-Light\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write the image-generation script that applies brand colors, typography, layout, and exports PNG",
+    "why_essential": "The script encodes the visual composition rules (colors, hierarchy, whitespace, product illustration) and produces the final artifact file.",
+    "evidence": "File created successfully at: /root/gen_artifact.py\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Execute the generation script to render and save /root/anthropic_branded_artifact.png",
+    "why_essential": "Running the script produces the required packaging-front PNG output file.",
+    "evidence": "python3 gen_artifact.py ... Saved → /root/anthropic_branded_artifact.png\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Create /root/design_parameters.json containing used HEX colors and heading font name",
+    "why_essential": "The task requires a JSON file listing the exact applied colors and heading font for reproducibility and verification.",
+    "evidence": "File created successfully at: /root/design_parameters.json\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Confirm that the generated image matches the design brief (minimalist, Anthropic visual language, primary heading 'RELAY DOCK')",
+    "why_essential": "A final verification ensures the artifact meets the brief’s requirements before delivering the files.",
+    "evidence": "The image looks great! ... Clean, minimalist design ... title and motif described in summary\""
+  }
+]

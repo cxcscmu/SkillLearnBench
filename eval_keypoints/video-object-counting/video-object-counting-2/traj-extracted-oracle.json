@@ -1,0 +1,38 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Extract I-frame keyframes from /root/super-mario.mp4 to /root/keyframes_%03d.png using ffmpeg",
+    "why_essential": "Keyframes are required as input images to detect and count coins and turtles per frame.",
+    "evidence": "ffmpeg command: ffmpeg -i /root/super-mario.mp4 -vf \"select='eq(pict_type,I)'\" -vsync vfr /root/keyframes_%03d.png and tool result indicating keyframes were extracted"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Verify presence of template images /root/coin*.png and /root/turtle*.png",
+    "why_essential": "The counting step must use all provided coin and turtle templates; ensure templates exist before detection.",
+    "evidence": "Glob output listing templates: /root/coin1.png, /root/coin2.png, /root/turtle.png, /root/turtle1.png"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Convert all extracted keyframes to grayscale in place (/root/keyframes_001.png ... /root/keyframes_005.png)",
+    "why_essential": "Task requires keyframes to be converted to grayscale (overwriting originals) before object detection/counting.",
+    "evidence": "ImageMagick conversion loop executed and returned: Done"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Count coins in each keyframe using templates /root/coin1.png and /root/coin2.png",
+    "why_essential": "Counting coins per frame (using all coin templates) is required to produce the 'coins' column in the CSV.",
+    "evidence": "object_counter output examples: Frame 001 coin1 -> 0, coin2 -> 0; Frame 003 coin1 -> 4, coin2 -> 0; Frame 004 coin1 -> 0, coin2 -> 3"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Count turtles in each keyframe using templates /root/turtle.png and /root/turtle1.png",
+    "why_essential": "Counting turtles per frame (using all turtle templates) is required to produce the 'turtles' column in the CSV.",
+    "evidence": "object_counter output examples: Frame 003 turtle -> 0, turtle1 -> 1; other frames show 0 for both templates"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write aggregated counts to /root/counting_results.csv with columns frame_id,coins,turtles",
+    "why_essential": "The final deliverable is the CSV file summarizing per-frame coin and turtle counts in the specified format/location.",
+    "evidence": "Write tool result: File created successfully at: /root/counting_results.csv (content included frame rows like /root/keyframes_001.png,0,0 etc.)"
+  }
+]

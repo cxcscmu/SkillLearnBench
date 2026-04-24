@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch the geospatial-analysis skill",
+    "why_essential": "Provides the specialized environment and tools required for geospatial computations (GeoPandas, shapely, etc.).",
+    "evidence": "\"Launching skill: geospatial-analysis\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Load earthquake GeoJSON (/root/earthquakes_2024.json)",
+    "why_essential": "Must read the 2024 earthquake catalog to identify events and their coordinates for analysis.",
+    "evidence": "\"head -c 3000 /root/earthquakes_2024.json\" (data loaded)"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Load plate polygons (/root/PB2002_plates.json) and boundary geometries (/root/PB2002_boundaries.json)",
+    "why_essential": "Need the Africa plate polygon to determine which earthquakes lie within the Africa plate and the plate boundary geometries to compute distances to boundaries.",
+    "evidence": "\"head -c 3000 /root/PB2002_plates.json\" and \"head -c 3000 /root/PB2002_boundaries.json\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Filter earthquakes to those located within the Africa plate polygon",
+    "why_essential": "Restricts analysis to events belonging to the Africa plate as required by the task.",
+    "evidence": "\"Find the 2024 seismic event located within the **Africa plate**\" (task) and script uses africa_plate geometry"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Compute distance from each Africa-plate earthquake epicenter to the nearest Africa plate boundary",
+    "why_essential": "Necessary to determine which event is farthest from its plate boundaries (the metric the task asks to maximize).",
+    "evidence": "\"calculate the largest distance to the Africa plate boundary\" and script computing distances"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Select the earthquake with the maximum distance to Africa plate boundary",
+    "why_essential": "Identifies the single event required by the task — the one at maximum distance from its plate boundaries.",
+    "evidence": "\"Earthquake farthest from Africa plate boundaries\" and output id `us7000mqfy`"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the selected event's fields (id, place, time, magnitude, latitude, longitude, distance_km) to /root/answer.json",
+    "why_essential": "Produces the final required output file in the specified format so the result can be consumed or validated.",
+    "evidence": "\"File created successfully\" and \"cat /root/answer.json\" showing the JSON with id `us7000mqfy`"
+  }
+]

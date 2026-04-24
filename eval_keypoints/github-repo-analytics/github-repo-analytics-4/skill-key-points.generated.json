@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker decided to call the GitHub API (GraphQL via gh) to fetch PR data; the skill's 'api' command line documents that gh can make authenticated API requests, which enabled using gh to run those GraphQL/REST queries.",
+    "key_point": "gh provides an 'api' command for making authenticated GitHub API requests, which the worker used to query PR data directly.",
+    "skill_reference": "api:        Make an authenticated GitHub API request"
+  },
+  {
+    "reason": "The worker needed to restrict the PR set to the task date window (Q2 2024); the skill documents the search/date query syntax (created:>=...), which is what the worker used to fetch PRs created on/after 2024-04-01.",
+    "key_point": "Use GitHub search date qualifiers such as created:>=YYYY-MM-DD to filter PRs by creation date (e.g., created:>=2024-04-01).",
+    "skill_reference": "| `>=YYYY-MM-DD` | `created:>=2024-04-01` — on or after April 1, 2024 |"
+  },
+  {
+    "reason": "Because the API/search can't filter by changed-files count, the worker fetched per-PR fields and checked changedFiles, createdAt, mergedAt, closedAt, and author to filter and compute metrics; the skill lists these available PR fields for --json/API output.",
+    "key_point": "The PR JSON/API output includes fields needed for filtering and metrics: changedFiles, createdAt, mergedAt, closedAt, and author (so you can check file counts, creation/merge/close times, and opener).",
+    "skill_reference": "additions\nassignees\nauthor\nbaseRefName\nbody\nchangedFiles\nclosed\nclosedAt\ncomments\ncommits\ncreatedAt\ndeletions\nfiles\nheadRefName\nheadRepository\nheadRepositoryOwner\nid\nisCrossRepository\nisDraft\nlabels\nmaintainerCanModify\nmergeCommit\nmergeStateStatus\nmergeable\nmergedAt"
+  },
+  {
+    "reason": "The worker targeted the specific repo (cli/cli); the skill documents the -R/--repo flag for selecting a repository, which is how GH commands can be pointed at cli/cli.",
+    "key_point": "Use the -R, --repo [HOST/]OWNER/REPO flag to select the repository to query (e.g., cli/cli).",
+    "skill_reference": "  -R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format"
+  },
+  {
+    "reason": "The worker enumerated and filtered PRs; the skill documents that gh pr has a 'list' subcommand to list and filter pull requests, which is the basic CLI capability for retrieving PR lists.",
+    "key_point": "Use 'gh pr list' to list and filter pull requests in a repository.",
+    "skill_reference": "  list:       List and filter pull requests in this repository"
+  }
+]

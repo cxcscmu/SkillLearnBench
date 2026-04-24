@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker invoked the pull-request listing capability to retrieve PRs for analysis (they ran gh pr list). Knowing that 'list' is the subcommand that lists and filters PRs is necessary to run the correct command.",
+    "key_point": "Use the 'gh pr list' subcommand to list and filter pull requests in a repository.",
+    "skill_reference": "list:       List and filter pull requests in this repository"
+  },
+  {
+    "reason": "The worker used the search flag to restrict PRs to a date span (they used a created: date range in their query). The skill's line stating that --search uses GitHub search syntax justifies forming queries like created:2024-01-01..2024-03-31.",
+    "key_point": "Use the --search flag with gh pr to apply GitHub search-syntax queries when listing PRs.",
+    "skill_reference": "The `--search` flag uses GitHub search syntax. Full documentation: https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax"
+  },
+  {
+    "reason": "The worker filtered PRs by creation date using a range (created:2024-01-01..2024-03-31). The date-range example shows the exact query form they relied on.",
+    "key_point": "Specify date ranges using the 'YYYY-MM-DD..YYYY-MM-DD' pattern in search queries (e.g., created:2024-01-01..2024-03-31).",
+    "skill_reference": "| `YYYY-MM-DD..YYYY-MM-DD` | `created:2024-04-30..2024-07-04` — date range |"
+  },
+  {
+    "reason": "The task requires cutoff times (e.g., 2024-04-15T00:00:00Z) and the worker used timestamps when comparing created/merged/closed times; the skill documents the accepted date/time format including optional time and timezone.",
+    "key_point": "Use ISO8601 date format (YYYY-MM-DD) and, when needed, include the optional time as YYYY-MM-DDTHH:MM:SS+00:00 for precise timestamps.",
+    "skill_reference": "Date format: `YYYY-MM-DD` (ISO8601). Optional time: `YYYY-MM-DDTHH:MM:SS+00:00`"
+  },
+  {
+    "reason": "To filter locally by changed-files count the worker fetched JSON fields for each PR; they relied on the skill's list of fields available from the --json output to know that changedFiles is retrievable.",
+    "key_point": "Request PR fields via the --json output and use the 'changedFiles' field from that JSON to determine how many files a PR changed.",
+    "skill_reference": "**PR**:\n\n```\nadditions\nassignees\nauthor\nbaseRefName\nbody\nchangedFiles\nclosed\nclosedAt\ncomments\ncommits\ncreatedAt\ndeletions\nfiles\nheadRefName\nheadRepository\nheadRepositoryOwner\nid\nisCrossRepository\nisDraft\nlabels\nmaintainerCanModify\nmergeCommit\nmergeStateStatus\nmergeable\nmergedAt\nmergedBy\nmilestone\nnumber\npotentialMergeCommit\nprojectCards\nreactionGroups\nreviewDecision\nreviewRequests\nreviews\nstate\nstatusCheckRollup\ntitle\nupdatedAt\nurl\n```"
+  },
+  {
+    "reason": "The worker needed to run the command against the cli/cli repository; the skill documents the -R/--repo flag syntax for selecting a specific repository in gh commands.",
+    "key_point": "Use -R or --repo with the [HOST/]OWNER/REPO format to select a repository when running gh commands.",
+    "skill_reference": "  -R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format"
+  }
+]

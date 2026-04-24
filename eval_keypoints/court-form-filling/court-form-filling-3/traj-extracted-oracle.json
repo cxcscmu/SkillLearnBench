@@ -1,0 +1,68 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch the pdf skill",
+    "why_essential": "Needed to access PDF processing tools and scripts to read and fill the SC-100 form",
+    "evidence": "\"Launching skill: pdf\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Read the pdf skill documentation (forms.md)",
+    "why_essential": "Contains required procedures and instructions for checking and filling PDF form fields correctly",
+    "evidence": "\"Let me read the forms.md file\" and tool read returned the forms.md content"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Open the blank SC-100 PDF to inspect pages",
+    "why_essential": "Confirm the PDF structure and that it contains the expected pages before extracting fields",
+    "evidence": "\"PDF pages extracted: 2 page(s) from /root/sc100-blank.pdf\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Check that the PDF has fillable form fields",
+    "why_essential": "Determines whether form fields can be programmatically extracted and filled",
+    "evidence": "\"This PDF has fillable form fields\" (output from check_fillable_fields.py)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Extract the form field metadata to /root/field_info.json",
+    "why_essential": "Provides the field IDs and locations needed to populate the correct form fields",
+    "evidence": "\"Wrote 103 fields to /root/field_info.json\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Render the PDF pages as images in /root/pdf_images",
+    "why_essential": "Allows visual inspection of the fields and mapping of field IDs to visible form locations",
+    "evidence": "\"Saved page 1 as /root/pdf_images/page_1.png\" and saved page 2"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Create field_values.json with the plaintiff/defendant and case data",
+    "why_essential": "Specifies the exact values to populate into the identified PDF form fields",
+    "evidence": "\"File created successfully at: /root/field_values.json\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Fill the PDF using fill_fillable_fields.py to produce /root/sc100-filled.pdf",
+    "why_essential": "Applies the prepared field values to the blank SC-100 form to produce the filled PDF",
+    "evidence": "\"python3 scripts/fill_fillable_fields.py /root/sc100-blank.pdf /root/field_values.json /root/sc100-filled.pdf\" executed and no errors"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Verify /root/sc100-filled.pdf was created and inspect the filled pages",
+    "why_essential": "Confirms the filled PDF exists and allows checking that fields were populated correctly",
+    "evidence": "\"ls -la /root/sc100-filled.pdf\" shows file and \"PDF pages extracted: 2 page(s) from /root/sc100-filled.pdf\""
+  },
+  {
+    "step_index": 10,
+    "core_step": "Update field_values.json to correct content for Section 3c, Section 5, and any other incorrect fields",
+    "why_essential": "Fixes content errors so the filled form accurately reflects the case description and required selections",
+    "evidence": "\"Now I need to make three fixes... Change FillField1 (section 3c)... switch from option b → option a...\""
+  },
+  {
+    "step_index": 11,
+    "core_step": "Refill the PDF with the updated field values and verify the final filled PDF",
+    "why_essential": "Applies corrections and ensures the final /root/sc100-filled.pdf accurately and completely represents the case",
+    "evidence": "\"python3 scripts/fill_fillable_fields.py ... /root/sc100-filled.pdf\" ran again and \"All pages now look correct. The filled form at /root/sc100-filled.pdf is complete\""
+  }
+]

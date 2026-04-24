@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Open the workbook and list sheets using the xlsx skill",
+    "why_essential": "To access the file contents and confirm the workbook contains the expected sheets ('Task' and 'Data') before making edits",
+    "evidence": "\"Sheets: ['Task', 'Data']\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Inspect 'Task' sheet layout (headers, year columns, and yellow target ranges)",
+    "why_essential": "To identify where to place lookup formulas (H12:M17, H19:M24), year headers (H9:M9), and where Trade Balance Coefficient and summary cells live so formulas reference correct cells",
+    "evidence": "\"=== Task Sheet - rows 9-15 ... H9: 2018 I9: 2019 J9: 2020 K9: 2021 L9: 2022 M9: 2023\" and \"H12:M17 = yellow range ... H19:M24 = yellow range\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Inspect 'Data' sheet contents to locate source rows 21–33 and series/year data",
+    "why_essential": "To determine the precise source ranges and structure required by the two-condition lookups (series code and year)",
+    "evidence": "\"The data you need for this problem are located in sheet 'Data', rows 21 to 33.\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Enter INDEX/MATCH (two-condition) formulas into H12:M17 to pull Exports data from 'Data'",
+    "why_essential": "Fills the Exports yellow range with the correct values using series code (column D) and year (row 10) as lookup keys — a required input for Trade Balance Coefficient calculations",
+    "evidence": "\"Fill H12:M17 (Exports) with INDEX/MATCH\" and \"Formulas written successfully.\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Enter INDEX/MATCH (two-condition) formulas into H19:M24 to pull Imports data from 'Data'",
+    "why_essential": "Fills the Imports yellow range with the correct values using the same two-condition lookup approach — necessary paired data for each country/year",
+    "evidence": "\"H19:M24 = yellow range\" and earlier instruction to use lookup functions for both yellow cell ranges"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Calculate Trade Balance Coefficient for each GCC country in H28:M33 using the formula (Exports - Imports)/(Exports + Imports) and multiply by 100 to show percent",
+    "why_essential": "Produces the core metric (percent Trade Balance Coefficient) for each country/year required by the task",
+    "evidence": "\"Calculate Trade Balance Coefficients for all six GCC countries in yellow cells H28:M33\" and formula definition provided"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Compute summary statistics (min, max, median, mean, 25th and 75th percentiles) across the Trade Balance Coefficients",
+    "why_essential": "Generates the required summary indicators that the task requests to be reported after per-country coefficients are computed",
+    "evidence": "\"Then calculate the min, max, median, simple mean, 25th percentile, and 75th percentiles.\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Calculate the GCC weighted mean using SUMPRODUCT (weights = exports+imports) and multiply by 100 for percent display",
+    "why_essential": "Produces the required weighted mean of Trade Balance Coefficient for the GCC using trade-volume weights as specified (SUMPRODUCT)",
+    "evidence": "\"Please calculate the Trade Balance Coefficients as percent of total trade volume (exports + imports) weighted mean for the GCC by using the SUMPRODUCT formula.\""
+  },
+  {
+    "step_index": 9,
+    "core_step": "Recalculate workbook and validate there are zero formula errors",
+    "why_essential": "Ensures all formulas evaluate correctly and the workbook conforms to the requirement of zero formula errors before finishing",
+    "evidence": "\"{ \\n \\\"status\\\": \\\"success\\\",\\n \\\"total_errors\\\": 0,\\n ... }\" and \"Zero errors.\""
+  },
+  {
+    "step_index": 10,
+    "core_step": "Verify calculated cell values by reading the workbook with data_only=True",
+    "why_essential": "Confirms the numerical results (e.g., per-country coefficients and weighted mean) match expected values and that percent formatting (multiplying by 100) produced intended displayed numbers",
+    "evidence": "\"=== Exports H12:M17 === [408.496539809394, ...]\" and \"UAE 2018 TBC: 11.8 (expected 11.8) ... Weighted mean 2018: 15.2 (expected 15.2)\""
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker began by deciding to make a plan and to create project-level planning files before organizing 100+ documents; the Quick Start list (create task_plan.md, findings.md, progress.md) directly prescribes these exact files and is the instruction the worker invoked when they wrote they would “create a plan, and organize them.”",
+    "key_point": "Before starting a complex file-organization task, create the three planning files task_plan.md, findings.md, and progress.md in your project and use the provided templates as references.",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference\n2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference\n3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "The worker was careful about where to place any planning files (they referenced the skill base dir but did not write files into it); the skill explicitly requires these planning files be created in the project working directory rather than the skill installation folder.",
+    "key_point": "Put all planning files (task_plan.md, findings.md, progress.md) in your current project directory (project root), not inside the skill's installation directory.",
+    "skill_reference": "> **Note:** All three planning files should be created in your current working directory (your project root), not in the skill's installation folder."
+  },
+  {
+    "reason": "The worker performed many read operations (pdftotext and multiple file reads) and therefore needed the rule that after limited viewing actions you must save findings; their behavior of extracting first lines and aggregating summaries follows this rule.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files (the 2-Action Rule) to avoid losing information from transient views.",
+    "skill_reference": "> \"After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.\""
+  },
+  {
+    "reason": "The worker extracted text from many PDFs (pdftotext) and treated those extracted snippets as the classification evidence; the decision matrix explicitly says that when viewing a PDF/image you must write findings now — the worker’s extraction step implements that.",
+    "key_point": "When you view an image or PDF, write findings immediately (multimodal views are volatile so save text right away).",
+    "skill_reference": "| Viewed image/PDF | Write findings NOW | Multimodal → text before lost |"
+  },
+  {
+    "reason": "The worker used a dedicated file to collect discoveries from reading PDFs (they planned to extract titles/abstracts and classify); the skill defines findings.md as the place for research/discoveries and to update it after any discovery, which guided how extracted text should be recorded.",
+    "key_point": "Use findings.md to record research and discoveries and update it after any discovery arising from reading files.",
+    "skill_reference": "| `findings.md` | Research, discoveries | After ANY discovery |"
+  },
+  {
+    "reason": "The worker planned and re-checked decisions before moving files (e.g., extracting first lines then classifying); the skill’s Quick Start instructs re-reading the plan before decisions to keep goals in view, which the worker followed when they reoriented before classification.",
+    "key_point": "Re-read the task plan before making major decisions so goals and phase status stay in the attention window.",
+    "skill_reference": "4. **Re-read plan before decisions** — Refreshes goals in attention window"
+  }
+]

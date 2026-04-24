@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The agent began by intending to make a plan before acting and explicitly proceeded to 'create a plan and organize' — creating task_plan.md first is the non-negotiable prerequisite the skill enforces and that the worker relied on when planning the multi-step organization.",
+    "key_point": "Always create task_plan.md in your project first (use the provided template as a reference) before starting a complex multi-step task.",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference"
+  },
+  {
+    "reason": "The worker saved discoveries and noted they would extract and record details from many PDFs; the skill required a findings file to capture any discovery — the agent relied on this when deciding to extract titles/abstracts and record classification evidence.",
+    "key_point": "Create a findings.md file in the project to record research discoveries and any extracted information from files.",
+    "skill_reference": "2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference"
+  },
+  {
+    "reason": "The agent performed many steps and logged progress (listing files, extracting text, moving files); the skill instructs keeping an ongoing session log — the worker implicitly relied on this to track phases and actions.",
+    "key_point": "Create a progress.md file in the project to log session activity, test results, and stepwise progress.",
+    "skill_reference": "3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "The worker looked for templates to structure the planning files and the skill specifies where to find those templates; this told the agent where to look for template examples.",
+    "key_point": "Use the skill's templates directory (the plugin root) to find example task_plan/findings/progress files: ${CLAUDE_PLUGIN_ROOT}/templates/.",
+    "skill_reference": "- **Templates** are stored in the skill directory at `${CLAUDE_PLUGIN_ROOT}/templates/`"
+  },
+  {
+    "reason": "The agent explicitly decided to create planning files in the project rather than in the skill installation; the skill's location rule guided where those files must be created so they persist with the project.",
+    "key_point": "Put your planning files (task_plan.md, findings.md, progress.md) in your project directory (your working folder), not in the skill installation folder.",
+    "skill_reference": "Your planning files (`task_plan.md`, `findings.md`, `progress.md`) should be created in **your project directory** — the folder where you're working"
+  },
+  {
+    "reason": "While classifying many PDFs the worker repeatedly extracted text and noted when pdftotext failed for pptx/docx; the skill's 2-Action Rule is the explicit rule used to decide when to immediately save findings after viewing/searching multiple items.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files to avoid losing discovered information.",
+    "skill_reference": "\"After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.\""
+  },
+  {
+    "reason": "The agent processed many PDFs and PPTX/DOCX and explicitly planned to extract text; the decision matrix entry guided the immediate action to write findings whenever viewing images or PDFs so multimodal info isn't lost.",
+    "key_point": "When you view an image or PDF, write findings immediately (\"Write findings NOW\") because multimodal content should be converted to text before it is lost.",
+    "skill_reference": "| Viewed image/PDF | Write findings NOW | Multimodal → text before lost |"
+  },
+  {
+    "reason": "The worker consciously chose to 're-read plan before decisions' in their planning steps (mentioned planning and re-checking before classifying ambiguous files); the skill's instruction to re-read the plan before major choices was used to keep goals in view.",
+    "key_point": "Re-read the task plan before making major decisions so goals and constraints remain in your attention window.",
+    "skill_reference": "Before major decisions, read the plan file. This keeps goals in your attention window"
+  },
+  {
+    "reason": "The agent performed multi-phase work (identify, classify, move) and needed to mark phases and note outcomes; the skill required updating phase status and recording files created/modified after each phase, which the worker implicitly followed when moving files and summarizing counts.",
+    "key_point": "After completing any phase, mark its status (e.g., in_progress → complete), log any errors encountered, and note files created or modified.",
+    "skill_reference": "After completing any phase:\n- Mark phase status: `in_progress` → `complete`\n- Log any errors encountered\n- Note files created/modified"
+  },
+  {
+    "reason": "The core principle that anything important must be written to disk underpinned the worker's repeated extraction of PDF text and creation of planning/logging files so results would persist across steps.",
+    "key_point": "Adopt the core pattern: treat the filesystem as persistent memory—anything important gets written to disk rather than only kept in RAM/context.",
+    "skill_reference": "→ Anything important gets written to disk."
+  }
+]

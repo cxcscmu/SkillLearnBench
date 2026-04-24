@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker assigned the corporate dark color to the outer casing and base enclosure; knowing the exact HEX value was necessary to apply the correct fill color for those components in the poster.",
+    "key_point": "Anthropic's corporate dark color hex value to use for primary text and dark backgrounds (applied to outer casing/base).",
+    "skill_reference": "- Dark: `#141413` - Primary text and dark backgrounds"
+  },
+  {
+    "reason": "The worker set the poster background to the identity light color; the exact HEX was required to render the overall poster background correctly.",
+    "key_point": "Anthropic's identity light/background color hex value to use for light backgrounds.",
+    "skill_reference": "- Light: `#faf9f5` - Light backgrounds and text on dark"
+  },
+  {
+    "reason": "Annotation leader lines and secondary UI elements were drawn in the muted mid-gray; the worker needed the exact hex code to match brand tokens for annotation lines.",
+    "key_point": "The muted mid-gray color hex value used for secondary elements and annotation lines.",
+    "skill_reference": "- Mid Gray: `#b0aea5` - Secondary elements"
+  },
+  {
+    "reason": "The worker used a neutral light gray for the battery module; the specific hex was needed to render the battery in a subtle, low-saturation tone.",
+    "key_point": "The light gray hex value intended for subtle backgrounds and neutral components (e.g., battery).",
+    "skill_reference": "- Light Gray: `#e8e6dc` - Subtle backgrounds"
+  },
+  {
+    "reason": "Interface details and connector highlights were painted with the primary accent; the worker required the primary accent hex to color those interaction elements.",
+    "key_point": "The primary accent (orange) hex value to use for primary interaction details and connector highlights.",
+    "skill_reference": "- Orange: `#d97757` - Primary accent"
+  },
+  {
+    "reason": "The worker applied the secondary accent to the thermal management unit; the exact hex value was needed to color that layer consistently with the brand.",
+    "key_point": "The secondary accent (blue) hex value to use for the thermal management unit and related accents.",
+    "skill_reference": "- Blue: `#6a9bcc` - Secondary accent"
+  },
+  {
+    "reason": "The worker colored the PCB substrate with the tertiary accent; the specific green hex allowed accurate application to the PCB layer.",
+    "key_point": "The tertiary accent (green) hex value to use for the PCB substrate.",
+    "skill_reference": "- Green: `#788c5d` - Tertiary accent"
+  },
+  {
+    "reason": "The task required the product title 'NOVA' heading and the worker selected the heading font accordingly; the rule that headings use Poppins determined the heading font to include in design_parameters.json.",
+    "key_point": "Headings should use the Poppins font (with Arial fallback) for title typography.",
+    "skill_reference": "- **Headings**: Poppins (with Arial fallback)"
+  },
+  {
+    "reason": "The worker set Poppins for large headings and selected a large point size for the 'NOVA' heading; the explicit rule mapping Poppins to headings 24pt+ guided that decision.",
+    "key_point": "Apply Poppins to headings sized 24pt and larger (the smart font application rule for headings).",
+    "skill_reference": "- Applies Poppins font to headings (24pt and larger)"
+  },
+  {
+    "reason": "The worker relied on available system fonts and fallbacks when rendering text; knowing that Poppins/Lora are used when installed and that the system will fall back to Arial/Georgia ensured robust text rendering in the generated poster.",
+    "key_point": "Font management: use system-installed Poppins and Lora when available and fall back to Arial (headings) and Georgia (body) if not.",
+    "skill_reference": "- Uses system-installed Poppins and Lora fonts when available\n- Provides automatic fallback to Arial (headings) and Georgia (body)"
+  },
+  {
+    "reason": "The worker assigned accent colors to non-text shapes (PCB, thermal unit, connectors); the rule that non-text shapes use accent colors (and that accents cycle orange/blue/green) directly informed how components were colored.",
+    "key_point": "Non-text shapes should use accent colors, and accent usage cycles through orange, blue, and green to maintain brand color order.",
+    "skill_reference": "- Non-text shapes use accent colors\n- Cycles through orange, blue, and green accents"
+  }
+]

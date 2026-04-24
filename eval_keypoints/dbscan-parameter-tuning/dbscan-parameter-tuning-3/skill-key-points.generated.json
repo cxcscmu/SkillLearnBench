@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker parallelized the entire grid search to evaluate 847 parameter combinations quickly; this required the joblib Parallel + delayed pattern to dispatch tasks across cores. The worker specifically reports running the grid search in ~25s using parallel workers, so this exact usage was essential.",
+    "key_point": "Use joblib.Parallel with delayed to run a generator of tasks across cores (pattern: Parallel(...)(delayed(func)(args) for args in ...)).",
+    "skill_reference": "from joblib import Parallel, delayed\n\ndef process_item(x):\n    \"\"\"Process a single item.\"\"\"\n    return x ** 2\n\n# Sequential\nresults = [process_item(x) for x in range(100)]\n\n# Parallel (uses all available cores)\nresults = Parallel(n_jobs=-1)(\n    delayed(process_item)(x) for x in range(100)\n)"
+  },
+  {
+    "reason": "The worker chose to use all CPU cores to speed up the heavy computation; knowing the meaning of n_jobs and that -1 uses all cores was necessary to set n_jobs=-1 in Parallel calls.",
+    "key_point": "Set n_jobs=-1 to use all available CPU cores when calling Parallel.",
+    "skill_reference": "- **n_jobs**: `-1` for all cores, `1` for sequential, or specific number"
+  },
+  {
+    "reason": "To avoid recomputing expensive per-image distance matrices for every (min_samples, epsilon) at the same shape_weight, the worker precomputed shared data per shape_weight and reused it across parameter combinations; the skill's pattern for precomputing shared data and passing it into workers is the template used.",
+    "key_point": "Pre-compute shared data once (e.g., distance matrices) and pass that shared object into each Parallel task to avoid redundant work.",
+    "skill_reference": "# Pre-compute once\nshared_data = load_data()\n\ndef process_with_shared(params, data):\n    return compute(params, data)\n\n# Pass shared data to each task\nresults = Parallel(n_jobs=-1)(\n    delayed(process_with_shared)(p, shared_data)\n    for p in param_list\n)"
+  },
+  {
+    "reason": "The worker implemented the grid search by enumerating parameter combinations (product) and evaluating each in parallel; the skill's grid-search example shows exactly this pattern and was followed to structure the evaluation loop.",
+    "key_point": "Create the parameter grid with itertools.product and feed the (a,b) pairs into Parallel(delayed(...)) to run a parallel grid search.",
+    "skill_reference": "params = list(product([0.1, 0.5, 1.0], [10, 20, 30]))\n\n# Parallel grid search\nresults = Parallel(n_jobs=-1, verbose=10)(\n    delayed(evaluate_params)(a, b) for a, b in params\n)"
+  },
+  {
+    "reason": "To identify Pareto-optimal trade-offs between maximizing F1 and minimizing delta, the worker used the paretoset library; the exact call with a sense vector (max/min) is the concrete method to compute the Pareto mask.",
+    "key_point": "Compute a boolean Pareto mask with paretoset(objectives, sense=[...]) where sense indicates which objectives to maximize or minimize.",
+    "skill_reference": "# Compute Pareto mask\n# sense: \"max\" for objectives to maximize, \"min\" for objectives to minimize\npareto_mask = paretoset(objectives, sense=[\"max\", \"min\"])"
+  },
+  {
+    "reason": "After computing the Pareto mask, the worker needed to extract the corresponding rows from the results dataframe to get the actual Pareto-optimal parameter entries; the skill shows selecting rows with the boolean mask.",
+    "key_point": "Select Pareto-optimal rows from the results dataframe using the boolean mask: pareto_points = df[pareto_mask].",
+    "skill_reference": "pareto_points = df[pareto_mask]"
+  },
+  {
+    "reason": "The task required filtering out low-performing parameter combinations (F1 <= 0.5) before computing the Pareto frontier; the skill demonstrated filtering a results dataframe by a threshold before pareto computation, providing the exact pattern the worker followed.",
+    "key_point": "Filter experimental results by a minimum-performance threshold before Pareto computation (e.g., results = results[results['accuracy'] >= 0.85]).",
+    "skill_reference": "results = results[results['accuracy'] >= 0.85]"
+  },
+  {
+    "reason": "Finally, the worker wrote the Pareto-optimal set to CSV in the specified output path; the skill shows the to_csv usage pattern used to persist the frontier results.",
+    "key_point": "Save the Pareto-optimal dataframe to disk using DataFrame.to_csv(..., index=False).",
+    "skill_reference": "pareto_frontier.to_csv('pareto_models.csv', index=False)"
+  }
+]

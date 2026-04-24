@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List the papers directory to discover files to organize",
+    "why_essential": "You must know which files exist (and count) before creating folders or classifying them",
+    "evidence": "ls /root/papers/all/ returned 103 files"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Create the five target subject folders",
+    "why_essential": "Folders are required destinations for sorting files so each file can be moved into its correct subject",
+    "evidence": "mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Prepare a brief on-disk plan and findings files for tracking the classification task",
+    "why_essential": "A concise plan and findings file record the intended classification and serve as working memory for batch classification",
+    "evidence": "File created successfully at: /root/task_plan.md and /root/findings.md"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Read/inspect each document (PDF/PPTX/DOCX) to determine its subject category",
+    "why_essential": "Accurate classification requires reading document content (or extracting text) to assign each file to exactly one subject folder",
+    "evidence": "Read/Extract operations for many files (e.g., \"PDF file read: /root/papers/all/0704.0117v1.pdf\", pptx slides extracted, docx document.xml extracted)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Run parallel classification agents to assign each file to one of the five categories",
+    "why_essential": "Batch/agent classification produced the mapping of each of the 103 files to a specific subject folder, enabling bulk moves",
+    "evidence": "Agent outputs showing JSON assignments for batches, e.g. [{\"file\": \"0704.0117v1.pdf\", \"category\": \"trapped_ion_and_qc\"}, ...]"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Move each file from the source folder into its assigned subject folder",
+    "why_essential": "Physically relocating files into the target folders completes the organization task; must preserve file names/content",
+    "evidence": "mv commands moving lists of files into trapped_ion_and_qc, black_hole, DNA, music_history, LLM; shell reported e.g. 'trapped_ion_and_qc done'"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Handle binary PPTX/DOCX by extracting text (or metadata) to classify them",
+    "why_essential": "Non-PDF binary files must be inspected via appropriate extraction to determine their subject and ensure they are not left unclassified",
+    "evidence": "python unzip/read of DAMOP.pptx and paper_file_1.docx/paper_file_2.docx to extract document.xml / slide XML content"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Verify that the source directory is empty and count files in each subject folder",
+    "why_essential": "A final verification ensures all files were moved and that every file belongs to exactly one subject folder (no leftovers)",
+    "evidence": "Verification output: '=== Remaining in /all === 0' and folder counts: LLM 20, trapped_ion_and_qc 23, black_hole 20, DNA 20, music_history 20"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Report completion and summary of file distribution",
+    "why_essential": "A final status message confirms successful task completion and provides a concise summary for the user",
+    "evidence": "All 103 files have been successfully organized... 'All 103 files have been successfully organized. The `/all` folder is now empty and files are distributed as...'"
+  }
+]

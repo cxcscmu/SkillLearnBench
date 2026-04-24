@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker needed to run a fuzzy fund name search (with keywords and quarter) to locate the fund's accession_number (used to find Geode's accession). This exact command pattern is what the worker invoked when searching COVERPAGE for fund names.",
+    "key_point": "Use the search_fund.py script with --keywords and --quarter (and optional --topk) to perform a fuzzy search for funds and get candidate accession numbers.",
+    "skill_reference": "python3 scripts/search_fund.py --keywords \"bridgewater\" --quarter 2025-q2 --topk 10"
+  },
+  {
+    "reason": "The worker relied on the ability to directly lookup a known accession_number to get an exact match (used to confirm accession IDs found by fuzzy search).",
+    "key_point": "If you already have an accession number, run search_fund.py with --accession_number to perform an exact identification.",
+    "skill_reference": "python3 scripts/search_fund.py \\\n    --accession_number 0001172661-25-003151 \\\n    --quarter 2025-q2"
+  },
+  {
+    "reason": "The worker interpreted the fuzzy-search output to extract the accession_number; the sample output format shows where ACCESSION_NUMBER appears and how to read it.",
+    "key_point": "The fuzzy-search prints ranked results including an ACCESSION_NUMBER field in its output, which you must read to obtain the accession id for a fund.",
+    "skill_reference": "** Rank 1 (score = 81.818) **\n  ACCESSION_NUMBER: 0001172661-25-003151\n  REPORTCALENDARORQUARTER: 30-JUN-2025\n  FILINGMANAGER_NAME: Bridgewater Associates, LP"
+  },
+  {
+    "reason": "To find Visa's CUSIP the worker used the stock fuzzy-search capability; the documented command shows how to query stock names to obtain CUSIPs.",
+    "key_point": "Use scripts/search_stock_cusip.py with --keywords and --topk to fuzzy-search stock names and obtain their CUSIPs.",
+    "skill_reference": "python3 scripts/search_stock_cusip.py \\\n    --keywords palantir \\\n    --topk 10"
+  },
+  {
+    "reason": "The worker used the one_fund_analysis script to retrieve a fund's summary including AUM (directly needed for Q1 answer). The usage shows required flags (accession_number + quarter).",
+    "key_point": "Run python3 scripts/one_fund_analysis.py with --accession_number and --quarter to get a fund's one-quarter holding summary (including AUM).",
+    "skill_reference": "python3 scripts/one_fund_analysis.py \\\n    --accession_number ... \\\n    --quarter 2025-q2 \\"
+  },
+  {
+    "reason": "To compute changes in holdings between Q2 and Q3 for Morgan Stanley, the worker used the one_fund_analysis script's baseline flags; the usage documents exactly which arguments to supply to compare two quarters.",
+    "key_point": "Use one_fund_analysis.py with --quarter (new), --accession_number (new), --baseline_quarter and --baseline_accession_number to analyze changes in holdings between two quarters.",
+    "skill_reference": "python scripts/one_fund_analysis.py \\\n    --quarter 2025-q3 \\\n    --accession_number <accession number assigned in q3> \\\n    --baseline_quarter 2025-q2 \\\n    --baseline_accession_number <accession number assigned in q2>"
+  },
+  {
+    "reason": "To list which funds hold Visa and rank them by notional value (for Q3 top managers), the worker used the holding_analysis tool; the usage shows how to query by CUSIP and quarter and get top-k holders.",
+    "key_point": "Run python scripts/holding_analysis.py with --cusip, --quarter, and --topk to get the top funds holding a given stock ranked by notional value.",
+    "skill_reference": "python scripts/holding_analysis.py \\\n    --cusip <stock cusip> \\\n    --quarter 2025-q3 \\\n    --topk 10"
+  },
+  {
+    "reason": "The worker relied on knowledge that one_fund_analysis prints AUM and other summary stats (so running that script yields the AUM value required for Q1).",
+    "key_point": "The one_fund_analysis script prints basic information for a fund in a quarter — including total holdings, AUM, and number of stock holdings — so it can be used to extract AUM.",
+    "skill_reference": "This script will print out several basic information of a given fund on 2025-q2, including total number of holdings, AUM, total number of stock holdings, etc."
+  },
+  {
+    "reason": "The worker relied on the change-analysis description to know the script reports newly purchased/sold stocks and can therefore produce the ranked dollar-value changes used to answer Q2.",
+    "key_point": "The one_fund_analysis change-mode (with baseline flags) prints dynamic changes between quarters, including newly purchased and newly sold stocks ranked by notional value.",
+    "skill_reference": "This script will print out the dynamic changes of holdings from 2025-q2 to 2025-q3. Such as newly purchased stocks ranked by notional value, and newly sold stocks ranked by notional value."
+  },
+  {
+    "reason": "To determine the top funds holding a stock by value (used for Q3 top-3 Visa holders), the worker needed the exact behavior of holding_analysis which states it returns top funds by notional value.",
+    "key_point": "The holding_analysis script returns the top N hedge funds holding a specified CUSIP ranked by highest notional value.",
+    "skill_reference": "This script will print out the top 10 hedge funds who hold a particular stock with highest notional value."
+  }
+]

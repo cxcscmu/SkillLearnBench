@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Fuzzy-search COVERPAGE for Soros in Q3 2025 to obtain accession number",
+    "why_essential": "The accession number is required to look up the fund's detailed 13F filing and extract AUM",
+    "evidence": "grep -i \"soros\" /root/2025-q3/COVERPAGE.tsv ... SOROS GEORGE ... SOROS FUND MANAGEMENT LLC"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Run one_fund_analysis.py for Soros accession 0000902664-25-005044 for quarter 2025-q3",
+    "why_essential": "This tool/script produces the fund summary including Total AUM needed to answer Q1",
+    "evidence": "python3 scripts/one_fund_analysis.py --accession_number 0000902664-25-005044 --quarter 2025-q3 ... Total AUM: 7020738956.00"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Fuzzy-search COVERPAGE for Pershing Square in Q3 2025 and Q2 2025 to obtain both accession numbers",
+    "why_essential": "Accession numbers for Pershing Square in each quarter are required to load and compare holdings between Q2 and Q3",
+    "evidence": "search_fund.py --keywords \"pershing square capital management\" --quarter 2025-q3 ... ACCESSION_NUMBER: 0001172661-25-005039; ... --quarter 2025-q2 ... ACCESSION_NUMBER: 0001172661-25-003509"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run one_fund_analysis/holding comparison for Pershing Square using Q2 and Q3 accession numbers to compute changes in holdings",
+    "why_essential": "Comparing the holdings between the two accessioned filings yields the dollar value changes per stock necessary to rank top increases for Q2→Q3",
+    "evidence": "python3 scripts/one_fund_analysis.py --quarter 2025-q3 --accession_number 0001172661-25-005039 --baseline_quarter 2025-q2 ... (invoked to compare holdings)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Search for NVIDIA CUSIP using stock name lookup",
+    "why_essential": "The NVIDIA CUSIP is needed to identify its holdings and find which funds hold NVIDIA in Q3",
+    "evidence": "python3 scripts/search_stock_cusip.py --keywords \"nvidia\" ... Name: nvidia corporation CUSIP: 67066G104"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run holding_analysis.py for CUSIP 67066G104 in quarter 2025-q3 to get top-5 fund accession numbers by holding value",
+    "why_essential": "This produces the list of top funds (by holding value) that held NVIDIA in Q3, which is required to answer Q3",
+    "evidence": "python3 scripts/holding_analysis.py --cusip 67066G104 --quarter 2025-q3 ... Top-5 fund managers holding CUSIP 67066G104 in quarter 2025-q3: Rank 1: accession number = 0000102909-25-000353, ..."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Resolve top fund accession numbers to fund manager names by looking them up in /root/2025-q3/COVERPAGE.tsv",
+    "why_essential": "Converting accession numbers to human-readable fund manager names is necessary to produce the final list of fund managers for Q3",
+    "evidence": "for acc in \"0000102909-25-000353\" ...; do grep \"^$acc\" /root/2025-q3/COVERPAGE.tsv ... 0000102909-25-000353\tVANGUARD GROUP INC"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write the final answers JSON file to /root/answers.json with q1_answer, q2_answer, and q3_answer",
+    "why_essential": "Persisting the computed answers in the requested answers.json file completes the task deliverable",
+    "evidence": "File created successfully at: /root/answers.json with { \"q1_answer\": 7020738956, \"q2_answer\": [\"44267T102\", \"90353T100\", \"812215200\"], \"q3_answer\": [\"VANGUARD GROUP INC\", ... ] }"
+  }
+]

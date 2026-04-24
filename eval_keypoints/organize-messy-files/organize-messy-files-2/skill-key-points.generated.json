@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker decided to 'create a plan and start categorizing' before heavy work; the explicit instruction to create a task_plan.md is the skill's required first planning step the agent relied on to organize the multi-step sorting task.",
+    "key_point": "Create a task_plan.md file in your project directory as the mandatory first planning artifact for any complex task.",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference"
+  },
+  {
+    "reason": "The agent extracted titles/abstracts and needed a place to record discoveries; the skill prescribes a findings.md for logging discoveries after examining files, which the worker implicitly relied on when extracting PDF contents.",
+    "key_point": "Create a findings.md file in your project directory to record research discoveries and extracted file contents.",
+    "skill_reference": "2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference"
+  },
+  {
+    "reason": "The worker performed many commands and progressed through phases (list → extract → categorize → move); the skill requires a progress.md to log session activity and test results, which supports tracking those steps.",
+    "key_point": "Create a progress.md file in your project directory to log session activity, test results, and stepwise progress.",
+    "skill_reference": "3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "The worker executed filesystem operations in the working folder (/root/papers/all) and moved files there; the skill enforces where planning files must be created so the worker's plan/findings/progress live next to the data being organized.",
+    "key_point": "Place the planning files (task_plan.md, findings.md, progress.md) in your project directory — the folder where you're working.",
+    "skill_reference": "- **Your planning files** (`task_plan.md`, `findings.md`, `progress.md`) should be created in **your project directory** — the folder where you're working"
+  },
+  {
+    "reason": "The worker repeatedly viewed many PDFs and extracted text; the core pattern that anything important should be persisted to disk justifies writing extracted titles/abstracts and the final categorization to files/folders.",
+    "key_point": "Treat the filesystem as persistent memory: anything important discovered in RAM should be written to disk.",
+    "skill_reference": "→ Anything important gets written to disk."
+  },
+  {
+    "reason": "The agent performed many view/extract operations on PDFs and then saved results; the 2-Action Rule directly prescribes when to save intermediate findings to avoid losing multimodal info during a multi-step extraction workflow.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files (the '2-Action Rule').",
+    "skill_reference": "> \"After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.\""
+  },
+  {
+    "reason": "The worker specifically extracted first-page text from many PDFs (multimodal content) to identify titles/subjects; the decision matrix item instructing to write findings right after viewing PDFs justifies extracting-and-saving that text.",
+    "key_point": "If you viewed an image or PDF, write findings now — multimodal content must be converted to text before it is lost.",
+    "skill_reference": "| Viewed image/PDF | Write findings NOW | Multimodal → text before lost |"
+  },
+  {
+    "reason": "Before starting categorization the worker stated they would create a plan and re-orient; the skill's strict rule to never start a complex task without the plan underpinned that decision.",
+    "key_point": "Never start a complex task without creating task_plan.md first — this is a non-negotiable prerequisite.",
+    "skill_reference": "Never start a complex task without `task_plan.md`. Non-negotiable."
+  },
+  {
+    "reason": "The worker went through phases (identify → categorize → move); the skill instructs marking phase status transitions which is necessary for correct bookkeeping and knowing which phase is complete before moving on.",
+    "key_point": "After completing any phase, mark the phase status (e.g., `in_progress` → `complete`) to record progress and signal phase completion.",
+    "skill_reference": "- Mark phase status: `in_progress` → `complete`"
+  },
+  {
+    "reason": "The worker encountered several command errors in the logs and retried commands; the skill's rule to log all errors into the plan file is essential to record failures and resolutions during the multi-step organization.",
+    "key_point": "Log every error encountered into the plan file so failures and attempted resolutions are recorded.",
+    "skill_reference": "Every error goes in the plan file."
+  }
+]

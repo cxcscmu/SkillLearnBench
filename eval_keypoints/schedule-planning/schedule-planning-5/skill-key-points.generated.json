@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker needed a concrete example of using pypdf to open a PDF and extract text so they could programmatically read the calendar pages and pull out timezone labels and appointment text; the trajectory shows they called pypdf-style routines to read the PDF and extract page text.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and call page.extract_text() on each page to collect the document text.",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "The worker relied on pdfplumber to preserve layout when extracting text (important to map horizontal lines to time intervals and to locate appointment labels), so an explicit pdfplumber usage example was essential for implementing that extraction.",
+    "key_point": "Open a PDF with pdfplumber and use page.extract_text() (iterating pages) to extract text while preserving layout information.",
+    "skill_reference": "import pdfplumber\n\nwith pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()\n        print(text)"
+  },
+  {
+    "reason": "The worker needed a method to extract structured table-like information if the calendar encoded events as table-like elements; the pdfplumber extract_tables example gave the exact API to call and iterate tables per page.",
+    "key_point": "Use pdfplumber's page.extract_tables() and iterate the returned tables/rows to extract table data from each page.",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for i, page in enumerate(pdf.pages):\n        tables = page.extract_tables()\n        for j, table in enumerate(tables):\n            print(f\"Table {j+1} on page {i+1}:\")\n            for row in table:\n                print(row)"
+  },
+  {
+    "reason": "To preserve text layout/spacing (necessary for mapping y-coordinates / horizontal lines to 15-minute intervals), the worker used the command-line pdftotext with the layout flag; the skill showed the exact pdftotext usage for layout-preserving extraction.",
+    "key_point": "Use the pdftotext command with the -layout option to extract text while preserving original document layout.",
+    "skill_reference": "pdftotext -layout input.pdf output.txt"
+  },
+  {
+    "reason": "When the calendar content might be raster (images) rather than selectable text, the worker needed the OCR workflow example (pdf2image + pytesseract) to convert pages to images and extract text—this exact pattern enabled them to plan for OCR if needed.",
+    "key_point": "If the PDF is scanned, convert pages to images with pdf2image.convert_from_path and then apply pytesseract.image_to_string to OCR each page.",
+    "skill_reference": "# Convert PDF to images\nimages = convert_from_path('scanned.pdf')\n\n# OCR each page\ntext = \"\"\nfor i, image in enumerate(images):\n    text += f\"Page {i+1}:\\n\"\n    text += pytesseract.image_to_string(image)\n    text += \"\\n\\n\""
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Create /root/patches directory to hold patch files",
+    "why_essential": "Patch files must be placed under /root/patches as required by the task before applying them to the repository",
+    "evidence": "\"mkdir -p /root/patches\" and \"File created successfully at: /root/patches/CVE-2021-25646-SamplerResource.patch\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Write the patch file CVE-2021-25646-SamplerResource.patch into /root/patches",
+    "why_essential": "The patch file contains the code changes that fix the empty-key JavaScript bypass and must exist for review/auditing and application",
+    "evidence": "\"File created successfully at: /root/patches/CVE-2021-25646-SamplerResource.patch\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Apply the patch by writing the updated SamplerResource.java into the repository",
+    "why_essential": "Modifying SamplerResource.java is the code change that intercepts and rejects exploit payloads; the repository must contain the patched source for the build",
+    "evidence": "\"The file /root/druid/indexing-service/src/main/java/org/apache/druid/indexing/overlord/sampler/SamplerResource.java has been updated successfully.\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run the Maven build to compile the patched indexing-service module (skip web-console and code quality checks)",
+    "why_essential": "A successful build produces the patched JAR that the verifier will deploy; the specified Maven flags ensure the build avoids OOM and skips checks for patched files",
+    "evidence": "\"mvn clean package ... -pl '!web-console' -pl indexing-service -am\" and \"Command running in background ... Output is being written to: ...\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Verify the patched JAR was created at /root/druid/indexing-service/target/druid-indexing-service-0.20.0.jar",
+    "why_essential": "The verifier will deploy this JAR; confirming its existence ensures the fix was compiled and is ready for deployment",
+    "evidence": "\"/root/druid/indexing-service/target/druid-indexing-service-0.20.0.jar\" listed with file details"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Verify the patched SamplerResource class is present inside the built JAR",
+    "why_essential": "Confirms the specific patched class (SamplerResource) was compiled into the JAR so the security fix is included in the artifact to be deployed",
+    "evidence": "\"jar tf ... | grep SamplerResource\" returned \"org/apache/druid/indexing/overlord/sampler/SamplerResource.class\""
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Needed official brand tokens to apply correct colors and typography.",
+    "key_point": "Invoke the brand-guidelines skill to retrieve Anthropic's official colors and typography.",
+    "trajectory_reference": "thinking: The user wants me to create a technical exploded-view poster... Let me first invoke the brand-guidelines skill to get the official brand colors and typography.\ntool_use[1]: tool=Skill; status=success"
+  },
+  {
+    "reason": "Mapped guideline values to the specific role names required by the task (background, accents, muted gray, heading font).",
+    "key_point": "Map brand guideline values to task roles: Corporate Dark #141413, Identity Light #faf9f5, Primary #d97757, Secondary #6a9bcc, Tertiary #788c5d, Muted Mid Gray #b0aea5, Heading font Poppins.",
+    "trajectory_reference": "thinking: Now I have the brand guidelines. Let me map the requirements to the brand colors:\n- Anthropic Corporate Dark: `#141413`\n- Anthropic Identity Light: `#faf9f5`\n- Primary Brand Accent: `#d97757`\n- Secondary Brand Accent: `#6a9bcc`\n- Tertiary Brand Accent: `#788c5d`\n- Muted Mid Gray: `#b0aea5`\n- Heading Font: Poppins"
+  },
+  {
+    "reason": "Decided on a drawing approach that produces clear layer separation and depth suitable for a technical exploded view.",
+    "key_point": "Choose a 2.5D isometric/top-down tilted rendering approach (2.5D isometric with 30-degree angle) to draw each layer as a flat slab offset vertically.",
+    "trajectory_reference": "I'm settling on a 2.5D isometric approach where each layer is drawn as a flat slab with perspective projection—the device sits at a 30-degree angle..."
+  },
+  {
+    "reason": "Assigned each hardware layer the specific brand color required by the design spec.",
+    "key_point": "Apply colors to components: outer casing in Corporate Dark (#141413), thermal unit in Secondary Accent (#6a9bcc), PCB in Tertiary Accent (#788c5d), interface/connectors in Primary Accent (#d97757), battery in light gray (#e8e6dc); annotation lines in Muted Mid Gray (#b0aea5).",
+    "trajectory_reference": "Now I have the brand tokens. Let me map them to the requirements and generate the poster.\n- Background → `#faf9f5`\n- Corporate Dark → `#141413` (Casing)\n- Primary Brand Accent → `#d97757` (Orange — Interface/connectors)\n- Secondary Brand Accent → `#6a9bcc` (Blue — Thermal Unit)\n- Tertiary Brand Accent → `#788c5d` (Green — PCB)\n- Muted Mid Gray → `#b0aea5` (Annotation lines)"
+  },
+  {
+    "reason": "Implemented the poster via script and persisted outputs to files.",
+    "key_point": "Write and execute a Python/PNG generation script (using PIL) to draw the exploded view and save /root/nova_technical_poster.png and /root/design_parameters.json.",
+    "trajectory_reference": "content: Now I'll write the full poster generation script:\ntool_use[1]: tool=Write; status=success; input_keys=content,file_path\ncontent: The poster looks clean and properly laid out. Now let me generate the `design_parameters.json`:\ntool_use[1]: tool=Write; status=success; input_keys=content,file_path\ncontent: Both files are generated."
+  },
+  {
+    "reason": "Adjusted canvas and diagram placement to meet composition/spacing requirements and avoid clipped labels.",
+    "key_point": "Iteratively adjust canvas height and CY_BASE (base center Y) to reposition the exploded stack and spec block so title, diagram, and spec block are balanced and labels are not clipped.",
+    "trajectory_reference": "thinking: The poster looks good but I notice a few things to improve: ... I should just adjust CY_BASE upward to move the entire assembly down and balance the spacing better within the canvas.\n... I'll update the code with these values."
+  },
+  {
+    "reason": "Ensured annotations use the specified thin, muted gray leader lines.",
+    "key_point": "Render annotation leader lines as thin dashed lines using Muted Mid Gray (#b0aea5) and numbered badges linking labels to layers.",
+    "trajectory_reference": "Writing helper functions... Writing the dashed line function...\ncontent: The component colors are correctly applied: ...\n- Annotation lines in gray ✓\n... Leader lines with numbered badges link each layer to its label + sub-description"
+  },
+  {
+    "reason": "Confirmed heading placement and font adherence to brand typography rules.",
+    "key_point": "Place the product title 'NOVA' in the top-left heading block using the Poppins heading font (applied_heading_font: Poppins).",
+    "trajectory_reference": "\"Place the product title 'NOVA' in the top-left as a clear heading block.\" and\ncontent: \"'NOVA' heading in Poppins Bold (88 pt) top-left\""
+  },
+  {
+    "reason": "Maintain minimal, low-saturation visual style and avoid prohibited gradient/neon styling.",
+    "key_point": "Ensure the poster stays minimalist and low-saturation with no neon or high-intensity 'AI gradient' styling; use solid brand colors and subtle neutrals only.",
+    "trajectory_reference": "content: Low-saturation, warm-neutral palette — no gradients, no neon tones\nthinking: The image itself looks clean though—the exploded view is centered nicely... The poster overall looks good and professional... I'll stick with the current layout and move forward with the JSON file."
+  },
+  {
+    "reason": "Record exact color and font values for reproducibility in the required JSON file.",
+    "key_point": "Generate design_parameters.json containing the exact HEX values and applied heading font name using the specified JSON structure.",
+    "trajectory_reference": "content: Now let me generate the `design_parameters.json`:\ntool_use[1]: tool=Write; status=success; input_keys=content,file_path\ncontent: Both files are generated. Here's a summary of everything produced:"
+  }
+]

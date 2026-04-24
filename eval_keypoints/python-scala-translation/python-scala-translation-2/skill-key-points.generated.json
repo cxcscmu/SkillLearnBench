@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "Knowing the source Python file path and the required Scala target path was essential to locate the original logic to port and to place the produced implementation where the test harness expects it; the worker implicitly relied on this to read '/root/Tokenizer.py' and write '/root/Tokenizer.scala'.",
+    "key_point": "Refactor the logic from the provided Python script into Scala and save the result to the specified path.",
+    "skill_reference": "You are provided with a Python script located at '/root/Tokenizer.py', which handles tokenization and data normalization. Your task is to refactor this logic into a high-quality Scala implementation and save it to '/root/Tokenizer.scala'."
+  },
+  {
+    "reason": "The worker needed to consult the test spec first to determine exact API signatures and method names before implementing the Scala version so the produced code would pass tests; this instruction governed the order of actions.",
+    "key_point": "Consult the provided test specification first to learn the expected API signatures and method names.",
+    "skill_reference": "A test spec is available at /root/TokenizerSpec.scala — you must first refer to it to understand the expected API signatures and method names."
+  },
+  {
+    "reason": "The implementation must include the exact set of classes and functions from the Python code so the Scala version exposes the same API surface required by the tests; the worker used this list to ensure all named components were implemented.",
+    "key_point": "Implement all classes and functions present in the Python code (TokenType, Token, BaseTokenizer, StringTokenizer, NumericTokenizer, TemporalTokenizer, UniversalTokenizer, WhitespaceTokenizer, TokenizerBuilder, tokenize, tokenizeBatch, toToken, withMetadata).",
+    "skill_reference": "Your Scala code must have all classes and functions in the python code (i.e. TokenType, Token, BaseTokenizer, StringTokenizer, NumericTokenizer, TemporalTokenizer, UniversalTokenizer, WhitespaceTokenizer, TokenizerBuilder, tokenize, tokenizeBatch, toToken, withMetadata), and compiles with Scala 2.13."
+  },
+  {
+    "reason": "Ensuring the code compiles with the expected Scala version is a strict constraint for the test environment; the worker had to target Scala 2.13 to avoid CI/test failures.",
+    "key_point": "Make sure the Scala code compiles under Scala 2.13.",
+    "skill_reference": "Your Scala code must have all classes and functions in the python code (i.e. TokenType, Token, BaseTokenizer, StringTokenizer, NumericTokenizer, TemporalTokenizer, UniversalTokenizer, WhitespaceTokenizer, TokenizerBuilder, tokenize, tokenizeBatch, toToken, withMetadata), and compiles with Scala 2.13."
+  },
+  {
+    "reason": "The Scala implementation must preserve the original behavior of the Python tokenizer so tests comparing semantics pass; the worker relied on this to match normalization and tokenization logic rather than just producing any similar API.",
+    "key_point": "The Scala implementation must reproduce the same behavior as the original Python implementation.",
+    "skill_reference": "Your Scala code must do the same thing as the python one and follows Scala conventions, and should have a good readability (clear, well-organized) and easy to maintain."
+  },
+  {
+    "reason": "Adhering to Scala conventions affects naming, abstractions, and idioms used; the worker used this guidance to produce idiomatic Scala (not just a mechanical translation), which impacts readability and maintainability required by the tests and review.",
+    "key_point": "Follow Scala conventions and idioms rather than performing a literal line-by-line translation.",
+    "skill_reference": "Your Scala code must do the same thing as the python one and follows Scala conventions, and should have a good readability (clear, well-organized) and easy to maintain."
+  },
+  {
+    "reason": "The instruction to avoid word-for-word translation and prefer Scala programming paradigms guided the worker to design idiomatic types and functions (e.g., case classes, Options/Either) instead of copying Python constructs, which is necessary to meet style and robustness expectations.",
+    "key_point": "Prefer Scala programming paradigms and do not produce a word-for-word translation from Python.",
+    "skill_reference": "Your Scala code should follow the certain programming paradigms that a proficient Scala developer would prefer, and should not be a word-to-word translation."
+  },
+  {
+    "reason": "Using proper abstractions for data, error handling, and program structure is essential to produce a maintainable Scala implementation and to map Python dynamic patterns into statically-typed Scala constructs; the worker applied this when designing types and tokenizers.",
+    "key_point": "Use proper abstractions to represent data, handle errors, and structure the program.",
+    "skill_reference": "You need to use proper abstractions for reprenting data, handling errors, and structuring programs."
+  },
+  {
+    "reason": "Following Scala naming conventions affects method/class names and visibility; the worker relied on this to ensure signatures and names matched what a Scala 2.13 codebase and tests expect.",
+    "key_point": "Follow Scala naming conventions.",
+    "skill_reference": "There are centain naming conventions in Scala, and you need to follow them."
+  },
+  {
+    "reason": "Reusing Scala's standard library avoids reinventing common utilities and results in more idiomatic, concise, and testable code; the worker used standard library types and functions when implementing tokenization and parsing.",
+    "key_point": "Use Scala's standard library wherever possible instead of reimplementing common functionality.",
+    "skill_reference": "You must make sure to use Scala's standard library wherever possible rather than reinventing wheels."
+  },
+  {
+    "reason": "Handling missing values, errors, and exceptions in a natural Scala way (e.g., using Option/Either/try semantics) prevents runtime surprises and aligns with the requirement to produce robust code; the worker applied this when mapping Python's dynamic error handling to Scala.",
+    "key_point": "Handle absence, errors, and exceptions in a natural, idiomatic Scala manner.",
+    "skill_reference": "Last but not the least, you need to handle the absence, errors, and exceptions naturally in Scala."
+  },
+  {
+    "reason": "The final deliverable must be saved at the exact file path so the test harness can locate and run it; the worker relied on this to place the compiled source where the grader expects it.",
+    "key_point": "Save the final Scala source file at /root/Tokenizer.scala and ensure it follows best practices.",
+    "skill_reference": "You will need to make sure your Scala code follows the best practices and save your file in `/root/Tokenizer.scala`."
+  }
+]

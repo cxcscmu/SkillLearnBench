@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "Locating files and resources is necessary before reading or modifying them.",
+    "key_point": "Use ToolSearch to find relevant files/resources before attempting to read them.",
+    "trajectory_reference": "tool_use[1]: tool=ToolSearch; status=success; input_keys=max_results,query"
+  },
+  {
+    "reason": "Read the employee data (input) so placeholders can be populated with correct values.",
+    "key_point": "Read the employee data file using the Read tool to obtain placeholder values.",
+    "trajectory_reference": "tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Discover available files in the directory to locate the Word template.",
+    "key_point": "Use Glob to list files and locate the offer letter template file.",
+    "trajectory_reference": "tool_use[1]: tool=Glob; status=success; input_keys=path,pattern; output_keys=text"
+  },
+  {
+    "reason": "Complex Word manipulation requires the docx skill; invoking the skill allows robust template handling.",
+    "key_point": "Invoke the docx Skill tool to perform Word-document-specific operations (placeholder replacement, conditional removal).",
+    "trajectory_reference": "tool_use[1]: tool=Skill; status=success; input_keys=args,skill; output_keys=text"
+  },
+  {
+    "reason": "Many placeholders are split across XML runs; identifying this ensures replacements work reliably.",
+    "key_point": "Detect that many placeholders are split across runs (e.g., '{{COMPA' + 'NY_NAME}}') and decide to operate at paragraph level to handle split placeholders.",
+    "trajectory_reference": "Now I can see the template structure. ... Many placeholders are split across runs: '{{COMP' + 'ANY_NAME"
+  },
+  {
+    "reason": "Writing the script and saving the filled document is the final execution step producing the deliverable.",
+    "key_point": "Write and execute a Python script (using python-docx) to perform replacements and save the filled document to /root/offer_letter_filled.docx.",
+    "trajectory_reference": "tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text"
+  },
+  {
+    "reason": "Verification ensures no placeholders or conditional markers remain and the output file exists.",
+    "key_point": "Verify the filled document contains no '{{' markers and confirm `/root/offer_letter_filled.docx` is ready.",
+    "trajectory_reference": "content: All placeholders are filled and no `{{..."
+  }
+]

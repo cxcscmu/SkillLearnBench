@@ -1,0 +1,82 @@
+[
+  {
+    "reason": "The worker ran the GLM executable to produce the simulation output several times; knowing the exact run command and working directory was necessary to start the model and produce output/output.nc.",
+    "key_point": "Run GLM from /root by changing to /root and executing the glm command.",
+    "skill_reference": "cd /root\nglm"
+  },
+  {
+    "reason": "The worker relied on the fact that GLM reads the namelist in the current directory and writes its NetCDF to output/output.nc when verifying that the run produced the expected file.",
+    "key_point": "GLM reads glm3.nml from the current directory and writes results to output/output.nc.",
+    "skill_reference": "GLM reads `glm3.nml` in the current directory and produces output in `output/output.nc`."
+  },
+  {
+    "reason": "The task restricted which parameters could be modified; the worker repeatedly checked and only changed those allowed parameters during calibration.",
+    "key_point": "Only modify the parameters explicitly allowed by the task (do not change other namelist settings).",
+    "skill_reference": "Only adjust the parameters explicitly allowed by the task"
+  },
+  {
+    "reason": "The worker chose values for Kw and had to keep them inside the stated permissible interval when tuning; this specific range guided the candidate values tried.",
+    "key_point": "Kw (light extinction) must stay within the published calibration range 0.1 - 0.5.",
+    "skill_reference": "| `Kw`           | `&light`       | Light extinction coefficient (m⁻¹) | 0.3     | 0.1 - 0.5      |"
+  },
+  {
+    "reason": "The worker adjusted the hypolimnetic mixing coefficient and used its valid bounds when selecting reduced values during calibration.",
+    "key_point": "coef_mix_hyp (hypolimnetic mixing) must stay within the published calibration range 0.3 - 0.7.",
+    "skill_reference": "| `coef_mix_hyp` | `&mixing`      | Hypolimnetic mixing coefficient      | 0.5     | 0.3 - 0.7      |"
+  },
+  {
+    "reason": "The worker tuned wind_factor and respected its allowed interval when lowering it to reduce surface mixing.",
+    "key_point": "wind_factor must stay within the published calibration range 0.7 - 1.3.",
+    "skill_reference": "| `wind_factor`  | `&meteorology` | Wind speed scaling factor            | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker adjusted longwave scaling slightly and had to keep it within the stated bounds while testing reductions.",
+    "key_point": "lw_factor must stay within the published calibration range 0.7 - 1.3.",
+    "skill_reference": "| `lw_factor`    | `&meteorology` | Longwave radiation scaling           | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker left ch near its default but relied on knowing the allowed bounds for any final fine-tuning.",
+    "key_point": "ch (sensible heat transfer coefficient) must stay within the published calibration range 0.0005 - 0.002.",
+    "skill_reference": "| `ch`           | `&meteorology` | Sensible heat transfer coefficient   | 0.0013  | 0.0005 - 0.002 |"
+  },
+  {
+    "reason": "The final reported metrics had to be computed exactly as required by the task; the worker followed this constraint when producing /root/metrics.json.",
+    "key_point": "Do not use nearest-time approximations or vertical interpolation; use the exact datetime + rounded-depth merge for final reported metrics.",
+    "skill_reference": "Do not use nearest-time approximations or vertical interpolation for the final reported metrics. Use the exact `datetime`/rounded-depth merge shown below, then compute any task-specific subsets from that merged table."
+  },
+  {
+    "reason": "To produce the verifier-matching merged table, the worker merged observations and simulations exactly by datetime and rounded depth; this exact merge code shows the intended join.",
+    "key_point": "Merge simulated and observed tables with an inner join on ['datetime','depth'] (exact datetime + rounded-depth matching).",
+    "skill_reference": "merged = pd.merge(obs_df, sim_df, on=['datetime', 'depth'], how='inner')"
+  },
+  {
+    "reason": "The worker rounded observation depths before merging so that depths matched the rounded simulation depths; this rounding step was applied to the observations data.",
+    "key_point": "Round observation depths to integers prior to merging (df['depth'] = df['depth'].round().astype(int)).",
+    "skill_reference": "df['depth'] = df['depth'].round().astype(int)"
+  },
+  {
+    "reason": "GLM's z coordinate is height-from-bottom; the worker used the conversion to compute depths from z when building the sim table to merge with observations.",
+    "key_point": "GLM z is height from the lake bottom (not depth from surface), so convert to depth_from_surface before matching.",
+    "skill_reference": "**Important**: GLM `z` is height from lake bottom, not depth from surface."
+  },
+  {
+    "reason": "The worker implemented the specific conversion to compute depth values from GLM output z when assembling the sim dataframe used for merging.",
+    "key_point": "Convert heights to depth-from-surface using depth_from_surface = LAKE_DEPTH - z (or equivalent depth = lake_depth - float(h_val)).",
+    "skill_reference": "depth_from_surface = LAKE_DEPTH - z"
+  },
+  {
+    "reason": "The worker removed duplicate sim-layer records per datetime+depth by aggregating before merging; this grouping step was used exactly as shown.",
+    "key_point": "Group by ['datetime','depth'] and aggregate temp_sim (e.g., mean) to handle duplicate layer records before merging.",
+    "skill_reference": "df = df.groupby(['datetime', 'depth']).agg({'temp_sim': 'mean'}).reset_index()"
+  },
+  {
+    "reason": "The task required writing a metrics file with specific keys; the worker produced /root/metrics.json containing the required fields.",
+    "key_point": "Write the final exact self-evaluation to /root/metrics.json when required by the task.",
+    "skill_reference": "When a task requires an exact self-evaluation file, save `/root/metrics.json` with the task's required keys."
+  },
+  {
+    "reason": "The worker needed the exact list of metric keys to write into /root/metrics.json; these exact keys were used in the final output file.",
+    "key_point": "The metrics.json file must contain the keys overall_rmse, annual_deep_rmse, summer_deep_rmse, overall_n_pairs, annual_deep_n_pairs, and summer_deep_n_pairs.",
+    "skill_reference": "- `overall_rmse`\n- `annual_deep_rmse`\n- `summer_deep_rmse`\n- `overall_n_pairs`\n- `annual_deep_n_pairs`\n- `summer_deep_n_pairs`"
+  }
+]

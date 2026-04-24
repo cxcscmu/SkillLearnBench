@@ -1,0 +1,67 @@
+[
+  {
+    "reason": "Selecting the PDF processing skill was necessary to read and fill the SC-100 PDF form programmatically.",
+    "key_point": "Load and use the PDF processing skill to handle the form (pypdf/pdf tools).",
+    "trajectory_reference": "tool_use[1]: tool=Skill; status=success; input_keys=skill; output_keys=text"
+  },
+  {
+    "reason": "The forms guide explained how to inspect and fill PDF form fields before populating values.",
+    "key_point": "Read the PDF Processing Guide / forms.md to understand how to fill PDF form fields.",
+    "trajectory_reference": "role=user content: Base directory for this skill: /logs/agent/sessions/skills/pdf ... If you need to fill out a PDF form, follow the instructions in forms.md"
+  },
+  {
+    "reason": "Confirmed the target PDF has interactive form fields to populate.",
+    "key_point": "Check the SC-100 PDF to verify it has fillable form fields.",
+    "trajectory_reference": "thinking: The PDF has fillable form fields."
+  },
+  {
+    "reason": "Extracting the form field info and images was needed to map which form fields correspond to the case data.",
+    "key_point": "Extract form field information and render form page images to identify field names and layout.",
+    "trajectory_reference": "content: The PDF has fillable fields. Let me extract the field info and convert to images."
+  },
+  {
+    "reason": "Populating plaintiff contact fields is required to identify the claimant on the form.",
+    "key_point": "Fill plaintiff name, address, city, state, zip, phone, and email with Tessa Nguyen's contact details.",
+    "trajectory_reference": "Page 2: ... Plaintiff name at top: \"Tessa Nguyen\" ... name, phone, and address fields for \"Tessa Nguyen\", phone \"4085550164\", and address \"2148 Monroe St Apt 6\""
+  },
+  {
+    "reason": "Populating defendant contact fields is necessary to identify the person being sued and determine venue.",
+    "key_point": "Fill defendant name, address, and phone with Brandon Lee's contact details.",
+    "trajectory_reference": "The defendant information starting with \"Brandon Lee\" and their phone number"
+  },
+  {
+    "reason": "The claim period must be placed into the correct fields (time period, not the single-date field).",
+    "key_point": "Map the dispute period as a time range: leave the single 'When did this happen?' date empty and set 'Date started' = 2025-08-21 and 'Through' = 2025-12-14.",
+    "trajectory_reference": "I need to correct the date fields—since this is a period rather than a specific date, I should leave Date1 empty and populate Date2 with the start date (2025-08-21) and Date3 with the end date (2025-12-14)."
+  },
+  {
+    "reason": "Documenting the dollar amount and basis of the claim is core to the complaint.",
+    "key_point": "Enter the claim amount $1,675 and an explanation that the defendant failed to return the security deposit per the signed room rental agreement after move-out.",
+    "trajectory_reference": "Page 2 ... claim amount $1,675, and explanation of the unpaid deposit"
+  },
+  {
+    "reason": "Small claims forms require indicating whether a demand for payment was made before filing.",
+    "key_point": "Check 'Yes' for Section 4 (demand made) because the plaintiff sent several text messages requesting the deposit back and got no reply; provide brief details in the explanation field.",
+    "trajectory_reference": "Section 4 ✓ Yes (demanded via text messages); ... the plaintiff sent several text messages requesting the deposit back, but received no reply."
+  },
+  {
+    "reason": "Venue selection must reflect where the defendant resides per filing instructions.",
+    "key_point": "Select the venue option corresponding to the defendant's residence (file where defendant lives) and enter the Santa Clara zip code 95050 in the venue zip field.",
+    "trajectory_reference": "Section 5a ✓ (defendant's residence/business); Zip 95050; both parties live in Santa Clara, so file in the venue where the defendant lives."
+  },
+  {
+    "reason": "Determine and indicate that this is the plaintiff's first California small claims filing and that the claim amount is under appeals threshold.",
+    "key_point": "Mark Section 9 'No' (has not filed more than 12 small claims in last 12 months) and Section 10 'No' (claim does not exceed $2,500).",
+    "trajectory_reference": "Section 9 ✗ No (first small claims case); Section 10 ✗ No (claim ≤ $2,500)"
+  },
+  {
+    "reason": "Correcting incorrect field mappings and regenerating the PDF was necessary to produce a valid filled form.",
+    "key_point": "Adjust the field_values JSON to fix the date mapping and remove an erroneous public-entity date, then regenerate and save the filled PDF to /root/sc100-filled.pdf.",
+    "trajectory_reference": "I need to correct the date fields ... Now I'll update the JSON and regenerate the PDF. ... The filled form at `/root/sc100-filled.pdf` is complete"
+  },
+  {
+    "reason": "Final verification of filled pages ensures all required fields were populated correctly and the output file was created.",
+    "key_point": "Read and verify pages 2–4 of the generated PDF to confirm plaintiff/defendant info, claim amount/explanation, date range, demand answer, venue, zip, and signature/date were correctly filled.",
+    "trajectory_reference": "content: All pages look correct now. The filled form at `/root/sc100-filled.pdf` is complete with: - Page 2 ... - Page 3: Date range 2025-08-21 through 2025-12-14; ... - Page 4: ... Date signed 2025-12-14; Tessa Nguyen printed as plaintiff"
+  }
+]

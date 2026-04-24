@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read /root/test_input.json to extract meeting requests and message bodies",
+    "why_essential": "You must obtain each email's requested duration and any date/time constraints to propose compatible meeting times.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/test_input.json\"}"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Open and parse /root/calendar.pdf with a PDF analysis tool to extract page geometry and drawn objects",
+    "why_essential": "The calendar's visual layout (lines, rects, curves, text) is required to compute appointment block positions and the timeline mapping from y-coordinates to clock times.",
+    "evidence": "Skill status=success input={\"skill\": \"pdf\", \"args\": \"/root/calendar.pdf\"} and 'Total rects: 1\\nTotal lines: 97\\nTotal curves: 12'"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Identify time-axis baseline and compute points-per-hour mapping from time labels (e.g., 12am top coordinate and pts-per-hour)",
+    "why_essential": "Converting block y-coordinates into concrete start/end times requires establishing the reference position for 12:00 AM and the scale (points per hour).",
+    "evidence": "Time label positions (top coordinate from page top):\\n 12am: top=39.168 ... and 'TWELVE_AM_TOP = 39.168\\nPTS_PER_HOUR = 29.963'"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Extract appointment blocks (curves/rects) with their top and height, determine each block's color, and convert to snapped 15-minute start/end times",
+    "why_essential": "You must know existing appointments, their times, and which are blue (flexible) so you can find earliest available slots and treat blue blocks as overwritable availability.",
+    "evidence": "=== APPOINTMENT BLOCKS (from curves) ===\\n Block 0: top=329.5, h=28.0pts, start=9:45am, end=10:30am, dur=56 min, color=RED/ORANGE ... and 'Snapped block times (rounded to nearest 15 min):\\nDark gray (Out of office): 12:15am -> 8:45am\\nOrange/Red (Weekly Group Meeting): 9:45am -> 10:30am'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Parse each email's requested meeting duration and constraints from the JSON and determine required meeting length",
+    "why_essential": "Scheduling requires the numeric meeting duration and any stated date/time restrictions so candidate slots can be validated against requests.",
+    "evidence": "{\"email_text\": \"Hi,\\nI am wondering if you could schedule a one-hour meeting with me on March 9th, 2026.\\nI am generally available from 10:00am to ...\"}"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Find the earliest compatible available slot for each request, treating blue (low-priority) blocks as available and avoiding non-overwritable blocks",
+    "why_essential": "To satisfy the instruction to prioritize meetings over blue blocks and select the earliest compatible times that fit each meeting's duration and constraints.",
+    "evidence": "Specifically identify blue-colored blocks, which represent low-priority or flexible tasks. Treat these blue slots as available time that can be overwritten; if a meeting request overlaps with a blue-colored entry, prioritize the meeting and consider the slot open."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Format reply content for each email using the required template, date format, time format, and calendar time zone",
+    "why_essential": "The task requires generating a standardized reply for each request with exact date/time formatting and timezone consistency for recipient communication.",
+    "evidence": "Generate the reply content and save as a .txt file: For each email ... Date: {day_name}, {date_formatted} ... Time: {HH:MM AM/PM} - {HH:MM AM/PM} ... All the time should be set according to the time zone in the calendar."
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write each reply file (e.g., /root/reply_{messageID}.txt) and save /root/results.json listing filenames and recipients",
+    "why_essential": "Persisting the generated replies and the results manifest is required by the workflow to record what would be sent and to produce the final results.json output.",
+    "evidence": "File created successfully at: /root/reply_1.txt\\nFile created successfully at: /root/reply_2.txt\\nFile created successfully at: /root/reply_3.txt\\nFile created successfully at: /root/results.json"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Extract key frames from /root/super-mario.mp4 into /root as /root/keyframes_%03d.png using ffmpeg",
+    "why_essential": "Keyframes must be produced from the video so subsequent image processing and object counting operate on the extracted frames",
+    "evidence": "ffmpeg -i /root/super-mario.mp4 -vf \"select='eq(pict_type,I)'\" -vsync vfr /root/keyframes_%03d.png"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Confirm the extracted keyframe file names exist (list /root/keyframes_*.png)",
+    "why_essential": "Verifies the extraction succeeded and identifies the exact frame file paths that will be processed and recorded in the CSV",
+    "evidence": "ls /root/keyframes_*.png -> /root/keyframes_001.png ... /root/keyframes_005.png"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Convert each extracted keyframe in-place to grayscale (/root/keyframes_001.png ... /root/keyframes_005.png)",
+    "why_essential": "The task requires all keyframe images be converted to grayscale and overwritten before object counting",
+    "evidence": "for i in 001 002 003 004 005; do convert /root/keyframes_${i}.png -colorspace Gray /root/keyframes_${i}.png; done"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Count enemies in all keyframes using template /root/enemy.png",
+    "why_essential": "Enemy counts per frame are required for the CSV; this runs the object counting using the provided enemy template across all frames",
+    "evidence": "python3 scripts/count_objects.py --tool count --input /root/keyframes_... --template /root/enemy.png -> 'There are 1 objects (`/root/enemy.png`) in file: `/root/keyframes_001.png`' (and similar for other frames)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Count turtles in all keyframes using template /root/turtle1.png",
+    "why_essential": "One provided turtle template must be applied to produce turtle detection counts contributing to the per-frame turtle totals",
+    "evidence": "python3 scripts/count_objects.py ... --template /root/turtle1.png -> 'There are 0 objects (`/root/turtle1.png`) in file: `/root/keyframes_001.png`' (and similar)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Count turtles in all keyframes using template /root/turtle2.png",
+    "why_essential": "The instructions require using all provided templates for each object class; this second turtle template must be run and its detections combined with the first",
+    "evidence": "python3 scripts/count_objects.py ... --template /root/turtle2.png -> 'There are 0 objects (`/root/turtle2.png`) in file: `/root/keyframes_001.png`' (and similar)"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the CSV /root/counting_results.csv with columns frame_id,coins,enemies,turtles and one row per keyframe (coins=0, enemies from enemy counts, turtles=sum of turtle1 and turtle2 counts)",
+    "why_essential": "Produces the required output file summarizing per-frame counts in the specified format and location",
+    "evidence": "File created successfully at: /root/counting_results.csv and content shown: 'frame_id,coins,enemies,turtles\\n/root/keyframes_001.png,0,1,0 ...'"
+  }
+]

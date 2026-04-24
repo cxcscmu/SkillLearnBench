@@ -1,0 +1,10 @@
+# Method configuration for b3-teacher-guided.
+# Read by core/skill_runner.py and generate_skills.py.
+
+# This method uses a plugin (method.py) for execution, so skills_only_mode
+# and rounds_template are not applicable — the plugin owns those decisions.
+
+# Number of rounds for the teacher-student loop. Passed to the plugin's run()
+# as max_rounds; minimum of 2 is enforced by the plugin regardless of this value.
+# Omitting max_rounds would cause the runner to fall back to 3, but explicit is clearer.
+max_rounds = 3

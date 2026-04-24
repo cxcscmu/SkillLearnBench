@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker needed to know that placeholders can be split across multiple XML runs so they would not rely on per-run string matching (which would miss split placeholders). This fact motivated the worker to use paragraph-level replacement and to invoke the docx skill accordingly (see trajectory thinking at [6], [12]).",
+    "key_point": "Word may split a placeholder across multiple XML runs; you cannot assume a placeholder appears wholly inside a single run.",
+    "skill_reference": "Word often splits placeholder text across multiple XML runs."
+  },
+  {
+    "reason": "The worker avoided a run-level replacement loop and instead rebuilt paragraph text into the first run; keeping this mechanism is essential to ensure replacements succeed when placeholders are split and to make a single replacement per paragraph.",
+    "key_point": "When replacing a placeholder that may be split, rebuild the paragraph text and write the new text into the first run, clearing subsequent runs (so the placeholder is replaced even if it was split across runs).",
+    "skill_reference": "for i, run in enumerate(runs):\n        if i == 0:\n            run.text = new_text\n        else:\n            run.text = ''"
+  },
+  {
+    "reason": "The worker used a pattern-based search to find placeholders in paragraphs before rebuilding; the regex identifies placeholders so the script knows which keys to replace and where to rebuild runs.",
+    "key_point": "Use a regex pattern to detect placeholders in paragraph text (e.g. pattern = r'\\{\\{([A-Z_]+)\\}\\}') so you can locate all {{KEY}} tokens at paragraph level before performing replacements.",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "Placeholders also appear in table cells and nested tables; the worker processed tables recursively to ensure replacements in the 'Role Snapshot + Rewards Package' and other table content succeeded.",
+    "key_point": "Recursively process tables (cells may contain nested tables); for each cell, process its paragraphs and recurse into cell.tables.",
+    "skill_reference": "Tables can contain other tables. Must recurse:"
+  },
+  {
+    "reason": "Some placeholders may be located in headers or footers; the worker had to process these separately (they are not part of doc.paragraphs) to ensure zero leftover {{...}} markers in the final document.",
+    "key_point": "Headers and footers are separate from the main body and must be processed via doc.sections -> section.header/section.footer paragraphs.",
+    "skill_reference": "Headers/footers are separate from main document body:"
+  },
+  {
+    "reason": "The worker needed a clear rule for conditional blocks (the relocation section) because RELOCATION_PACKAGE was 'No'—they removed the block content rather than leaving markers in the output.",
+    "key_point": "For conditional blocks of the form {{IF_...}} ... {{END_IF_...}}, if the condition is false remove the entire content between the markers (do not leave the markers or the block content).",
+    "skill_reference": "Remove entire content between markers"
+  },
+  {
+    "reason": "The worker had to know which template to open and where to save the filled file; these exact paths were used when running the fill script and saving output.",
+    "key_point": "Use the specified template and output file paths provided by the skill when running the fill: the template path and the output path must be used as given.",
+    "skill_reference": "Template file: /root/offer_letter_template.docx\nOutput file: /root/offer_letter_filled.docx"
+  },
+  {
+    "reason": "The worker relied on the skill-provided mapping of placeholders to concrete values to perform replacements exactly as required (so each {{KEY}} was mapped to the correct salary, dates, names, etc.).",
+    "key_point": "The skill supplies an explicit placeholder→value mapping that must be applied to replace all {{KEY}} tokens in the document.",
+    "skill_reference": "Replace all placeholders with these values:"
+  }
+]

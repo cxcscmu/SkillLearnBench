@@ -1,0 +1,77 @@
+[
+  {
+    "reason": "Reading the main TSV was necessary to get the list of stocks and their metadata (ticker, sector, full name, marketCap) which drive both charts and table.",
+    "key_point": "Read the stock-descriptions.tsv to obtain ticker, sector, full name, and marketCap fields for visualization and table population.",
+    "trajectory_reference": "tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Listing individual stock CSVs was required to confirm the per-stock price-history file set and their location for copying into the web app data folder.",
+    "key_point": "Use Glob to enumerate files under /root/data/indiv-stock/ to understand the available per-stock CSVs.",
+    "trajectory_reference": "tool_use[1]: tool=Glob; status=success; input_keys=path,pattern; output_keys=text"
+  },
+  {
+    "reason": "Executing shell commands verified file contents and supported deterministic file operations and output directory setup.",
+    "key_point": "Run Bash commands to inspect files and to set up/copy files into the output directory structure.",
+    "trajectory_reference": "tool_use[1]: tool=Bash; status=success; input_keys=command; output_keys=text"
+  },
+  {
+    "reason": "Creating the output files is the core of delivering the requested single-page web app at the specified path.",
+    "key_point": "Write files into /root/output including index.html, css/style.css and js/visualization.js to produce the web app.",
+    "trajectory_reference": "tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text"
+  },
+  {
+    "reason": "The user required D3.js v6 offline, so vendoring a specific d3.v6.min.js ensures the app runs offline and matches the requested version.",
+    "key_point": "Vendor (include) d3.v6.min.js in /root/output/js/ to ensure D3 v6 is available offline for the visualization.",
+    "trajectory_reference": "├── d3.v6.min.js             ← D3 v6.7.0 vendored (offline)"
+  },
+  {
+    "reason": "Sizing bubbles by market cap (with uniform size for ETFs) directly addresses the visual encoding requirement.",
+    "key_point": "Size bubbles proportional to marketCap (using a sqrt scale so area matches market cap) and assign a fixed uniform size for ETFs which lack marketCap.",
+    "trajectory_reference": "Bubble **size** ∝ market cap (sqrt scale so area is proportional); ETFs get a fixed uniform size"
+  },
+  {
+    "reason": "Cluster positioning by sector via forces is necessary so bubbles of the same sector appear close together as requested.",
+    "key_point": "Use a D3 force simulation with forceX/forceY pulling nodes toward sector-specific cluster centers so stocks of the same sector group together.",
+    "trajectory_reference": "Force simulation with `forceX`/`forceY` pulling each sector toward its designated cluster center"
+  },
+  {
+    "reason": "Avoiding overlap is critical for legible bubble labels and adherence to requirements.",
+    "key_point": "Apply forceCollide in the simulation to prevent bubble overlaps.",
+    "trajectory_reference": "`forceCollide` prevents overlaps"
+  },
+  {
+    "reason": "Deterministic layout of the force simulation prevents non-deterministic results and meets the reproducibility constraint.",
+    "key_point": "Run the force simulation for an exact fixed number of ticks (300) to produce a deterministic layout.",
+    "trajectory_reference": "run for exactly 300 ticks (deterministic)"
+  },
+  {
+    "reason": "Each bubble must be identifiable; labels inside the circles provide the required ticker annotation.",
+    "key_point": "Render each stock as an SVG <circle> and add an inside label showing the ticker symbol.",
+    "trajectory_reference": "Each bubble is **labeled** with its ticker symbol"
+  },
+  {
+    "reason": "Tooltips must only show for non-ETF stocks since ETFs lack some metadata; this conditional behavior matches the dataset constraints.",
+    "key_point": "Show a hover tooltip with ticker, full name, and sector for stocks, but suppress tooltips for ETF entries that lack marketCap, country, or website data.",
+    "trajectory_reference": "Tooltip on hover shows ticker, full name, and sector (suppressed for ETFs which lack that data)"
+  },
+  {
+    "reason": "A legend implemented as a div satisfies the explicit requirement about legend DOM type and helps map colors to sectors.",
+    "key_point": "Provide a color legend implemented as an HTML div element mapping sector names to bubble colors.",
+    "trajectory_reference": "Color **legend** below the chart"
+  },
+  {
+    "reason": "The table is the other half of the UI and must present the required fields in a readable format.",
+    "key_point": "Create a right-side data table listing all 50 stocks with columns: Ticker symbol, Full company name, Sector, and formatted Market cap (e.g., '2.68T').",
+    "trajectory_reference": "Data Table (right)\n- All 50 stocks sorted by sector then ticker\n- Columns: Ticker (monospace bold), Full Name, Sector (colored badge), Market Cap (formatted e.g. `2.68T`, `—` for ETFs)"
+  },
+  {
+    "reason": "Interactive linking between chart and table is required for selection synchronicity.",
+    "key_point": "Implement cross-linking click handlers so clicking a bubble highlights and scrolls its table row into view, and clicking a table row highlights the corresponding bubble; clicking again toggles deselect.",
+    "trajectory_reference": "Clicking a bubble highlights that row in the table (scrolls it into view) and outlines the bubble\n- Clicking a table row highlights that bubble and outlines the row\n- Clicking the same item again deselects it (toggle)"
+  },
+  {
+    "reason": "Confirming the final output path ensures the user can open the produced single-page app.",
+    "key_point": "Place the finished web app at /root/output/index.html and include the js, css, and data subpaths as specified.",
+    "trajectory_reference": "The web app is ready at `/root/output/index.html`. Here's a summary of what was built:\n\n---\n\n## Output Structure\n\n```\n/root/output/\n├── index.html                    ← Main page (open this)\n├── css/style.css                 ← Styles for layout, bubbles, table, tooltip\n├── js/\n│   ├── d3.v6.min.js             ← D3 v6.7.0 vendored (offline)\n│   •  •  visualization.js         ← All chart & table logic\n└── data/\n    ├── stock-descriptions.tsv   ← Copied input\n    •    indiv-stock/             ← 50 individual CSVs\n```"
+  }
+]

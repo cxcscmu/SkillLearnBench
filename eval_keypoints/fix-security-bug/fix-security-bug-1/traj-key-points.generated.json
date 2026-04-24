@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "Identifies the precise vulnerability vector enabling RCE via Jackson deserialization with an empty JSON key.",
+    "key_point": "Recognize that an empty JSON key \"\" in the sampler payload can override @JacksonInject JavaScriptConfig and enable JavaScript execution (the empty-key Jackson deserialization attack).",
+    "trajectory_reference": "The issue is in Apache Druid's JavaScript filter functionality where the empty key `\"\"` in the JSON can bypass JavaScript security settings to enable JavaScript execution."
+  },
+  {
+    "reason": "Needed to find all places in the codebase where injected JavaScriptConfig can be overridden, to apply a systematic fix.",
+    "key_point": "Search and inspect Druid source files to locate all uses of @JacksonInject JavaScriptConfig (e.g., JavaScriptDimFilter, JavaScriptExtractionFn, JavaScriptPostAggregator, JavaScriptAggregatorFactory, JavaScriptParseSpec, JavaScriptTieredBrokerSelectorStrategy).",
+    "trajectory_reference": "Now I have a clear picture. The fix is to add `useInput = OptBoolean.FALSE` to all `@JacksonInject JavaScriptConfig` annotations. ... Files to fix: ... `JavaScriptDimFilter.java`, `JavaScriptExtractionFn.java`, `JavaScriptPostAggregator.java`, `JavaScriptAggregatorFactory.java`, `JavaScriptWorkerSelectStrategy.java`, `JavaScriptParseSpec.java`, `JavaScriptTieredBrokerSelectorStrategy.java`"
+  },
+  {
+    "reason": "Applying a Jackson configuration change prevents JSON input from overriding injected values—the core mitigation for the empty-key attack.",
+    "key_point": "Add useInput = OptBoolean.FALSE to all @JacksonInject JavaScriptConfig annotations so Jackson will never use JSON input to populate those injected values.",
+    "trajectory_reference": "The fix is to add `useInput = OptBoolean.FALSE` to all `@JacksonInject JavaScriptConfig` annotations. This tells Jackson to always use the injected value from the IoC container and never allow it to be overridden by JSON input."
+  },
+  {
+    "reason": "Defense-in-depth: prevent exploit payloads from reaching Jackson by validating raw JSON before deserialization at the sampler entrypoint.",
+    "key_point": "Add pre-deserialization validation in SamplerResource to inspect the raw request JSON and reject any object that contains an empty string key \"\" (recursively walking the JSON tree).",
+    "trajectory_reference": "Add pre-deserialization validation in `SamplerResource` to check for empty string keys in the JSON body ... validate the JSON for empty keys before deserializing ... The validation needs to recursively check all JSON objects in the tree for empty string keys."
+  },
+  {
+    "reason": "Ensures SamplerResource can perform raw JSON validation by having access to Jackson parser and controlling deserialization.",
+    "key_point": "Inject ObjectMapper into SamplerResource and change the POST handling to accept raw body (String/InputStream) so the resource can validate JSON before calling ObjectMapper.readValue().",
+    "trajectory_reference": "I need to modify `SamplerResource.java` to: 1. Inject `ObjectMapper` via `@Inject` in a constructor 2. Change the POST method to accept `byte[]` body (or use `InputStream`) 3. Validate the JSON for empty keys before deserializing 4. Then deserialize using the ObjectMapper"
+  },
+  {
+    "reason": "Practical implementation step: create and apply concrete patches to the repo and persist them for verifier use.",
+    "key_point": "Create patch files for the changes and save them under /root/patches/, applying edits directly to the source and generating git diffs as patch files.",
+    "trajectory_reference": "Let me now create the patch files and apply them. I'll create the patch files in `/root/patches/` and then apply them.The changes needed: ... Now I'm ready to create the patch files and apply them to the codebase."
+  },
+  {
+    "reason": "Must rebuild the project to produce patched artifacts for deployment and verification.",
+    "key_point": "Rebuild Druid with Maven for the indexing-service module and its dependencies using the provided mvn command, skipping web-console and code-quality checks.",
+    "trajectory_reference": "Now let me rebuild Druid with Maven. ... Build succeeded."
+  },
+  {
+    "reason": "Address compile-time issues encountered while adding validation code so build can complete successfully.",
+    "key_point": "Fix compilation errors encountered during build (e.g., adjust SamplerException usage), re-run the build until it succeeds.",
+    "trajectory_reference": "There's a compilation error: `throw new SamplerException(\"...\")` - the `SamplerException` doesn't take a `String` argument or has a different constructor. Let me check the `SamplerException` class. ... Build succeeded."
+  },
+  {
+    "reason": "Summarizes the applied fixes and where to find the patch for audit and deployment.",
+    "key_point": "Produce a summary and provide the generated patch file path `/root/patches/cve-2021-25646-javascript-rce-fix.patch` containing the annotation changes and SamplerResource validation.",
+    "trajectory_reference": "Fixes Applied (`/root/patches/cve-2021-25646-javascript-rce-fix.patch`): 1. All 7 JavaScript components — Added `useInput = OptBoolean.FALSE` ... 2. `SamplerResource` — Added pre-deserialization validation ..."
+  }
+]

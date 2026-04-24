@@ -1,0 +1,77 @@
+[
+  {
+    "reason": "The worker needed to run GLM from the project root and know where model output will appear so they could read the produced NetCDF; this exact run location and output path were used when they executed the model and later read output/output.nc.",
+    "key_point": "GLM is run from /root with the command 'glm', and it reads glm3.nml and writes its NetCDF to output/output.nc.",
+    "skill_reference": "cd /root\nglm\n\nGLM reads `glm3.nml` in the current directory and produces output in `output/output.nc`."
+  },
+  {
+    "reason": "The worker programmatically edited glm3.nml to apply candidate parameter values; the provided modify_nml function (regex replace + write) is the exact mechanism they used to change parameters before running GLM.",
+    "key_point": "Use a script that reads glm3.nml, replaces numeric parameter values with regex (per-parameter), and writes the file back (the modify_nml routine).",
+    "skill_reference": "def modify_nml(nml_path, params):\n    with open(nml_path, 'r') as f:\n        content = f.read()\n    for param, value in params.items():\n        pattern = rf\"({param}\\s*=\\s*)[\\d\\.\\-e]+\"\n        replacement = rf\"\\g<1>{value}\"\n        content = re.sub(pattern, replacement, content)\n    with open(nml_path, 'w') as f:\n        f.write(content)"
+  },
+  {
+    "reason": "The worker adhered to the allowed calibration parameters and their valid ranges when searching for a passing configuration; knowing Kw's allowed range prevented out-of-bounds choices.",
+    "key_point": "Kw (light extinction) must be in the published calibration range 0.1 - 0.5 (section &light).",
+    "skill_reference": "| `Kw`           | `&light`       | Light extinction coefficient (m⁻¹) | 0.3     | 0.1 - 0.5      |"
+  },
+  {
+    "reason": "The worker changed coef_mix_hyp and needed its valid bounds to keep the final configuration legal; this informed their candidate selection (they set coef_mix_hyp=0.35).",
+    "key_point": "coef_mix_hyp (hypolimnetic mixing coefficient) must be in the published calibration range 0.3 - 0.7 (section &mixing).",
+    "skill_reference": "| `coef_mix_hyp` | `&mixing`      | Hypolimnetic mixing coefficient      | 0.5     | 0.3 - 0.7      |"
+  },
+  {
+    "reason": "The worker tuned wind_factor and needed its allowed bounds to avoid invalid settings while attempting to improve surface/deep fit.",
+    "key_point": "wind_factor (wind speed scaling) must be in the published calibration range 0.7 - 1.3 (section &meteorology).",
+    "skill_reference": "| `wind_factor`  | `&meteorology` | Wind speed scaling factor            | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker adjusted lw_factor and needed its valid range to reduce heat input without violating constraints.",
+    "key_point": "lw_factor (longwave radiation scaling) must be in the published calibration range 0.7 - 1.3 (section &meteorology).",
+    "skill_reference": "| `lw_factor`    | `&meteorology` | Longwave radiation scaling           | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker left ch unchanged but needed to know its allowed bounds in case of tuning; the range ensured any final value would be valid.",
+    "key_point": "ch (sensible heat transfer coefficient) must be in the published calibration range 0.0005 - 0.002 (section &meteorology).",
+    "skill_reference": "| `ch`           | `&meteorology` | Sensible heat transfer coefficient   | 0.0013  | 0.0005 - 0.002 |"
+  },
+  {
+    "reason": "The calibration workflow required the worker to stop searching and hand off to the output-step as soon as a candidate passed; the worker followed this rule after finding a passing set.",
+    "key_point": "When a candidate parameter set appears to pass the task metrics, stop calibration immediately and hand off to glm-output to compute the final verifier-matching metrics and write /root/metrics.json.",
+    "skill_reference": "Once a candidate setting appears to pass, stop calibration and hand off immediately to `glm-output` for the final verifier-matching metrics and `/root/metrics.json`."
+  },
+  {
+    "reason": "The worker computed depths from GLM z-values rather than using z directly; using lake_depth - z is essential to get correct depth values for merging with observations.",
+    "key_point": "Convert GLM 'z' (height above bottom) to depth from surface by computing depth = lake_depth - z before matching to observations.",
+    "skill_reference": "**Important**: GLM `z` is height from lake bottom, not depth from surface.\n```python\nLAKE_DEPTH = <lake_depth_from_nml>\ndepth_from_surface = LAKE_DEPTH - z\n```"
+  },
+  {
+    "reason": "The worker needed to create timestamps for each GLM time record to match observation datetimes exactly; the start_date + hours conversion is how the skill maps the NC 'time' variable into datetimes.",
+    "key_point": "Convert the NetCDF 'time' (hours since start) into datetimes using the model start date (e.g. start_date = datetime(2009,1,1,12,0,0) and date = start_date + Timedelta(hours=hours)).",
+    "skill_reference": "start_date = datetime(2009, 1, 1, 12, 0, 0)\n...\ndate = pd.Timestamp(start_date) + pd.Timedelta(hours=hours)"
+  },
+  {
+    "reason": "Exact matching required rounding depths and aggregating duplicate layer values so the merge keys align; the worker used rounding and grouping when building the sim and obs tables.",
+    "key_point": "Round depths to integers and group simulation records by (datetime, depth) (mean temp_sim) so pairs can be matched exactly to rounded observation depths.",
+    "skill_reference": "df['depth'] = df['depth'].round().astype(int)\n...\n    df = pd.DataFrame(records)\n    df = df.groupby(['datetime', 'depth']).agg({'temp_sim': 'mean'}).reset_index()"
+  },
+  {
+    "reason": "The worker merged observations and simulations using exact datetime + rounded-depth keys (no interpolation); this merge is the basis for computing the exact RMSE metrics used by the task verifier.",
+    "key_point": "Merge observation and simulation tables on the exact datetime and rounded depth keys (inner join) and compute RMSE from that merged table.",
+    "skill_reference": "merged = pd.merge(obs_df, sim_df, on=['datetime', 'depth'], how='inner')"
+  },
+  {
+    "reason": "The task's special subsets (annual deep and summer deep) drive the RMSE checks; the worker used these precise definitions to compute the three required metrics.",
+    "key_point": "Define 'deep' as rounded depths >= 13 m, define 'summer' as months 6–9, and compute annual_deep and summer_deep subsets from the merged table accordingly.",
+    "skill_reference": "summer_mask = merged['datetime'].dt.month.isin([6, 7, 8, 9])\nannual_deep = merged[merged['depth'] >= 13]\nsummer_deep = merged[summer_mask & (merged['depth'] >= 13)]"
+  },
+  {
+    "reason": "The worker followed the explicit rule forbidding temporal interpolation or nearest-time matching for final reported metrics; this constrained how they implemented the merge and metric calculations.",
+    "key_point": "For final reported metrics, do not use nearest-time approximations or vertical interpolation; instead use the exact datetime + rounded-depth merge.",
+    "skill_reference": "Do not use nearest-time approximations or vertical interpolation for the final reported metrics. Use the exact `datetime`/rounded-depth merge shown below, then compute any task-specific subsets from that merged table."
+  },
+  {
+    "reason": "The task required a standardized metrics output; the worker produced /root/metrics.json with these exact keys to satisfy the verifier and stop the workflow.",
+    "key_point": "Write /root/metrics.json containing the exact required keys: overall_rmse, annual_deep_rmse, summer_deep_rmse, overall_n_pairs, annual_deep_n_pairs, summer_deep_n_pairs.",
+    "skill_reference": "- `overall_rmse`\n- `annual_deep_rmse`\n- `summer_deep_rmse`\n- `overall_n_pairs`\n- `annual_deep_n_pairs`\n- `summer_deep_n_pairs`"
+  }
+]

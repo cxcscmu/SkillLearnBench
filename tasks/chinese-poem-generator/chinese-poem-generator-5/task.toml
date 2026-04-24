@@ -1,0 +1,8 @@
+[task]
+id = "content-strategy"
+name = "Professional Research & Structured Writing"
+category = "Text Generation"
+difficulty = "Hard"
+
+[evaluation]
+required_files = ["/outputs/research.md", "/outputs/outline.md", "/outputs/hooks_analysis.md", "/outputs/final_draft.md"]

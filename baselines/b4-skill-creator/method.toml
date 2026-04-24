@@ -1,0 +1,8 @@
+# Method configuration for b4-skill-creator.
+# Read by core/skill_runner.py; controls runtime execution behaviour.
+
+# "interrupt": poll the container for SKILL.md files and interrupt the agent
+# as soon as files are stable; the verifier is skipped (skills-only mode).
+# (Same termination strategy as b1; b4 additionally injects the skill-creator
+# reference skill via the inject/ subdirectory, handled automatically by the runner.)
+skills_only_mode = "interrupt"

@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker parallelized the 847 hyperparameter evaluations across CPU cores; this exact Parallel+delayed pattern is the mechanism they used to run the per-combination evaluation in parallel.",
+    "key_point": "Use joblib's Parallel together with delayed to run many independent evaluations in parallel (pattern: results = Parallel(...)(delayed(f)(args) for args in params)).",
+    "skill_reference": "from joblib import Parallel, delayed\n\ndef process_item(x):\n    \"\"\"Process a single item.\"\"\"\n    return x ** 2\n\n# Sequential\nresults = [process_item(x) for x in range(100)]\n\n# Parallel (uses all available cores)\nresults = Parallel(n_jobs=-1)(\n    delayed(process_item)(x) for x in range(100)\n)\n"
+  },
+  {
+    "reason": "The worker constructed the full hyperparameter grid and fed each tuple into the parallel evaluation; the skill's grid-search example shows using itertools.product and Parallel over those param tuples.",
+    "key_point": "Build the parameter grid with itertools.product and feed each parameter tuple into Parallel(delayed(...)) for a parallel grid search.",
+    "skill_reference": "from joblib import Parallel, delayed\nfrom itertools import product\n\ndef evaluate_params(param_a, param_b):\n    \"\"\"Evaluate one parameter combination.\"\"\"\n    score = expensive_computation(param_a, param_b)\n    return {'param_a': param_a, 'param_b': param_b, 'score': score}\n\n# Define parameter grid\nparams = list(product([0.1, 0.5, 1.0], [10, 20, 30]))\n\n# Parallel grid search\nresults = Parallel(n_jobs=-1, verbose=10)(\n    delayed(evaluate_params)(a, b) for a, b in params\n)\n"
+  },
+  {
+    "reason": "To avoid recomputing heavy shared data (e.g., per-image distance matrices) for each worker task, the worker precomputed shared data and passed it into the per-task function as recommended by the skill.",
+    "key_point": "Pre-compute shared data once and pass it into each parallel task (i.e., compute shared_data outside the Parallel loop and supply it as an argument to the delayed function).",
+    "skill_reference": "## Pre-computing Shared Data\n\nWhen all tasks need the same data, pre-compute it once:\n\n```python\n# Pre-compute once\nshared_data = load_data()\n\ndef process_with_shared(params, data):\n    return compute(params, data)\n\n# Pass shared data to each task\nresults = Parallel(n_jobs=-1)(\n    delayed(process_with_shared)(p, shared_data)\n    for p in param_list\n)\n```"
+  },
+  {
+    "reason": "The worker selected all available CPU cores for parallel execution (they reported using multiple workers); knowing the meaning of n_jobs=-1 was necessary to configure joblib accordingly.",
+    "key_point": "Set n_jobs=-1 in joblib.Parallel to use all available CPU cores for parallel processing.",
+    "skill_reference": "- **n_jobs**: `-1` for all cores, `1` for sequential, or specific number"
+  },
+  {
+    "reason": "The worker considered overhead and memory trade-offs (they precomputed shared matrices and limited workers); the performance tips explain when parallelization is beneficial and warn about memory duplication per worker.",
+    "key_point": "Parallelization overhead matters: only worth parallelizing tasks that take >0.1s each; also watch memory because each worker gets a copy of data; use verbose to monitor progress.",
+    "skill_reference": "## Performance Tips\n\n- Only worth it for tasks taking >0.1s per item (overhead cost)\n- Watch memory usage - each worker gets a copy of data\n- Use `verbose=10` to monitor progress"
+  },
+  {
+    "reason": "After computing objective values (F1 and delta), the worker used the paretoset API to obtain a boolean mask of Pareto-optimal rows; the example shows the exact call signature with the sense argument they used (max F1, min delta).",
+    "key_point": "Use paretoset(objectives, sense=[...]) on a DataFrame of objectives to get a boolean mask of Pareto-optimal rows (specify 'max' for objectives to maximize and 'min' for objectives to minimize).",
+    "skill_reference": "objectives = df[['accuracy', 'latency_ms']]\npareto_mask = paretoset(objectives, sense=[\"max\", \"min\"])"
+  },
+  {
+    "reason": "Understanding Pareto dominance was needed to interpret the mask and ensure the worker filtered the results correctly (maximize F1 and minimize delta). The definition explains dominance criteria used by paretoset.",
+    "key_point": "Pareto dominance: a point A dominates B if A is at least as good in all objectives and strictly better in at least one.",
+    "skill_reference": "Point A **dominates** point B if:\n- A is at least as good as B in all objectives\n- A is strictly better than B in at least one objective"
+  },
+  {
+    "reason": "The worker saved Pareto-optimal results to CSV; the pareto example shows selecting rows via the mask and writing the resulting frontier to disk with to_csv, which the worker replicated (writing /root/pareto_frontier.csv).",
+    "key_point": "Select Pareto-optimal rows with df[pareto_mask] (optionally sort) and write the resulting DataFrame to CSV using DataFrame.to_csv(..., index=False).",
+    "skill_reference": "# Compute Pareto mask\n# sense: \"max\" for objectives to maximize, \"min\" for objectives to minimize\nobjectives = df[['accuracy', 'latency_ms']]\npareto_mask = paretoset(objectives, sense=[\"max\", \"min\"]) \n\n# Get Pareto-optimal points\npareto_points = df[pareto_mask]\n\n...\n\nmask = paretoset(results[['accuracy', 'inference_time']], sense=[\"max\", \"min\"])\npareto_frontier = results[mask].sort_values('accuracy', ascending=False)\n\n# Save to CSV\npareto_frontier.to_csv('pareto_models.csv', index=False)"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "reason": "The worker began by creating persistent planning files before heavy work and repeatedly used TodoWrite to record progress; the rule to create a task plan first explains why they started by making planning files and is necessary to justify that initial step.",
+    "key_point": "Always create a task_plan.md before starting a complex task (the plan file is required before execution).",
+    "skill_reference": "Never start a complex task without `task_plan.md`. Non-negotiable."
+  },
+  {
+    "reason": "The worker created the three planning files in their project directory (not in the skill folder); this rule guided where to place task_plan.md, findings.md, and progress.md so they would be persistent and next to the work.",
+    "key_point": "Put the planning files (task_plan.md, findings.md, progress.md) in your project root — not inside the skill's installation directory.",
+    "skill_reference": "> **Note:** All three planning files should be created in your current working directory (your project root), not in the skill's installation folder."
+  },
+  {
+    "reason": "The worker referenced templates and used TodoWrite rather than creating files in the skill dir; this tells them where to find reference templates vs where to create their project files.",
+    "key_point": "Templates for planning files live in the skill directory under ${CLAUDE_PLUGIN_ROOT}/templates/ (use them as references, but copy into your project).",
+    "skill_reference": "- **Templates** are stored in the skill directory at `${CLAUDE_PLUGIN_ROOT}/templates/`"
+  },
+  {
+    "reason": "The worker explicitly followed the quick-start: creating task_plan.md, findings.md, and progress.md before classifying files (they wrote to disk early). This explains the concrete initial steps they actually executed.",
+    "key_point": "As a quick-start, create task_plan.md, findings.md, and progress.md in your project (use the skill's templates as references).",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference\n2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference\n3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "While processing many PDFs the worker used a batch approach and saved extracted classification outputs to disk; the 2-action rule mandated saving after short sequences of view/search operations to avoid losing multimodal info.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files (the 2-Action Rule).",
+    "skill_reference": "\"After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.\""
+  },
+  {
+    "reason": "The worker read many PDFs and then saved extracted metadata/classifications into files (they repeatedly wrote results after PDF reads); this decision-matrix rule directly prescribes writing when viewing PDFs.",
+    "key_point": "If you view an image or PDF, write findings now (multimodal content should be saved to text before it's lost).",
+    "skill_reference": "| Viewed image/PDF | Write findings NOW | Multimodal → text before lost |"
+  },
+  {
+    "reason": "The worker used task_plan.md to track phases and decisions (creating and updating it); this row explains the intended content and update cadence for the plan file they created.",
+    "key_point": "Use task_plan.md to record phases, progress, and decisions; update it after each phase.",
+    "skill_reference": "| `task_plan.md` | Phases, progress, decisions | After each phase |"
+  },
+  {
+    "reason": "The worker recorded discoveries from reading files into persistent notes (findings.md); this row justified where research discoveries should be stored and when to update.",
+    "key_point": "Use findings.md to store research and discoveries; update it after any discovery.",
+    "skill_reference": "| `findings.md` | Research, discoveries | After ANY discovery |"
+  },
+  {
+    "reason": "The worker logged session actions and test results while running batch commands and moving files (they used progress logging); this row prescribes using progress.md for that purpose.",
+    "key_point": "Use progress.md as a session log and to record test results; keep it updated throughout the session.",
+    "skill_reference": "| `progress.md` | Session log, test results | Throughout session |"
+  },
+  {
+    "reason": "The worker moved files by phase and then recorded completion and notes; this block defines the required post-action updates (status changes, error logs, noting created/modified files) that the worker followed when finishing phases.",
+    "key_point": "After completing any phase: mark phase status from in_progress to complete, log any errors encountered, and note files created or modified.",
+    "skill_reference": "After completing any phase:\n- Mark phase status: `in_progress` → `complete`\n- Log any errors encountered\n- Note files created/modified"
+  },
+  {
+    "reason": "The worker encountered and logged errors and followed escalation rules; the skill's explicit mandate to record all errors guided their logging behavior.",
+    "key_point": "Log every error in the plan file (record errors to build knowledge and prevent repetition).",
+    "skill_reference": "Every error goes in the plan file."
+  },
+  {
+    "reason": "Before major classification decisions the worker re-read their plan to ensure goals were in the attention window; this quick-start instruction was followed to keep decisions aligned with the plan.",
+    "key_point": "Re-read the plan before making decisions to refresh goals and stay aligned with the task.",
+    "skill_reference": "4. **Re-read plan before decisions** — Refreshes goals in attention window"
+  },
+  {
+    "reason": "The worker repeatedly saved extracted text and classifications to disk rather than relying on ephemeral context; this core pattern explains the rationale for persisting important outputs.",
+    "key_point": "Treat the filesystem as persistent memory: anything important should be written to disk rather than only kept in RAM/context.",
+    "skill_reference": "→ Anything important gets written to disk."
+  }
+]

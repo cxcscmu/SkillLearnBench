@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker invoked the pull-request listing capability to retrieve PRs for analysis (they stated they would “use `gh pr list` with appropriate filters” and then fetched PR data). This single-command capability is the entrypoint the worker relied on to enumerate PRs.",
+    "key_point": "Use the gh pr list command to list and filter pull requests in a repository.",
+    "skill_reference": "list:       List and filter pull requests in this repository"
+  },
+  {
+    "reason": "The worker needed to target the cli/cli repository explicitly when running gh commands; the repo-selection flag is how they specified OWNER/REPO for those commands.",
+    "key_point": "Specify which repository to operate on by passing -R or --repo with the [HOST/]OWNER/REPO identifier.",
+    "skill_reference": "-R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format"
+  },
+  {
+    "reason": "To restrict PRs to the Q4 date range the worker relied on the gh CLI’s search capability and its search-syntax guidance; the skill text states that the --search flag uses GitHub search syntax (which supports date qualifiers).",
+    "key_point": "Use the --search flag (which accepts GitHub search syntax) to filter PRs by search qualifiers such as created:date-ranges.",
+    "skill_reference": "The `--search` flag uses GitHub search syntax. Full documentation: https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax"
+  },
+  {
+    "reason": "To form the date-range filter the worker relied on the documented date query format and range syntax (they used a created:YYYY-MM-DD..YYYY-MM-DD style filter for Q4 2024).",
+    "key_point": "Express dates as YYYY-MM-DD (optionally with time) and use the range syntax YYYY-MM-DD..YYYY-MM-DD for created/date filters.",
+    "skill_reference": "| `YYYY-MM-DD..YYYY-MM-DD` | `created:2024-04-30..2024-07-04` — date range |"
+  },
+  {
+    "reason": "The worker needed machine-readable PR fields (changedFiles, createdAt, mergedAt, closedAt, author) to filter by changed-files count, decide merged vs closed by cutoff, compute merge durations, and count authors; the skill documents that these fields are available via --json.",
+    "key_point": "Request JSON output fields (via --json) that include PR properties such as changedFiles, createdAt, mergedAt, closedAt, and author so you can programmatically filter and compute metrics.",
+    "skill_reference": "**PR**:\n\n```\nadditions\nassignees\nauthor\nbaseRefName\nbody\nchangedFiles\nclosed\nclosedAt\ncomments\ncommits\ncreatedAt\ndeletions\nfiles\nheadRefName\nheadRepository\nheadRepositoryOwner\nid\nisCrossRepository\nisDraft\nlabels\nmaintainerCanModify\nmergeCommit\nmergeStateStatus\nmergeable\nmergedAt\nmergedBy\nmilestone\nnumber\npotentialMergeCommit\nprojectCards\nreactionGroups\nreviewDecision\nreviewRequests\nreviews\nstate\nstatusCheckRollup\ntitle\nupdatedAt\nurl\n```"
+  }
+]

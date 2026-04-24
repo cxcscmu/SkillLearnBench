@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker parallelized the hyperparameter grid evaluation; they needed the exact joblib pattern to run a Python callable across many parameter combinations in parallel (the trajectory says they ran ~847 combinations with 4 workers).",
+    "key_point": "Use joblib.Parallel together with joblib.delayed to execute a function over an iterable of inputs in parallel.",
+    "skill_reference": "results = Parallel(n_jobs=-1)(\n    delayed(process_item)(x) for x in range(100)\n)"
+  },
+  {
+    "reason": "The worker chose how many workers to use; the skill's n_jobs convention tells how to request all cores (or a specific count) when launching Parallel.",
+    "key_point": "Control number of workers with the n_jobs parameter (use -1 to use all CPU cores).",
+    "skill_reference": "n_jobs: `-1` for all cores, `1` for sequential, or specific number"
+  },
+  {
+    "reason": "Creating the full grid of hyperparameter combinations is necessary before mapping them to parallel workers; the skill shows using itertools.product and list(...) to produce that grid.",
+    "key_point": "Build the list of parameter combinations using itertools.product and convert to a list for iteration by Parallel.",
+    "skill_reference": "params = list(product([0.1, 0.5, 1.0], [10, 20, 30]))"
+  },
+  {
+    "reason": "The worker passed a function that evaluates a parameter tuple to each parallel worker; the skill example demonstrates calling delayed on the evaluator with the parameter unpacking pattern used in the grid search.",
+    "key_point": "Pass parameter tuples into the evaluator via delayed(evaluate_params)(a, b) inside the Parallel call over the params iterable.",
+    "skill_reference": "results = Parallel(n_jobs=-1, verbose=10)(\n    delayed(evaluate_params)(a, b) for a, b in params\n)"
+  },
+  {
+    "reason": "The citizen/expert point data is shared across evaluations; the worker needed to avoid reloading large shared data per job. The skill shows precomputing shared data once and passing it into each task.",
+    "key_point": "Pre-compute shared data once and pass it as an extra argument to each parallel task (e.g., delayed(func)(p, shared_data)).",
+    "skill_reference": "# Pre-compute once\nshared_data = load_data()\n\ndef process_with_shared(params, data):\n    return compute(params, data)\n\n# Pass shared data to each task\nresults = Parallel(n_jobs=-1)(\n    delayed(process_with_shared)(p, shared_data)\n    for p in param_list\n)"
+  },
+  {
+    "reason": "To compute the Pareto frontier the worker used the paretoset utility; the skill shows the exact function call pattern returning a boolean mask that identifies Pareto-optimal rows.",
+    "key_point": "Use paretoset(objectives, sense=[...]) to obtain a boolean mask selecting Pareto-optimal rows from a DataFrame.",
+    "skill_reference": "pareto_mask = paretoset(objectives, sense=[\"max\", \"min\"])"
+  },
+  {
+    "reason": "The worker had two objectives (maximize F1, minimize delta); the skill specifies how to pass the two-objective DataFrame slice into paretoset.",
+    "key_point": "Pass a DataFrame (or its two-objective columns) to paretoset, e.g., objectives = df[[col1, col2]] before calling paretoset.",
+    "skill_reference": "objectives = df[['accuracy', 'latency_ms']]"
+  },
+  {
+    "reason": "After computing the Pareto boolean mask the worker needed to extract and save the Pareto-optimal rows; the skill shows indexing the original DataFrame with the mask and saving to CSV.",
+    "key_point": "Index the original results DataFrame with the pareto boolean mask to get Pareto-optimal rows, then save that subset to CSV.",
+    "skill_reference": "pareto_points = df[pareto_mask]\n...\n# Save to CSV\npareto_frontier.to_csv('pareto_models.csv', index=False)"
+  }
+]

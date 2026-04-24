@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke brand-guidelines skill to fetch official Anthropic brand tokens and typography",
+    "why_essential": "You must use Anthropic's official colors and fonts to meet the poster's brand requirements.",
+    "evidence": "Launched skill: brand-guidelines; 'Now I have the brand guidelines.'"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Map task color/typography requirements to the retrieved brand tokens",
+    "why_essential": "Determines which exact HEX colors and heading font to apply on the poster and in the design_parameters.json.",
+    "evidence": "‘Let me map them to the requirements and generate the poster. - Background → #faf9f5 ... Corporate Dark → #141413 ... Primary Brand Accent → #d97757’"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Install Pillow (PIL) to enable image generation",
+    "why_essential": "Image creation script depends on the Pillow library to draw and save the poster PNG.",
+    "evidence": "pip install Pillow ... ModuleNotFoundError: No module named 'PIL' -> then 'pip install Pillow -q --break-system-packages' succeeded"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Download and place the Poppins font files for use as the poster heading font",
+    "why_essential": "Applying the specified heading typography requires having the font file available to the rendering script.",
+    "evidence": "Downloaded Poppins variants; urllib.request.urlretrieve 'Poppins-Regular.ttf' ... '/tmp/Poppins-Regular.ttf'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Create the poster generation script /root/generate_nova_poster.py",
+    "why_essential": "Script programmatically composes the exploded-view poster with the required layers, color tokens, annotation styles, and typography.",
+    "evidence": "File created successfully at: /root/generate_nova_poster.py"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run the generation script to produce the poster image",
+    "why_essential": "Executing the script renders and saves the final poster PNG to the filesystem as required output.",
+    "evidence": "python3 generate_nova_poster.py -> Saved: /root/nova_technical_poster.png (1200×1720px)"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Refine the poster layout via edits to the script and re-run until final composition is satisfactory",
+    "why_essential": "Layout adjustments ensure the exploded view, title placement, and annotations meet the minimalist and spacing requirements; re-running produces the updated final image.",
+    "evidence": "The file ... has been updated successfully. ... python3 generate_nova_poster.py -> Saved: /root/nova_technical_poster.png (1200×1500px) — 'The poster looks much better now!'"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write /root/design_parameters.json containing applied HEX values and heading font name",
+    "why_essential": "The task requires a JSON file that documents the exact colors and heading font used in the poster for downstream handoff.",
+    "evidence": "File created successfully at: /root/design_parameters.json with content '\"background_hex\": \"#faf9f5\", \"corporate_dark_hex\": \"#141413\", \"primary_accent_hex\": \"#d97757\" ...'"
+  }
+]

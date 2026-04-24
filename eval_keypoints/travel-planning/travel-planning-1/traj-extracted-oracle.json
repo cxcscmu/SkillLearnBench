@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch bundled dataset search tool",
+    "why_essential": "Access to the project's bundled datasets is required to find real-world cities, accommodations, restaurants, attractions, and distances (rule: must search provided database).",
+    "evidence": "Launching skill: bundled-dataset-search-tool"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Query dataset for Ohio cities",
+    "why_essential": "Identify which Ohio cities are present in the data so the itinerary can cover three valid Ohio cities from the available set.",
+    "evidence": "Cities loaded. ['Toledo', 'Cleveland', 'Dayton', 'Columbus', 'Akron', 'Cincinnati']"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Select Cleveland, Columbus, and Cincinnati as the three Ohio cities",
+    "why_essential": "Choose three target cities to structure the 7-day route; these are popular options among the available cities and determine routing, accommodations, and attractions.",
+    "evidence": "I need to pick 3 cities in Ohio. The most popular tourist cities would be Cleveland, Columbus, and Cincinnati."
+  },
+  {
+    "step_index": 4,
+    "core_step": "Retrieve driving distances and durations between Minneapolis and the selected Ohio cities and between the Ohio cities",
+    "why_essential": "Driving times and distances are required to create a no-flight, self-driving itinerary that fits the trip duration and budget constraints.",
+    "evidence": "Minneapolis to Cleveland: driving ... duration: 11 hours 14 mins ... Cleveland to Columbus: driving ... duration: 2 hours 8 mins ... Columbus to Cincinnati: 1h 39min"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Plan route and nightly city stays (Minneapolis → Cleveland → Columbus → Cincinnati → Minneapolis) with nights allocation (2 nights per Ohio city)",
+    "why_essential": "Establish the 7-day sequence and where to stay each night to meet the date range (Mar 17–23) and cover three Ohio cities within trip duration.",
+    "evidence": "Route: Minneapolis → Cleveland (2 nights) → Columbus (2 nights) → Cincinnati (2 nights) → Minneapolis"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Search accommodations and filter for pet-friendly options with suitable occupancy and minimum nights",
+    "why_essential": "Pet-friendly lodging that accepts a dog and meets occupancy/minimum-night requirements is mandatory for each city to ensure compliance with user constraints.",
+    "evidence": "I need to find pet-friendly accommodations. Looking at the house_rules, I need to avoid places that say 'No pets'."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Search restaurants and attractions in each selected city",
+    "why_essential": "Identify meal options (American, Mediterranean, Chinese, Italian preferred) and nearby attractions to populate daily breakfast/lunch/dinner and activities.",
+    "evidence": "Restaurants loaded. === CLEVELAND === ...; === COLUMBUS === ...; Attractions loaded. === CLEVELAND === ... The Cleveland Museum of Art"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Assemble the 7-day itinerary JSON structure using selected route, accommodations, meals, and attractions",
+    "why_essential": "Produce the required output file with the exact schema (7 day objects, transportation as self-driving, pet-friendly accommodation etc.) to satisfy the task output format.",
+    "evidence": "Now let me compile the itinerary. **Plan:** - Day 1 (Mar 17): Minneapolis → Cleveland ... Now let me plan the full itinerary."
+  },
+  {
+    "step_index": 9,
+    "core_step": "Write itinerary JSON to /app/output/itinerary.json and validate constraints (no flights, pet-friendly stays)",
+    "why_essential": "Persist the final itinerary in the specified file location and confirm it meets constraints (no flights, pet-friendly, uses bundled datasets) as required by the workflow.",
+    "evidence": "File created successfully at: /app/output/itinerary.json ... Final Validation: | No flights used | ✓ All days use 'Self-driving' | | Pet-friendly accommodations ... ✓"
+  }
+]

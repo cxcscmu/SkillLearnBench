@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch the gh-cli skill to interact with GitHub",
+    "why_essential": "All subsequent repository queries and data collection are done via the GitHub CLI; launching the skill is required before making API calls.",
+    "evidence": "\"Let me use the gh CLI skill to interact with GitHub\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Query GitHub to count PRs created in 2024-04-01..2024-06-30 for repo cli/cli",
+    "why_essential": "Determine the total number of PRs in the date range so we know how many PRs must be paginated and fetched for filtering by changed-files.",
+    "evidence": "\"gh api graphql ... search(query: \\\"repo:cli/cli is:pr created:2024-04-01..2024-06-30\\\")\" and returned \"issueCount\":119"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Fetch first page of PR nodes (first 100) with metadata including createdAt, mergedAt, closedAt, changedFiles, author",
+    "why_essential": "We need detailed PR fields (including changedFiles and timestamps) to filter to PRs that changed >= 8 files and compute merge/close metrics.",
+    "evidence": "\"search(... first: 100) { nodes { ... on PullRequest { nu...\" and returned nodes with createdAt/mergedAt/closedAt"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Fetch second page of PR nodes using the returned cursor to get remaining PRs",
+    "why_essential": "There were 119 PRs total, so pagination is required to collect all PRs in the date range for complete filtering and metrics.",
+    "evidence": "\"There are 119 PRs in total. I can paginate...\" and \"first: 100, after: \\\"Y3Vyc29yOjEwMA==\\\"\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Filter collected PRs to those with changedFiles >= 8 and apply cutoff 2024-07-15T00:00:00Z for merge/close status",
+    "why_essential": "The task specifically requires metrics only for PRs that changed at least 8 files and statuses as of the cutoff date; filtering enforces these constraints before metric calculation.",
+    "evidence": "\"filter for PRs with >= 8 changed files\" and \"The cutoff date is 2024-07-15T00:00:00Z.\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Compute metrics: total count, merged by cutoff, closed-without-merge by cutoff, average time-to-merge (days) for merged PRs, and top contributor by PR count (lexicographic tie-break)",
+    "why_essential": "These computations produce the exact set of numbers the report must contain: total, merged, closed, avg_merge_days, and top_contributor.",
+    "evidence": "\"Compute the required metrics... total count ... merged ... closed ... average time-to-merge ... Identify the person who opened the most\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the results to /app/report.json using the required JSON schema",
+    "why_essential": "The task requires saving the final report in the exact JSON structure at /app/report.json so the output can be consumed or archived.",
+    "evidence": "\"Now writing the report.\" and \"File created successfully at: /app/report.json\""
+  }
+]

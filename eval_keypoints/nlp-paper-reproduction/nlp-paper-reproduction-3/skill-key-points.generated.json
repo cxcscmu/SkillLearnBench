@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker followed the skill's central principle to align the runtime to the repository’s declared dependencies before installing anything; this guided the decision to inspect environment files and to create a matching Python environment rather than installing packages into the existing Python 3.12 runtime.",
+    "key_point": "Always align the execution environment to the repository's declared dependencies before installing packages.",
+    "skill_reference": "When reproducing an NLP research repo, **always align the environment to the repo’s declared dependencies first**."
+  },
+  {
+    "reason": "The worker explicitly checked Python versions and treated Python mismatch as the primary failure mode, then created a matching Python environment (uv + venv). This sentence justified the worker's action to set up Python 3.10 rather than proceed with the existing Python 3.12.",
+    "key_point": "Treat Python version mismatch as a primary cause of failures and proactively address it when reproducing a repo.",
+    "skill_reference": "Most failures come from **Python version mismatch** or installing packages without following `requirements.txt` / `environment.yml`."
+  },
+  {
+    "reason": "The worker inspected dependency files and used the environment file as the authoritative source for Python version and non-pip deps; this rule determined using environment.yml (if present) as the base for environment setup.",
+    "key_point": "Prefer environment.yml/environment.yaml as the authoritative dependency file and treat it as the base when both environment.yml and requirements.txt exist.",
+    "skill_reference": "If both exist, treat `environment.yml` as the base, `requirements.txt` as supplemental unless README says otherwise"
+  },
+  {
+    "reason": "The worker logged Python and pip information to a file to document the runtime and reproduce the run; the skill's explicit command list specified the exact commands to capture the required environment information.",
+    "key_point": "Record the current Python environment by running and saving the outputs of: python -VV, python -m pip --version, and python -m pip freeze.",
+    "skill_reference": "Write `/root/python_int.txt` containing: - `python -VV` *(required; Python version is often the root cause)* - `python -m pip --version` - `python -m pip freeze`"
+  },
+  {
+    "reason": "When the worker found a Python major/minor mismatch, they followed the skill guidance to create a matching environment (using uv) instead of forcing installs into the wrong Python; this instruction justified creating a Python 3.10 venv prior to installs.",
+    "key_point": "If the repo expects a specific Python major/minor and the current Python does not match, set up a matching Python environment before installing dependencies.",
+    "skill_reference": "If the repo expects a specific Python major/minor and the current Python does not match, it’s usually best to **set up a matching environment**  before installing dependencies."
+  },
+  {
+    "reason": "The worker used the skill's example procedure (installing uv, installing Python via uv, and creating a venv) as the concrete method to get the required Python version and a reproducible interpreter path to run installs and tests.",
+    "key_point": "Use uv to install a target Python and create a venv (example sequence: install uv, run uv python install <version>, then uv venv --python <version> <path>) and use the new interpreter for installs/tests.",
+    "skill_reference": "# Install uv\napt-get update\napt-get install -y --no-install-recommends curl ca-certificates\nrm -rf /var/lib/apt/lists/*\ncurl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh\nexport PATH=\"/root/.local/bin:$PATH\"\n\n# Install Python + create a venv\nuv python install 3.11.8\nuv venv --python 3.11.8 /opt/py311\n\n# Use the new Python for installs/runs\n/opt/py311/bin/python -VV\n/opt/py311/bin/python -m pip install -U pip setuptools wheel"
+  },
+  {
+    "reason": "After aligning the environment, the worker installed only the minimal packages and ran import/smoke tests; this sentence justified prioritizing installation from the repo's dependency files followed by a quick import test rather than ad-hoc upgrades.",
+    "key_point": "Install dependencies from the repository's declared dependency files (avoid arbitrary upgrades), then run a quick import/smoke test to validate the environment.",
+    "skill_reference": "Prefer installing from the repo’s dependency files (avoid random upgrades), then run a quick import/smoke test."
+  }
+]

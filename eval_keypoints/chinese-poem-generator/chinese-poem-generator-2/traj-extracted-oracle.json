@@ -1,0 +1,32 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Determine required poetic form and perspective",
+    "why_essential": "The poem must be a seven-character regulated verse and written from the village wife's perspective; establishing form and viewpoint is necessary to meet task constraints.",
+    "evidence": "The user: 'compose a seven-character regulated verse... perspective of a village wife whose husband has survived the war'"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Specify theme details and required emotional content",
+    "why_essential": "The poem must recall fear, separation, and uncertainty, express gratitude for restored family life, and wish for lasting peace; these content requirements guide composition.",
+    "evidence": "The user: 'recall the years of fear, separation, and uncertainty... express gratitude... deep wish that no more wars will break the peace.'"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Choose rhyme and tone pattern consistent with modern Mandarin 七言律诗",
+    "why_essential": "A regulated verse requires a specific rhyme and tonal pattern; selecting rhyme (modern Mandarin final) and tone scheme is required to produce a valid 七言律诗.",
+    "evidence": "Assistant: 'Form chosen: Ze-start Ping-end, rhyme-on-line-1... Rhyme: modern Mandarin final -uan (平声)'"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Invoke regulated-lvshi-composer skill to compose the poem with the specified form, theme, perspective, and rhyme",
+    "why_essential": "The composition is produced by the specialized skill—the tool must be called to generate a compliant 七言律诗.",
+    "evidence": "Tool call input: '{\"skill\": \"regulated-lvshi-composer\", \"args\": \"七言律诗，主题：乱后重逢。视角：村妇... 保存到 /root/poem.txt...\"}'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write the composed poem to /root/poem.txt with title on first line followed by eight poem lines",
+    "why_essential": "The user required the poem to be saved at /root/poem.txt in the exact format (title then eight lines); writing the file finalizes task delivery.",
+    "evidence": "Write tool input: '{\"file_path\": \"/root/poem.txt\", \"content\": \"乱后夫归\\n\\n塞外归人踏雁还，\\n...再莫烽烟散梦圆。\\n\"}' and tool_result: 'File created successfully at: /root/poem.txt'"
+  }
+]

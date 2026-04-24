@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker explicitly followed the skill's instruction to consult the forms documentation before filling a PDF form (they read forms.md and then proceeded to map form fields), so this directive was essential to know to use the provided form-filling guidance rather than ad-hoc PDF editing.",
+    "key_point": "If you need to fill out a PDF form, read forms.md and follow its instructions.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The worker used pypdf to open and inspect the SC-100 PDF pages and extract text/fields (they created a reader and inspected pages), so knowing the pypdf import and reader usage was required to programmatically read the PDF.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and iterate pages to extract text or inspect fields.",
+    "skill_reference": "reader = PdfReader(\"document.pdf\")"
+  },
+  {
+    "reason": "To produce the final filled PDF the worker wrote output files; the worker relied on pypdf's writer API to assemble/write the output PDF, so the writer.write call is a necessary action to save the filled PDF.",
+    "key_point": "Use PdfWriter and call writer.write(output) to save the assembled/modified PDF to disk.",
+    "skill_reference": "writer.write(output)"
+  },
+  {
+    "reason": "The worker used page-level operations when examining and composing PDFs (they inspected pages and mapped fields), so the ability to add pages programmatically was needed when manipulating or reassembling PDF content during form processing.",
+    "key_point": "Use PdfWriter.add_page(page) to add pages from a reader into a writer when merging or rebuilding PDFs.",
+    "skill_reference": "writer.add_page(page)"
+  },
+  {
+    "reason": "The worker converted PDF pages to images to visually inspect the filled form fields; the skill's PDF->image snippet (pdf2image usage) provides the exact method for converting pages to images for OCR/visual verification, which the worker applied.",
+    "key_point": "Convert PDF pages to images using convert_from_path so pages can be OCR'd or visually inspected (pdf2image -> pytesseract workflow).",
+    "skill_reference": "images = convert_from_path('scanned.pdf')"
+  }
+]

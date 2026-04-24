@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker used the fuzzy-name-search script to find funds by name (to locate Soros or Pershing Square accession numbers); this exact command pattern is what they ran to perform a fuzzy fund lookup for a quarter.",
+    "key_point": "Use the search_fund.py script with --keywords and --quarter to perform a fuzzy search for fund names and return candidate matches.",
+    "skill_reference": "```bash\npython3 scripts/search_fund.py --keywords \"bridgewater\" --quarter 2025-q2 --topk 10\n```"
+  },
+  {
+    "reason": "The worker relied on the search output fields to extract the accession number and filing manager name for the matched fund (they used the ACCESSION_NUMBER from the output to fetch fund details).",
+    "key_point": "The fuzzy search returns records containing ACCESSION_NUMBER and FILINGMANAGER_NAME (among other fields) which you use to identify the fund.",
+    "skill_reference": "** Rank 1 (score = 81.818) **\n  ACCESSION_NUMBER: 0001172661-25-003151\n  REPORTCALENDARORQUARTER: 30-JUN-2025\n  FILINGMANAGER_NAME: Bridgewater Associates, LP\n  FILINGMANAGER_STREET: One Nyala Farms Road\n  FILINGMANAGER_CITY: Westport\n  FILINGMANAGER_STATEORCOUNTRY: CT\n  FORM13FFILENUMBER: 028-11794"
+  },
+  {
+    "reason": "When an accession number is already known, the worker used the exact-search invocation to get a precise match for that accession number; this is how they resolved accession -> fund.",
+    "key_point": "You can run search_fund.py with --accession_number and --quarter to get an exact, single-match result for that accession number.",
+    "skill_reference": "```python\npython3 scripts/search_fund.py \\\n    --accession_number 0001172661-25-003151 \\\n    --quarter 2025-q2\n```"
+  },
+  {
+    "reason": "To find NVIDIA's CUSIP the worker used the stock fuzzy-search facility; the documented script and example show how to retrieve a CUSIP by keyword.",
+    "key_point": "Use scripts/search_stock_cusip.py with --keywords and --topk to fuzzy-search stock names and obtain CUSIPs.",
+    "skill_reference": "```python\npython3 scripts/search_stock_cusip.py \\\n    --keywords palantir \\\n    --topk 10\n```"
+  },
+  {
+    "reason": "The worker needed to obtain a fund's AUM for Q3; the one_fund_analysis script is the documented tool to output AUM for a given accession number and quarter.",
+    "key_point": "Run scripts/one_fund_analysis.py with --accession_number and --quarter to analyze a single fund in one quarter (used to retrieve AUM).",
+    "skill_reference": "```bash\npython3 scripts/one_fund_analysis.py \\\n    --accession_number ... \\\n    --quarter 2025-q2 \\\n```"
+  },
+  {
+    "reason": "The worker expected the one_fund_analysis output to include AUM (so they knew this script would directly give the AUM value for Q1's query).",
+    "key_point": "The one_fund_analysis.py script prints basic information for a fund including AUM.",
+    "skill_reference": "This script will print out several basic information of a given fund on 2025-q2, including total number of holdings, AUM, total number of stock holdings, etc."
+  },
+  {
+    "reason": "To compute changes in Pershing Square's holdings between Q2 and Q3, the worker invoked the comparison mode of one_fund_analysis with baseline quarter and accession; this exact argument pattern is what produces the delta.",
+    "key_point": "Use one_fund_analysis.py with --quarter (target), --accession_number (target), --baseline_quarter and --baseline_accession_number to analyze holdings changes between two quarters.",
+    "skill_reference": "```bash\npython scripts/one_fund_analysis.py \\\n    --quarter 2025-q3 \\\n    --accession_number <accession number assigned in q3> \\\n    --baseline_quarter 2025-q2 \\\n    --baseline_accession_number <accession number assigned in q2>\n```"
+  },
+  {
+    "reason": "To list the top funds holding NVIDIA by notional value in Q3 the worker used the holding-analysis script; this command is the documented way to get the top-k holders for a CUSIP.",
+    "key_point": "Run scripts/holding_analysis.py with --cusip, --quarter and --topk to list the top funds holding a given stock by notional value.",
+    "skill_reference": "```bash\npython scripts/holding_analysis.py \\\n    --cusip <stock cusip> \\\n    --quarter 2025-q3 \\\n    --topk 10\n```"
+  },
+  {
+    "reason": "The worker relied on the fuzzy-name-search tolerance to try partial terms (e.g., 'soros') after the initial query failed; the skill explicitly states that exact spelling is not required.",
+    "key_point": "The fuzzy-name-search does not require an exact name because it uses built-in fuzzy string search algorithms (Levenshtein-based) to match similar names.",
+    "skill_reference": "Note that you don't have to provide the accurate name since this tool has built-in fuzzy string search algorithms based on Levinsteins."
+  }
+]

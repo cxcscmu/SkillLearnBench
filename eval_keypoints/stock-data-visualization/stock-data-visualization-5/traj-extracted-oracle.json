@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read /root/data/stock-descriptions.csv to load company metadata",
+    "why_essential": "The visualization requires company metadata (ticker, sector, full name, marketCap) to build the table and bubble attributes (size, color, labels).",
+    "evidence": "Read status=success ... file_path: /root/data/stock-descriptions.csv"
+  },
+  {
+    "step_index": 2,
+    "core_step": "List CSV files in /root/data/indiv-stock/ to identify available stock price histories",
+    "why_essential": "The app must copy and provide the individual stock price datasets; knowing which files exist ensures all required input datasets are included under output/data/indiv-stock.",
+    "evidence": "Glob status=success input={\"pattern\": \"/root/data/indiv-stock/*.csv\"} -> returned a list of CSV files (e.g., GE.csv, NEE.csv, XOM.csv...)"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Read a sample stock file (/root/data/indiv-stock/AAPL.csv) to confirm file structure",
+    "why_essential": "Understanding the per-stock CSV structure (Date, Open, Close, etc.) ensures the visualization can correctly handle/copy these files and any future parsing needs.",
+    "evidence": "Read status=success ... file_path: /root/data/indiv-stock/AAPL.csv -> content shows header 'Date,Low,Open,Volume,High,Close,Adjusted Close'"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create output directories and copy input datasets into /root/output/data/",
+    "why_essential": "Project structure requires copied datasets under /root/output/data/ so the single-page app can load them from the specified path.",
+    "evidence": "Bash status=success input={\"command\": \"mkdir -p /root/output/js /root/output/css /root/output/data/indiv-stock && cp /root/data/stock-descriptions.csv /root/output/data/ && cp /root/data/indiv-stock/* /r...\"} -> \"done\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Download D3.js v6 minified to /root/output/js/d3.v6.min.js",
+    "why_essential": "The visualization must use D3.js v6; providing d3.v6.min.js locally ensures the app can run without external network dependencies.",
+    "evidence": "Bash status=success input={\"command\": \"curl -sL \\\"https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js\\\" -o /root/output/js/d3.v6.min.js\"} -> output file present (270687 bytes)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write /root/output/css/style.css with application styling",
+    "why_essential": "Styling is required for layout (two components side-by-side), full text display, legend div, and general readability of the app.",
+    "evidence": "Write status=success file created: /root/output/css/style.css"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write /root/output/js/visualization.js implementing the D3 bubble chart, force simulation, tooltips, interactions, and legend behavior",
+    "why_essential": "All core visualization logic (bubbles sized by market cap, color by sector, clustering forces, forceCollide, tooltips excluding ETFs, click interactions linking table and bubbles) must be implemented in this JS file.",
+    "evidence": "Write status=success file created: /root/output/js/visualization.js; grep result shows 'bubble.append(\"circle\")' (one circle per stock bubble)"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write /root/output/index.html to load assets, arrange bubble chart and data table side-by-side, and include legend div",
+    "why_essential": "An HTML entry point is required at /root/output/index.html to present the single-page application and satisfy the requirement that the final output be viewable there.",
+    "evidence": "Write status=success file created: /root/output/index.html"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Verify output files and ensure SVG circle usage is limited to stock bubbles",
+    "why_essential": "Confirming the output structure and that only stock-representing <circle> elements exist ensures compliance with constraints (no auxiliary decorative SVG circles) and that the app is ready to run.",
+    "evidence": "Bash find /root/output ... returned file list; Grep 'circle' in visualization.js returned 'bubble.append(\"circle\")'; grep in index.html returned 'No matches found'"
+  }
+]

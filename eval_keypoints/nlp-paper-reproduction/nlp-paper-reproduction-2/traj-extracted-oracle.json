@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read simpo_trainer.py and unit_test_1.py to locate the missing implementation and test harness",
+    "why_essential": "You must find where simpo_loss needs to be implemented and how the unit test will exercise it before making code changes",
+    "evidence": "Read /root/SimPO/scripts/simpo_trainer.py and /root/SimPO/unit_test/unit_test_1.py"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Install poppler-utils and extract the paper text from /root/SimPO/paper.pdf",
+    "why_essential": "The paper describes the SimPO loss formula required to implement simpo_loss correctly; extracting its text is necessary to implement according to the paper",
+    "evidence": "\"apt-get install -y poppler-utils\" and then \"pdftotext /root/SimPO/paper.pdf -\" produced the paper text"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Set up Python 3.10.14 runtime and create a virtual environment at /opt/py310",
+    "why_essential": "The repository expects a Python 3.10 environment; tests and package installs must run under a compatible interpreter to reproduce results deterministically",
+    "evidence": "uv python install 3.10.14 ... Installed Python 3.10.14; uv venv --python 3.10.14 /opt/py310"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Install required Python packages (torch, transformers, trl, pytest, etc.) into the /opt/py310 environment",
+    "why_essential": "Unit tests and the implementation depend on these libraries (e.g., torch) to compute the loss and run the tests",
+    "evidence": "uv pip install --python /opt/py310/bin/python \"torch==2.2.2\" \"transformers==4.44.2\" \"trl==0.9.6\" ... and later installed pytest"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Implement simpo_loss in /root/SimPO/scripts/simpo_trainer.py according to the SimPO paper",
+    "why_essential": "The task requires implementing the simpo_loss function (the missing core functionality) so the unit test can compute the expected losses",
+    "evidence": "Now let me implement the `simpo_loss` function: ... Edit status=success input={\"file_path\": \"/root/SimPO/scripts/simpo_trainer.py\"}"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run the unit test unit_test_1.py using the /opt/py310 Python to compute losses",
+    "why_essential": "Executing the unit test generates the fixed-input loss outputs used for verification and saves them to /root/loss.npz as required",
+    "evidence": "cd /root/SimPO && /opt/py310/bin/python -m pytest unit_test/unit_test_1.py -v ... Test passed."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Save environment information (python -VV and pip freeze) to /root/python_info.txt",
+    "why_essential": "Recording the exact Python version and installed packages is necessary to reproduce the loss computation environment",
+    "evidence": "{ /opt/py310/bin/python -VV; /opt/py310/bin/python -m pip freeze; } > /root/python_info.txt"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Verify the produced loss matrix by loading /root/loss.npz and printing the 'losses' key",
+    "why_essential": "Confirmation ensures the unit test produced the required output and that the losses are available under the specified key",
+    "evidence": "np.load('/root/loss.npz'); print('keys:', list(d.keys())); print('losses:', d['losses'])"
+  }
+]

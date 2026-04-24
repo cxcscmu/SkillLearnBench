@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "The worker created planning files early (tool writes at [11],[12]) and relied on them as persistent state during the multi-step classification; without the rule to not start without a task_plan.md the agent might begin classification without recording the plan.",
+    "key_point": "Do not begin a complex multi-step task until a task_plan.md planning file is created.",
+    "skill_reference": "Never start a complex task without `task_plan.md`. Non-negotiable."
+  },
+  {
+    "reason": "The worker explicitly created the three planning files (tool writes at [11],[12]) following the Quick Start; these separate files structured the session and were required for logging findings and progress.",
+    "key_point": "Create a task_plan.md in the project to capture phases and decisions before work starts.",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference"
+  },
+  {
+    "reason": "The worker saved intermediate discoveries and relied on persistent notes while reading many documents (numerous Read calls); the skill required a dedicated findings.md for research discoveries.",
+    "key_point": "Create a findings.md in the project to record research discoveries and important observations as they occur.",
+    "skill_reference": "2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference"
+  },
+  {
+    "reason": "The worker logged session actions and results (many tool calls and later verification); the skill instructs maintaining a progress.md for session logs and results.",
+    "key_point": "Create a progress.md in the project to log session activity, test results, and actions performed throughout the session.",
+    "skill_reference": "3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "The worker placed planning files alongside the working files (wrote files in project dir); the skill specifies these files must live in the project directory rather than the skill installation folder to be accessible and persistent.",
+    "key_point": "Store the planning files (task_plan.md, findings.md, progress.md) in your project directory (the folder you are working in).",
+    "skill_reference": "Your planning files (`task_plan.md`, `findings.md`, `progress.md`) should be created in **your project directory** — the folder where you're working"
+  },
+  {
+    "reason": "The worker followed the explicit note about file location (created files in working dir rather than skill dir); this prevents accidentally writing files into the skill installation area.",
+    "key_point": "Ensure all three planning files are created in the current working directory (project root), not in the skill's installation folder.",
+    "skill_reference": "> **Note:** All three planning files should be created in your current working directory (your project root), not in the skill's installation folder."
+  },
+  {
+    "reason": "Throughout the trajectory the agent repeatedly read many files (numerous Read tool calls) and wrote results; the core pattern justified writing any important information to disk so it would persist across many operations.",
+    "key_point": "Treat RAM as volatile and write anything important to disk so it persists across the session.",
+    "skill_reference": "→ Anything important gets written to disk."
+  },
+  {
+    "reason": "The worker performed many read/view operations and then wrote planning files and moved files; the 2-Action Rule prescribes saving after every two view/search actions to avoid losing multimodal info—this explains why the agent created and updated planning files while classifying batches.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files (the '2-Action Rule').",
+    "skill_reference": "> \"After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.\""
+  },
+  {
+    "reason": "The worker paused to decide strategy (e.g., 'Let me think about an efficient approach', created folders then classified) — the skill requires reading the plan before major decisions so choices remain aligned to goals.",
+    "key_point": "Before major decisions, read the plan file to keep goals in the attention window.",
+    "skill_reference": "Before major decisions, read the plan file. This keeps goals in your attention window"
+  },
+  {
+    "reason": "The worker executed phases (create folders, classify, move files) and then verified totals; the skill instructs marking phase status and noting created/modified files after completing phases—this is how the agent tracked progress and confirmed all files were moved.",
+    "key_point": "After completing any phase, mark the phase status (e.g., in_progress → complete) and note files created or modified.",
+    "skill_reference": "Mark phase status: `in_progress` → `complete`"
+  },
+  {
+    "reason": "The worker encountered many read errors (many Read calls with status=error) and needed to record errors; the skill explicitly requires logging every error into the plan file so failures are tracked and not repeated.",
+    "key_point": "Log every error in the plan file so errors are recorded, investigated, and prevented from recurring.",
+    "skill_reference": "Every error goes in the plan file. This builds knowledge and prevents repetition."
+  },
+  {
+    "reason": "The worker used templates from the skill to create planning files (the Quick Start and templates references), and the skill tells where templates are stored so the agent knows which path to copy from when initializing planning files.",
+    "key_point": "Use the skill's templates stored under the skill directory (CLAUDE_PLUGIN_ROOT/templates/) as references when creating planning files.",
+    "skill_reference": "- **Templates** are stored in the skill directory at `${CLAUDE_PLUGIN_ROOT}/templates/`"
+  }
+]

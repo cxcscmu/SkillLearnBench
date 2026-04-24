@@ -1,0 +1,87 @@
+[
+  {
+    "reason": "The agent needed the exact command to run GLM from the working directory to produce model output; the worker executed shell runs of GLM as shown in the trajectory.",
+    "key_point": "Run GLM from /root using the shell command sequence: change to /root and run the 'glm' executable.",
+    "skill_reference": "cd /root\nglm"
+  },
+  {
+    "reason": "The worker relied on the fact that GLM reads glm3.nml and produces NetCDF output at output/output.nc so that changing glm3.nml and rerunning GLM would create /root/output/output.nc as required by the task.",
+    "key_point": "GLM reads glm3.nml in the current directory and writes its output to output/output.nc.",
+    "skill_reference": "GLM reads `glm3.nml` in the current directory and produces output in `output/output.nc`."
+  },
+  {
+    "reason": "The calibration search and final edits were constrained to a small set of parameters; the worker only modified these and kept other parameters unchanged per the skill guidance.",
+    "key_point": "Only adjust the explicitly allowed calibration parameters (do not change other configuration or initialization settings).",
+    "skill_reference": "Only adjust the parameters explicitly allowed by the task"
+  },
+  {
+    "reason": "The worker used the allowed range for Kw to set Kw=0.5 (the upper bound); knowing this numeric range prevented out-of-range edits and guided parameter choices.",
+    "key_point": "Kw (light extinction) is editable and must stay within the range 0.1 - 0.5.",
+    "skill_reference": "| `Kw`           | `&light`       | Light extinction coefficient (m⁻¹) | 0.3     | 0.1 - 0.5      |"
+  },
+  {
+    "reason": "The worker adjusted the hypolimnetic mixing coefficient (coef_mix_hyp) during calibration; the allowed range governed valid test values.",
+    "key_point": "coef_mix_hyp (hypolimnetic mixing coefficient) is editable and must stay within the range 0.3 - 0.7.",
+    "skill_reference": "| `coef_mix_hyp` | `&mixing`      | Hypolimnetic mixing coefficient      | 0.5     | 0.3 - 0.7      |"
+  },
+  {
+    "reason": "The worker experimented with wind scaling during calibration (e.g., setting wind_factor=0.9); the skill's numeric range was necessary to keep values valid.",
+    "key_point": "wind_factor (wind speed scaling) is editable and must stay within the range 0.7 - 1.3.",
+    "skill_reference": "| `wind_factor`  | `&meteorology` | Wind speed scaling factor            | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker tuned longwave radiation scaling to reduce overall bias; the allowed lw_factor range prevented invalid choices.",
+    "key_point": "lw_factor (longwave radiation scaling) is editable and must stay within the range 0.7 - 1.3.",
+    "skill_reference": "| `lw_factor`    | `&meteorology` | Longwave radiation scaling           | 1.0     | 0.7 - 1.3      |"
+  },
+  {
+    "reason": "The worker left ch at its default but used the knowledge that it was editable and bounded; the range constrained any fine-tuning decisions.",
+    "key_point": "ch (sensible heat transfer coefficient) is editable and must stay within the range 0.0005 - 0.002.",
+    "skill_reference": "| `ch`           | `&meteorology` | Sensible heat transfer coefficient   | 0.0013  | 0.0005 - 0.002 |"
+  },
+  {
+    "reason": "The worker targeted cooling of deep waters by increasing Kw; the skill provided the causal effect linking Kw changes to deep-water temperature.",
+    "key_point": "Increasing Kw reduces light penetration and cools deep water; decreasing Kw increases light penetration and warms deep water.",
+    "skill_reference": "| `Kw`           | Less light penetration, cooler deep water | More light penetration, warmer deep water |"
+  },
+  {
+    "reason": "The worker adjusted coef_mix_hyp to control deep mixing versus stratification; the skill described the effect of changing this parameter, guiding calibration choices.",
+    "key_point": "Increasing coef_mix_hyp increases deep mixing (weaker stratification); decreasing it reduces mixing (stronger stratification).",
+    "skill_reference": "| `coef_mix_hyp` | More deep mixing, weaker stratification   | Less mixing, stronger stratification      |"
+  },
+  {
+    "reason": "To compute exact evaluation metrics the agent converted GLM's vertical coordinate to depth-from-surface; the skill's code showed the exact conversion used by the worker.",
+    "key_point": "Convert GLM z (height above lake bottom) to depth-from-surface as depth = lake_depth - z when building the simulated profile table.",
+    "skill_reference": "depth = lake_depth - float(h_val)"
+  },
+  {
+    "reason": "The worker matched observations and simulations by rounded depth; the skill showed rounding the simulated depth and grouping duplicates before merging, which the worker used for exact matching.",
+    "key_point": "Round depths to integers and group by datetime and depth (averaging duplicates) before merging simulations with observations.",
+    "skill_reference": "records.append({\n                        'datetime': date,\n                        'depth': round(depth),\n                        'temp_sim': float(t_val)\n                    })\n    nc.close()\n\n    df = pd.DataFrame(records)\n    df = df.groupby(['datetime', 'depth']).agg({'temp_sim': 'mean'}).reset_index()"
+  },
+  {
+    "reason": "The worker computed the final merged set by exact key matching on datetime and rounded depth; the skill provided the exact merge command the worker used.",
+    "key_point": "Merge observations and simulations by exact 'datetime' and 'depth' with an inner join to get matched pairs for RMSE.",
+    "skill_reference": "merged = pd.merge(obs_df, sim_df, on=['datetime', 'depth'], how='inner')"
+  },
+  {
+    "reason": "The worker used the skill's RMSE function to compute the task metrics on the merged pairs; the exact RMSE formula was applied to evaluate success.",
+    "key_point": "Compute RMSE as the square root of the mean squared error between temp_sim and temp_obs: sqrt(mean((temp_sim - temp_obs)^2)).",
+    "skill_reference": "return float(np.sqrt(np.mean(errors ** 2)))"
+  },
+  {
+    "reason": "The task requires specific deep and seasonal subsets; the worker used the skill's exact month mask and depth threshold to compute those subsets for RMSE.",
+    "key_point": "Define summer as months 6–9 and deep as depth >= 13 m using exact masks when computing the annual_deep and summer_deep subsets.",
+    "skill_reference": "summer_mask = merged['datetime'].dt.month.isin([6, 7, 8, 9])\n    annual_deep = merged[merged['depth'] >= 13]\n    summer_deep = merged[summer_mask & (merged['depth'] >= 13)]"
+  },
+  {
+    "reason": "After finding a candidate that passes the metrics the worker needed to produce the exact required output file; the skill specified the exact metrics file and keys to write.",
+    "key_point": "When producing final self-evaluation, save /root/metrics.json containing the keys overall_rmse, annual_deep_rmse, summer_deep_rmse, overall_n_pairs, annual_deep_n_pairs, and summer_deep_n_pairs.",
+    "skill_reference": "When a task requires an exact self-evaluation file, save `/root/metrics.json` with the task's required keys. For the deep-band calibration tasks in this benchmark family, the file must contain:\n- `overall_rmse`\n- `annual_deep_rmse`\n- `summer_deep_rmse`\n- `overall_n_pairs`\n- `annual_deep_n_pairs`\n- `summer_deep_n_pairs`"
+  },
+  {
+    "reason": "The worker followed the calibration workflow: stop calibration once a passing configuration is found, rerun GLM at that setting, and hand off to glm-output to write metrics.json; this rule determined the end-of-search behavior the worker used.",
+    "key_point": "After finding a passing parameter set, rerun GLM once at that setting, switch to glm-output, write /root/metrics.json, and stop further calibration.",
+    "skill_reference": "After the first passing configuration is found, rerun GLM once at that setting, switch to `glm-output`, write `/root/metrics.json`, and end the task"
+  }
+]

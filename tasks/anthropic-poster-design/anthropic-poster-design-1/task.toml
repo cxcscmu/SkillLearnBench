@@ -1,0 +1,12 @@
+[task]
+id = "anthropic-poster-design"
+name = "Brand-Compliant Technical Infographic Generation"
+category = "Image Generation"
+difficulty = "Medium"
+
+[metadata]
+tags = ["image-generation", "brand-consistency", "knowledge-retrieval"]
+
+[evaluation]
+# Check if the agent correctly mapped semantic labels to hex codes
+required_files = ["/root/nova_technical_poster.png", "/root/design_parameters.json"]

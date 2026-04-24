@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke travel-planning-workflow skill",
+    "why_essential": "Starts the structured workflow used to plan the trip and guides subsequent dataset searches and planning logic",
+    "evidence": "Skill status=success input={\"skill\": \"travel-planning-workflow\"} -> \"Launching skill: travel-planning-workflow\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Launch bundled-dataset-search-tool",
+    "why_essential": "Provides access to the bundled datasets (cities, distances, accommodations, restaurants, attractions) required by rules to build a real-data itinerary",
+    "evidence": "Skill status=success input={\"skill\": \"bundled-dataset-search-tool\"} -> \"Launching skill: bundled-dataset-search-tool\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Install Python packages needed for dataset scripts (pip install pandas numpy requests)",
+    "why_essential": "Ensures the environment has the libraries required to run dataset search scripts that extract real-world POIs and distances",
+    "evidence": "Bash status=success input={\"command\": \"pip install pandas numpy requests -q && echo \\\"Done\\\"\"} -> \"Done\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run Cities script to list Ohio cities",
+    "why_essential": "Identifies candidate Ohio cities to select the three cities to include in the 7-day itinerary",
+    "evidence": "python3 -c \"from search_cities import Cities\\n c = Cities()\\n print(c.run('Ohio'))\" -> \"['Toledo', 'Cleveland', 'Dayton', 'Columbus', 'Akron', 'Cincinnati']\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Query driving distances using GoogleDistanceMatrix script",
+    "why_essential": "Obtains driving durations and distances needed to create a self-driving itinerary without flights and to estimate travel time/cost between cities",
+    "evidence": "GoogleDistanceMatrix loaded.\\ndriving, from Minneapolis to Cleveland, duration: 11 hours 14 mins, distance: 1,219 km, cost: 60"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Search accommodations dataset for pet-friendly lodgings",
+    "why_essential": "Finds pet-friendly accommodation options required by the user's constraint to travel with their dog",
+    "evidence": "python3 -c \"from search_accommodations import Accommodations\\n acc = Accommodations()...\" -> \"Accommodations loaded.\\n=== Cleveland ===\" and discussion of house_rules filtering for 'No pets'"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Search restaurants dataset for cuisine options (American, Mediterranean, Chinese, Italian)",
+    "why_essential": "Identifies restaurants matching the user's preferred cuisines to include in daily meal entries",
+    "evidence": "python3 -c \"from search_restaurants import Restaurants\\n r = Restaurants()...\" -> \"Restaurants loaded.\\n=== Cleveland ===\\n Name Cuisines Average Cost\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Search attractions dataset for city points of interest",
+    "why_essential": "Retrieves attractions to populate daily activity plans, while allowing omission on day 4 per user request",
+    "evidence": "python3 -c \"from search_attractions import Attractions\\n a = Attractions()...\" -> \"Attractions loaded.\\n=== Cleveland ===\\n Name Cleveland Metroparks Zoo\""
+  },
+  {
+    "step_index": 9,
+    "core_step": "Create output directory /app/output",
+    "why_essential": "Ensures the destination directory exists so the itinerary JSON file can be written to the required path",
+    "evidence": "Bash status=success input={\"command\": \"mkdir -p /app/output && echo \\\"Directory ready\\\"\"} -> \"Directory ready\""
+  },
+  {
+    "step_index": 10,
+    "core_step": "Write final itinerary JSON to /app/output/itinerary.json",
+    "why_essential": "Produces the required single JSON file containing the 7-day plan and data_sources as the task's specified output",
+    "evidence": "Write status=success input={\"file_path\": \"/app/output/itinerary.json\", \"content\": \"...\"} -> \"File created successfully at: /app/output/itinerary.json\""
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker vendored a local D3 file (wrote /root/output/js/d3.v6.min.js); the skill's offline/dependency rule is the basis for that decision and prevents loading from a CDN which would break offline/deterministic output.",
+    "key_point": "Do not load D3 from a CDN; instead vendor a pinned, minified D3 bundle so the visualization is offline and deterministic.",
+    "skill_reference": "Do **not** load D3 from a CDN."
+  },
+  {
+    "reason": "The worker created a local minified D3 file rather than pulling from a CDN; the skill recommends vendoring a minified bundle which justifies adding /root/output/js/d3.v6.min.js to the output.",
+    "key_point": "Prefer vendoring a minified D3 bundle (i.e., include a local d3.x.min.js file) rather than relying on external package resolution at runtime.",
+    "skill_reference": "Prefer vendoring a minified D3 bundle (e.g., `vendor/d3.v7.9.0.min.js`) or bundling with a lockfile."
+  },
+  {
+    "reason": "The worker implemented a deterministic force simulation and explicitly ran a fixed number of ticks (300). The skill prescribes how to make force layouts deterministic (fix ticks and initial positions), which the worker followed.",
+    "key_point": "When using a force layout, make it deterministic by fixing the tick count, fixing initial node positions deterministically, and running exactly N ticks then stopping.",
+    "skill_reference": "If a force layout is required:\n  - fix the tick count,\n  - fix initial positions deterministically (e.g., sorted nodes placed on a grid),\n  - run exactly N ticks and stop."
+  },
+  {
+    "reason": "The worker explicitly avoided randomness and ran a deterministic simulation; the skill forbids random generators which would break reproducibility.",
+    "key_point": "Avoid randomness in visualization code; do not use Math.random() or d3-random so results remain reproducible.",
+    "skill_reference": "No randomness: do not use Math.random() or d3-random."
+  },
+  {
+    "reason": "The worker implemented hover tooltips and used the pattern of creating a tooltip element; the skill provides the exact HTML element to add and the worker used this pattern.",
+    "key_point": "Create a dedicated tooltip DOM element (a div with an id/class) in the HTML to show hover details.",
+    "skill_reference": "<div id=\"tooltip\" class=\"tooltip\"></div>"
+  },
+  {
+    "reason": "The worker used CSS-based show/hide and pointer-events rules for the tooltip (so it doesn't block mouse events and transitions are smooth); these CSS rules come straight from the skill's recommended tooltip styling.",
+    "key_point": "Style the tooltip with opacity: 0 by default and pointer-events: none, and toggle a visible class for showing it to avoid blocking mouse events and enable smooth transitions.",
+    "skill_reference": ".tooltip {\n    position: absolute;\n    padding: 10px;\n    background: rgba(0, 0, 0, 0.8);\n    color: white;\n    border-radius: 4px;\n    pointer-events: none;  /* Prevent mouse interference */\n    opacity: 0;\n    transition: opacity 0.2s;\n    z-index: 1000;\n}"
+  },
+  {
+    "reason": "The worker implemented tooltip show/hide on mouseover/mouseout and positioned it relative to the mouse; the skill provides the exact D3 event handler pattern including class toggling and positioning which the worker applied.",
+    "key_point": "Use event handlers that call d3.select('#tooltip').classed('visible', true/false) and position the tooltip with event.pageX/pageY to show contextual information on hover.",
+    "skill_reference": "svg.selectAll('circle')\n    .on('mouseover', function(event, d) {\n        d3.select('#tooltip')\n            .classed('visible', true)  // Add .visible class\n            .html(`<strong>${d.name}</strong><br/>${d.value}`)\n            .style('left', (event.pageX + 10) + 'px')\n            .style('top', (event.pageY - 10) + 'px');\n    })\n    .on('mouseout', function() {\n        d3.select('#tooltip').classed('visible', false);  // Remove .visible class\n    });"
+  },
+  {
+    "reason": "The worker implemented click-to-highlight behavior for bubbles and table rows; the skill gives the concrete click handler pattern and CSS class toggling to implement selection/highlighting deterministically.",
+    "key_point": "Implement click handlers that clear previous selections (d3.selectAll(...).classed('selected', false)) and add a 'selected' class to the clicked element to highlight it.",
+    "skill_reference": "svg.selectAll('.bar')\n    .on('click', function(event, d) {\n        // Remove previous selection\n        d3.selectAll('.bar').classed('selected', false);\n        // Add to clicked element\n        d3.select(this).classed('selected', true);\n    });"
+  },
+  {
+    "reason": "To ensure deterministic rendering across runs the worker followed the skill's rendering determinism checklist, such as using fixed canvas dimensions rather than dynamic/responsive defaults that could vary.",
+    "key_point": "Use fixed width, height, margin, and viewBox values for rendering determinism rather than relying on variable layout or implicit sizing.",
+    "skill_reference": "Fixed `width`, `height`, `margin`, `viewBox`."
+  },
+  {
+    "reason": "The worker avoided transitions and animations (the summary notes no transitions) which the skill warns can introduce timing variance and nondeterminism.",
+    "key_point": "Do not use transitions or animations by default because they can introduce timing variance and nondeterministic output.",
+    "skill_reference": "No transitions/animations by default (transitions can introduce timing variance)."
+  }
+]

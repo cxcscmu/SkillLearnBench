@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke the xlsx skill to enable Excel file operations",
+    "why_essential": "Tool access is required to read and modify the workbook programmatically",
+    "evidence": "Launching skill: xlsx; Skill status=success input={\"skill\": \"xlsx\"}"
+  },
+  {
+    "step_index": 2,
+    "core_step": "List files to locate gdp.xlsx in the working directory",
+    "why_essential": "Need the exact path/filename to open the correct workbook",
+    "evidence": "ls /root/*.xlsx ... returned \"/root/gdp.xlsx\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Open the workbook and read sheet names and basic Task sheet structure",
+    "why_essential": "Confirm the workbook contains the required 'Task' and 'Data' sheets and understand Task layout before inserting formulas",
+    "evidence": "wb.sheetnames -> ['Task', 'Data']; Task sheet: max_row=71, max_col=16384; --- Task sheet rows 1-45"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect the Data sheet rows and identify data rows 21–40 for exports, imports, and GDP",
+    "why_essential": "Must know exact Data row ranges (21–40) that contain the series values to be looked up into the Task sheet",
+    "evidence": "Data sheet: max_row=47 ... 'Data sheet rows 1-5 (headers)' and description: Data sheet rows 21-40"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Verify Task sheet target year columns (H34:L34) to align lookups with years",
+    "why_essential": "Lookup formulas must match the Task sheet's year headers to pull correct year columns from Data",
+    "evidence": "Task row 34 --- H34: 2019 I34: 2020 J34: 2021 K34: 2022 L34: 2023"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Formulate plan for INDEX/MATCH lookups for H12:L17, H19:L24, H26:L31 and SUMPRODUCT for weighted mean",
+    "why_essential": "A concrete formula plan is required to populate the yellow regions from Data and compute net exports-to-GDP percentages and weighted average",
+    "evidence": "Plan: H12:L17 - Exports: =INDEX(... MATCH($D12, Data!$B$21:$B$40, 0), MATCH(H$9, Data!$H$4:$M$4, 0)) ... apply SUMPRODUCT for weighted mean"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the lookup and calculation formulas into the Task sheet (populate H12:L17, H19:L24, H26:L31, H35:L40 and weighted mean cells)",
+    "why_essential": "Inserting the formulas implements the required data retrieval, percent calculations, descriptive stats, and weighted-mean computation in the workbook",
+    "evidence": "Now I'll write the formulas into the Task sheet... (then) Saved successfully."
+  },
+  {
+    "step_index": 8,
+    "core_step": "Run the workbook recalculation/validation script to ensure zero formula errors",
+    "why_essential": "Recalculation verifies that inserted formulas produce no errors and that the model is correct",
+    "evidence": "python3 /root/.claude/skills/xlsx/recalc.py gdp.xlsx 60 -> { \"status\": \"success\", \"total_errors\": 0, ... }"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Read and verify computed values in the Task sheet (exports and net export % results)",
+    "why_essential": "Confirming numeric outputs ensures lookups and calculations produced the expected results before finishing",
+    "evidence": "=== Exports (H12:L17) ===\\n UAE : [404.046289993193, 350.279101429544, ...]\""
+  }
+]

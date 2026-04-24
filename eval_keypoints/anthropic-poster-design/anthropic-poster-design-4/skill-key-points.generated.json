@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker directly relied on the skill's dark background token to set the poster canvas color (they set the poster background to Corporate Dark #141413). Without this exact color token the output would not meet the brand color requirement.",
+    "key_point": "Use the brand 'Dark' color #141413 for primary dark backgrounds.",
+    "skill_reference": "- Dark: `#141413` - Primary text and dark backgrounds"
+  },
+  {
+    "reason": "The worker used the light token for the outer casing fill (outer casing rendered in Corporate Light #faf9f5), so the exact light color value is essential.",
+    "key_point": "Use the brand 'Light' color #faf9f5 for light backgrounds and the outer casing.",
+    "skill_reference": "- Light: `#faf9f5` - Light backgrounds and text on dark"
+  },
+  {
+    "reason": "The worker used the skill's Mid Gray value for annotation leader lines and secondary elements (they set leader lines to #b0aea5), so this specific token was required.",
+    "key_point": "Use the 'Mid Gray' color #b0aea5 for secondary elements and annotation leader lines.",
+    "skill_reference": "- Mid Gray: `#b0aea5` - Secondary elements"
+  },
+  {
+    "reason": "The worker mapped primary interaction details and connector highlights to the primary accent; they used the skill's orange hex for that role.",
+    "key_point": "Use the 'Orange' accent color #d97757 as the Primary Brand Accent for primary interaction/connector highlights.",
+    "skill_reference": "- Orange: `#d97757` - Primary accent"
+  },
+  {
+    "reason": "The worker assigned the thermal management unit to the secondary accent and used the skill's blue hex for that element, so the specific secondary-accent hex is required.",
+    "key_point": "Use the 'Blue' accent color #6a9bcc as the Secondary Brand Accent for thermal-management elements.",
+    "skill_reference": "- Blue: `#6a9bcc` - Secondary accent"
+  },
+  {
+    "reason": "The worker assigned the PCB substrate to the tertiary accent and used the skill's green hex for that element, so the specific tertiary-accent hex is required.",
+    "key_point": "Use the 'Green' accent color #788c5d as the Tertiary Brand Accent for PCB substrate.",
+    "skill_reference": "- Green: `#788c5d` - Tertiary accent"
+  },
+  {
+    "reason": "The poster's typography decision (title vs body) depended on the skill's explicit font mapping; the worker attempted to use Poppins/Lora for headings/body and fell back when those fonts were unavailable.",
+    "key_point": "Headings should use Poppins (with Arial fallback) and body text should use Lora (with Georgia fallback).",
+    "skill_reference": "- **Headings**: Poppins (with Arial fallback)\n- **Body Text**: Lora (with Georgia fallback)"
+  },
+  {
+    "reason": "The worker applied the skill's rule about which text sizes get the heading font (ensuring the title used the heading font at large sizes). This determined the choice of heading font for the large 'ORION' title.",
+    "key_point": "Apply Poppins to headings 24pt and larger (i.e., use Poppins for large title/headings).",
+    "skill_reference": "- Applies Poppins font to headings (24pt and larger)"
+  },
+  {
+    "reason": "The worker relied on the guideline that non-text shapes should be colored with brand accent colors (they colored PCB, thermal unit, and connectors using accent tokens), so this shape-color rule was essential.",
+    "key_point": "Style non-text shapes using the brand accent colors (use accents for components and graphical shapes).",
+    "skill_reference": "- Non-text shapes use accent colors"
+  },
+  {
+    "reason": "The worker used different accent colors for different component types (orange for connectors, blue for thermal unit, green for PCB), following the skill guidance to use multiple accents.",
+    "key_point": "Cycle through the orange, blue, and green accents to maintain on-brand variety across shapes/components.",
+    "skill_reference": "- Cycles through orange, blue, and green accents"
+  },
+  {
+    "reason": "The worker handled unavailable custom fonts by falling back to system fonts; the skill's font-management/fallback behavior informed that approach and the expectation that system-installed fonts will be used if Poppins/Lora aren't present.",
+    "key_point": "Use system-installed Poppins and Lora when available and automatically fall back to system fonts (Arial for headings, Georgia for body) if custom fonts are not installed.",
+    "skill_reference": "- Uses system-installed Poppins and Lora fonts when available\n- Provides automatic fallback to Arial (headings) and Georgia (body)"
+  }
+]

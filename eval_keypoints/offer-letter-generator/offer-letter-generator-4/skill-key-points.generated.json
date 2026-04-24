@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker needed to know that placeholders can be split across multiple XML runs so they would not try naive run-level replacement (which would miss split placeholders). This directly motivated using paragraph-level replacement in the trajectory.",
+    "key_point": "Word templates often split placeholder text across multiple XML runs; therefore placeholder replacement must be done at the paragraph level rather than per-run.",
+    "skill_reference": "**The #1 issue with Word templates**: Word often splits placeholder text across multiple XML runs."
+  },
+  {
+    "reason": "When rebuilding paragraph text after replacement the worker preserved formatting by placing the new combined text into the first run and clearing the rest; the trajectory shows they implemented and relied on this technique.",
+    "key_point": "After assembling the new paragraph text, put the new text into the first run and clear subsequent runs to preserve the first run's formatting.",
+    "skill_reference": "for i, run in enumerate(runs):\n        if i == 0:\n            run.text = new_text\n        else:\n            run.text = ''"
+  },
+  {
+    "reason": "The worker used a consistent placeholder-detection pattern to find placeholders like {{KEY}} across the document; this regex guided which tokens to replace from employee_data.json.",
+    "key_point": "Detect placeholders using the regex pattern r'\\{\\{([A-Z_]+)\\}\\}' to find tokens of the form {{KEY}}.",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "The template contained nested tables; the worker explicitly recursed into table cells and nested tables to find and replace placeholders, so a recursive process_table implementation was required.",
+    "key_point": "Process tables recursively: iterate rows->cells->paragraphs and recurse into cell.tables to handle nested tables.",
+    "skill_reference": "def process_table(table):\n        for row in table.rows:\n            for cell in row.cells:\n                for para in cell.paragraphs:\n                    replace_in_para(para)\n                for nested in cell.tables:\n                    process_table(nested)"
+  },
+  {
+    "reason": "Headers and footers are not part of doc.paragraphs; the worker updated headers/footers separately, following this instruction to avoid leaving placeholders there.",
+    "key_point": "Process headers and footers by iterating doc.sections and running the paragraph-replacement on section.header.paragraphs and section.footer.paragraphs.",
+    "skill_reference": "for section in doc.sections:\n        for para in section.header.paragraphs:\n            replace_in_paragraph(para)\n        for para in section.footer.paragraphs:\n            replace_in_paragraph(para)"
+  },
+  {
+    "reason": "The worker had to remove the relocation block because RELOCATION_PACKAGE was \"No\"; they relied on the conditional-section handling logic to either strip markers or remove the entire section.",
+    "key_point": "Handle conditional blocks marked {{IF_KEY}}...{{END_IF_KEY}}: if the condition is true remove only the markers, otherwise remove the entire content between the markers and clear the paragraph's runs.",
+    "skill_reference": "start_marker = '{{IF_' + condition_key + '}}'\n    end_marker = '{{END_IF_' + condition_key + '}}'\n\n    for para in doc.paragraphs:\n        text = para.text\n        if start_marker in text and end_marker in text:\n            if should_include:\n                # Remove just the markers\n                new_text = text.replace(start_marker, '').replace(end_marker, '')\n                # Also replace any placeholders inside\n                for key, val in data.items():\n                    new_text = new_text.replace('{{' + key + '}}', str(val))\n            else:\n                # Remove entire content between markers\n                new_text = ''\n\n            # Apply to first run\n            if para.runs:\n                para.runs[0].text = new_text\n                for run in para.runs[1:]:\n                    run.text = ''"
+  },
+  {
+    "reason": "Finally, the worker saved the filled document to the required output path; the skill's doc.save call is the concrete operation used to produce /root/offer_letter_filled.docx.",
+    "key_point": "Save the modified Document object to the output path using doc.save(output_path).",
+    "skill_reference": "doc.save(output_path)"
+  }
+]

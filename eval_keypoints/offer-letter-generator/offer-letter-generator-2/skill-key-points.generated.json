@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "The worker encountered placeholders split across XML runs and needed to know that Word can split placeholder text; this motivated using paragraph-level replacement instead of run-level replacement (trajectory: assistant noted split placeholders in multiple places and switched approach).",
+    "key_point": "Word can split placeholder text across multiple XML runs, so placeholders may be broken into separate runs and can't be reliably found by checking individual runs.",
+    "skill_reference": "**The #1 issue with Word templates**: Word often splits placeholder text across multiple XML runs."
+  },
+  {
+    "reason": "The worker avoided the run-level replacement that would miss split placeholders; the skill's explicit warning prevented using the naive approach that would have failed.",
+    "key_point": "Don't search/replace inside each run individually because split placeholders will be missed.",
+    "skill_reference": "# DON'T DO THIS - won't find split placeholders"
+  },
+  {
+    "reason": "To actually fix split placeholders the worker used a paragraph-level replacement routine that reconstructs paragraph text and rewrites runs; this function shows the exact approach they implemented.",
+    "key_point": "Use a paragraph-level replace function that gets paragraph.text, locates the placeholder, builds new_text = full_text.replace(placeholder, value), then rewrites runs so the first run contains new_text and remaining runs are cleared.",
+    "skill_reference": "def replace_placeholder_robust(paragraph, placeholder, value):"
+  },
+  {
+    "reason": "When rebuilding paragraph text the worker needed to preserve formatting of the original first run; the skill's guidance shows how to keep formatting while clearing other runs.",
+    "key_point": "Preserve the first run's formatting when rebuilding a paragraph: put the rebuilt text in the first run and clear subsequent runs.",
+    "skill_reference": "# Preserve first run's formatting, clear others"
+  },
+  {
+    "reason": "The worker used a regex to locate placeholder keys (like CANDIDATE_FULL_NAME) across the full paragraph text and to drive replacements from the JSON data, as shown in the skill.",
+    "key_point": "Use a regex pattern to find all placeholders of the form {{KEY}} (e.g. pattern = r'\\{\\{([A-Z_]+)\\}\\}') and map each KEY to data for replacement.",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "After building the replacement text the worker applied it to the paragraph by assigning it to the first run and clearing others; the skill shows the exact lines used to update runs.",
+    "key_point": "When a paragraph's text changes, set para.runs[0].text = new_text and set all other runs' text = '' to apply the replacement cleanly.",
+    "skill_reference": "para.runs[0].text = new_text"
+  },
+  {
+    "reason": "The template had nested tables (Basic Information and Compensation). The worker needed to recurse into nested tables (cell.tables) to find and replace placeholders in inner cells.",
+    "key_point": "Process tables recursively because tables can contain nested tables; iterate rows and cells and recurse into cell.tables.",
+    "skill_reference": "Tables can contain other tables. Must recurse:"
+  },
+  {
+    "reason": "Headers and footers contain placeholders but are not in doc.paragraphs; the worker explicitly processed headers/footers via sections per the skill so placeholders there were replaced as well.",
+    "key_point": "Access headers and footers through doc.sections (e.g. for section in doc.sections: for para in section.header.paragraphs / section.footer.paragraphs) because they are separate from the main body.",
+    "skill_reference": "for section in doc.sections:"
+  },
+  {
+    "reason": "The template contained a conditional relocation block; the worker relied on the skill's conditional-handling logic to either strip markers or remove content depending on the flag—here RELOCATION_PACKAGE was Yes so markers needed removal while keeping content.",
+    "key_point": "Handle conditional blocks of the form {{IF_CONDITION}}...{{END_IF_CONDITION}}: if should_include is True remove just the markers and keep content; otherwise remove the content between markers.",
+    "skill_reference": "For `{{IF_CONDITION}}...{{END_IF_CONDITION}}` patterns:"
+  },
+  {
+    "reason": "For conditionals that appear inside the same paragraph (the worker found the IF and END_IF in the same paragraph), the skill shows the concrete code to remove only the markers while preserving inner text.",
+    "key_point": "When both start and end markers are in the same paragraph and the condition is true, replace the markers with empty strings (new_text = text.replace(start_marker, '').replace(end_marker, '')) so the inner content is retained.",
+    "skill_reference": "new_text = text.replace(start_marker, '').replace(end_marker, '')"
+  },
+  {
+    "reason": "Finally, the worker saved the filled document to the requested output path; the skill's example shows the required doc.save call used to produce the final /root/offer_letter_filled.docx.",
+    "key_point": "After processing, save the modified Document object using doc.save(output_path).",
+    "skill_reference": "doc.save(output_path)"
+  },
+  {
+    "reason": "The worker explicitly checked and ensured conditional markers would not be left behind; the skill's common-pitfalls list reminded them to remove leftover IF/END_IF markers to avoid artifacts in the final letter.",
+    "key_point": "Ensure conditional markers like {{IF_...}} and {{END_IF_...}} are removed after processing so no markers remain in the final document.",
+    "skill_reference": "5. **Conditional markers left behind** - Remove `{{IF_...}}` markers after processing"
+  }
+]

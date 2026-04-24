@@ -1,0 +1,77 @@
+[
+  {
+    "reason": "The worker first needed to decide whether to write a five- or seven-character regulated verse; this determination guided choosing seven-character form and all subsequent constraints.",
+    "key_point": "Identify whether the task requires five-character or seven-character regulated verse before composing.",
+    "skill_reference": "- whether the user wants five-character regulated verse or seven-character regulated verse"
+  },
+  {
+    "reason": "The worker used Mandarin tone categories to assign 平/仄 when checking and composing each line's tonal pattern.",
+    "key_point": "Map modern Mandarin tones to 平/仄 for metrical checks: 1st and 2nd tones count as 平; 3rd and 4th tones count as 仄.",
+    "skill_reference": "1st and 2nd tones = 平\n- 3rd and 4th tones = 仄"
+  },
+  {
+    "reason": "The worker avoided using neutral-tone characters for metrical positions; this rule affected character selection and tone-checking.",
+    "key_point": "Treat neutral (轻声) readings as not counting for 平/仄 decisions; avoid relying on neutral-tone characters for metre.",
+    "skill_reference": "- neutral tone does not count"
+  },
+  {
+    "reason": "When the worker considered polyphonic characters, they allowed a character only if a non-neutral reading satisfied the required tone/rhyme—enabling some flexible choices while preserving metre.",
+    "key_point": "Allow polyphonic characters only if some non-neutral reading satisfies the required 平仄 or rhyme condition.",
+    "skill_reference": "a polyphonic character is acceptable if any non-neutral reading satisfies the required 平仄 or rhyme condition"
+  },
+  {
+    "reason": "Rhyme selection and validation were based on modern Mandarin finals rather than historical rhyme-books; the worker explicitly checked modern-final rhyme compatibility.",
+    "key_point": "Judge rhyme by modern Mandarin finals (not by historical rhyme books).",
+    "skill_reference": "rhyme is judged by modern Mandarin finals, not historical rhyme books"
+  },
+  {
+    "reason": "The worker composed a seven-character regulated verse and therefore had to meet the exact structural counts for lines and characters per line.",
+    "key_point": "For seven-character regulated verse, the poem must have exactly 8 lines and exactly 7 Chinese characters per line.",
+    "skill_reference": "For seven-character regulated verse:\n- exactly 8 lines\n- exactly 7 Chinese characters per line"
+  },
+  {
+    "reason": "To produce output in the required file format the worker needed the poem's precise layout: title, blank line, then the 8 body lines, which they followed when writing and saving /root/poem.txt.",
+    "key_point": "Format the poem with the title on line 1, a blank line on line 2, and the eight body lines on lines 3–10.",
+    "skill_reference": "Output format:\n- line 1: title\n- line 2: blank line\n- lines 3-10: the 8 body lines of the poem"
+  },
+  {
+    "reason": "The worker selected a single canonical tonal form (Ze-start Ping-end rhyme-on-line-1) and needed to follow exactly one of the allowed formal patterns from the skill.",
+    "key_point": "The poem must follow one and only one of the canonical forms listed by the skill (choose one form and stick to it).",
+    "skill_reference": "The poem must follow one and only one of the basic forms below."
+  },
+  {
+    "reason": "The worker used a specific allowed tonal pattern from the canonical seven-character forms (the opening-line pattern they applied when composing line 1).",
+    "key_point": "Use one of the canonical seven-character tonal patterns (e.g., the pattern string used for Ze-start Ping-end forms).",
+    "skill_reference": "仄仄平平仄仄平"
+  },
+  {
+    "reason": "Because the worker chose a rhyme-on-line-1 canonical form, they needed to rhyme the specified set of lines; the rhyme plan was central to building line endings.",
+    "key_point": "For forms marked rhyme-on-line-1, the rhyme lines are lines 1, 2, 4, 6, and 8 (plan rhymes accordingly).",
+    "skill_reference": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8."
+  },
+  {
+    "reason": "The worker ensured all rhyme lines shared a single modern-Mandarin final (they explicitly chose and verified a single rhyme set).",
+    "key_point": "Require that all required rhyme lines share a common modern Mandarin final across their line-ending characters.",
+    "skill_reference": "All required rhyme lines must share a common modern Mandarin final across their line-ending characters."
+  },
+  {
+    "reason": "The user explicitly requested parallelism for the middle couplets; the worker therefore constructed the颔联 and颈联 with clear syntactic and imagistic parity following the skill's rule.",
+    "key_point": "If the user explicitly asks for parallelism, the middle two couplets should aim for clear parallel structure in syntax, imagery, and rhetorical weight.",
+    "skill_reference": "If the user explicitly asks for parallelism, these two couplets should aim for clear parallel structure in syntax, imagery, and rhetorical weight"
+  },
+  {
+    "reason": "The worker built rhyme endings first (they described working out rhyme characters and then composing lines to fit), following the skill's drafting order.",
+    "key_point": "When drafting, build the line endings first—especially the rhyme lines—before completing full lines.",
+    "skill_reference": "7. build the line endings first, especially the rhyme lines"
+  },
+  {
+    "reason": "To validate each composed line the worker explicitly checked every character position against the target 平仄 pattern as recommended by the skill.",
+    "key_point": "Check every character position in each line against the target 平仄 pattern during revision.",
+    "skill_reference": "9. check every position against the target 平仄 pattern"
+  },
+  {
+    "reason": "Before finalizing the poem the worker used the skill's final-check checklist to ensure compliance with strict form rules (line counts, character counts per line).",
+    "key_point": "Before returning the poem, verify that every body line has exactly 5 or 7 Chinese characters as required.",
+    "skill_reference": "- every body line has exactly 5 or 7 Chinese characters as required"
+  }
+]

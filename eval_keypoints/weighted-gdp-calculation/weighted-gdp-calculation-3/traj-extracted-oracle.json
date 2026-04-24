@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Open the workbook gdp.xlsx and load the 'Task' and 'Data' sheets",
+    "why_essential": "You must access the workbook and both sheets to read source data and write formulas on the Task sheet",
+    "evidence": "Sheets: ['Task', 'Data']"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Inspect the Data sheet header to identify year columns and locate rows 21–40",
+    "why_essential": "The lookup formulas need the exact header row (years) and the correct data block (rows 21–40) as inputs",
+    "evidence": "Data row 4 (header): ['Database', 'Series_code', 'Country', 'Indicator', 'Indicator.Name', 'Frequency', 'Scale', 2018, 2019, 2020, 2021, 2022, 2023] ... Data B21:B40"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Write INDEX/MATCH formulas into H12:L17 on the Task sheet to pull 'Exports' by series code and year",
+    "why_essential": "Fills the first required block of source values (exports) using the two lookup conditions (series code in column D and year in row 10)",
+    "evidence": "H12: =INDEX(Data!$H$21:$M$40,MATCH($D12,Data!$B$21:$B$40,0),MATCH(H$10,Data!$H$4:$M$4,0))"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Write INDEX/MATCH formulas into H19:L24 on the Task sheet to pull 'Imports' by series code and year",
+    "why_essential": "Fills the second required block of source values (imports) needed to compute net exports",
+    "evidence": "H19: =INDEX(Data!$H$21:$M$40,...)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write INDEX/MATCH formulas into H26:L31 on the Task sheet to pull 'GDP' by series code and year",
+    "why_essential": "Fills the third required block of source values (GDP) used as the denominator when computing net exports as percent of GDP",
+    "evidence": "H26: =INDEX(Data!$H$21:$M$40,...)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Calculate net exports (% of GDP) for all six GCC countries in H35:L40 using (Exports - Imports)/GDP*100 and round to one decimal",
+    "why_essential": "Converts the retrieved raw values into the task's target metric (net exports as percent of GDP) in the required cells and format",
+    "evidence": "Step 2: Calculate net exports for all six GCC countries in percent of GDP in yellow cells H35:L40."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Compute summary statistics (min, max, median, mean, 25th and 75th percentiles) for the net exports range on the Task sheet",
+    "why_essential": "Required aggregated statistics of the net exports values as requested in Step 2",
+    "evidence": "Then calculate the min, max, median, simple mean, 25th percentile, and 75th percentiles."
+  },
+  {
+    "step_index": 8,
+    "core_step": "Calculate the GCC weighted mean net exports (% of GDP) using SUMPRODUCT and multiply by 100 to display as percent rounded to one decimal",
+    "why_essential": "Computes the final required weighted-average metric across countries using the specified SUMPRODUCT approach and ensures percent formatting",
+    "evidence": "Step 3: Please calculate the net exports as percent of GDP weighted mean for the GCC by using the SUMPRODUCT formula."
+  },
+  {
+    "step_index": 9,
+    "core_step": "Recalculate workbook and verify there are zero formula errors and sanity-check a few sample values (e.g., UAE 2019, Saudi 2020, weighted mean 2019)",
+    "why_essential": "Ensures all formulas evaluate correctly (no errors) and validates results are sensible before delivering the file",
+    "evidence": "recalc.py returned { \"status\": \"success\", \"total_errors\": 0 } and sample checks: 'UAE 2019 NX%: 19.0', 'Saudi 2020 NX%: 0.1', 'Weighted mean 2019: 11.7'"
+  },
+  {
+    "step_index": 10,
+    "core_step": "Save the modified workbook with the written formulas intact",
+    "why_essential": "Persist the inserted formulas and computed results in gdp.xlsx so the Task sheet contains the requested calculations",
+    "evidence": "Formulas written successfully"
+  }
+]

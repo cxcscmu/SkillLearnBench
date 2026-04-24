@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "Identifies which plate polygon to use for spatial filtering (necessary to select earthquakes inside the Pacific plate).",
+    "key_point": "Loaded the Pacific plate polygon from PB2002_plates.json and used its Code value 'PA' to identify the Pacific plate.",
+    "trajectory_reference": "Loaded Pacific plate polygon from `PB2002_plates.json` (Code: `PA`)"
+  },
+  {
+    "reason": "Defines how points inside the plate were selected, reducing the dataset to only relevant events.",
+    "key_point": "Filtered earthquake points to those within the Pacific plate polygon using the .within() spatial filter.",
+    "trajectory_reference": "Filtered 1,504 earthquakes to **107** events within the Pacific plate using `.within()` spatial filter"
+  },
+  {
+    "reason": "Ensures distance measurements are accurate by using a metric CRS rather than degrees.",
+    "key_point": "Projected both earthquake and boundary datasets to EPSG:4087 (World Equidistant Cylindrical) before computing distances.",
+    "trajectory_reference": "Projected both datasets to **EPSG:4087** (World Equidistant Cylindrical) for accurate metric distances"
+  },
+  {
+    "reason": "Combines boundary geometries to allow a single point-to-geometry distance calculation for each earthquake.",
+    "key_point": "Combined plate boundary geometries (using a union operation) to create a single boundary geometry for distance calculations.",
+    "trajectory_reference": "Combined all plate boundaries with `.union_all()` and computed point-to-boundary distances"
+  },
+  {
+    "reason": "Performs the core measurement and identifies the extreme outlier required by the task.",
+    "key_point": "Calculated point-to-boundary distances for earthquakes inside the Pacific plate and selected the earthquake with the largest distance.",
+    "trajectory_reference": "Calculated point-to-boundary distances\n...\nThe Hawaii earthquake (Pāhala) is the outlier — located ~3,878 km from the nearest plate boundary"
+  },
+  {
+    "reason": "Provides the required output fields and confirms numeric formatting (kilometers, rounded to two decimals).",
+    "key_point": "Reported the outlier earthquake details including id, place, ISO 8601 time, magnitude, latitude, longitude, and distance in km rounded to two decimals (3,878.27 km).",
+    "trajectory_reference": "| **ID** | `hv74103036` |\n| **Place** | 2 km SW of Pāhala, Hawaii |\n| **Time** | 2024-02-09T20:06:31Z |\n| **Magnitude** | 5.88 |\n| **Latitude** | 19.1868 |\n| **Longitude** | -155.4932 |\n| **Distance to boundary** | **3,878.27 km** |"
+  },
+  {
+    "reason": "Ensures final results are persisted to the required output location.",
+    "key_point": "Saved the final outlier result to /root/answer.json.",
+    "trajectory_reference": "The result has been saved to `/root/answer.json`."
+  }
+]

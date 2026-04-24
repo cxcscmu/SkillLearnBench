@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "Understanding file structure is necessary to know where source data and target cells are located.",
+    "key_point": "Read the workbook and inspect the Data and Task sheets to identify headers, year columns, and the exact cell ranges to use.",
+    "trajectory_reference": "thinking: Let me start by reading the Excel file to understand its structure before making any changes."
+  },
+  {
+    "reason": "Confirming exact header row avoids off-by-one errors when matching years between sheets.",
+    "key_point": "Determine that the years for lookup are in Task!H9:L9 (row 9) even though the user description referred to row 10.",
+    "trajectory_reference": "thinking: Now I understand the structure: - Task Sheet: - Row 9 has the headers: ... H9=2019, I9=2020, J9=2021, K9=2022, L9=2023"
+  },
+  {
+    "reason": "Restricting the lookup range to the specified rows ensures correct matches and follows the task constraints.",
+    "key_point": "Limit the source data lookup to Data rows 21:40 and columns H:M for the values and B21:B40 for series-code matching.",
+    "trajectory_reference": "thinking: Since the task specifies using data from rows 21 to 40 in the Data sheet, I need to restrict the MATCH function to that range for the series code lookup, then set up the corresponding INDEX range to pull the actual values."
+  },
+  {
+    "reason": "A two-condition lookup is needed to pull the correct series-by-year cell values into the Task sheet.",
+    "key_point": "Use INDEX with two MATCHes (one matching the series code in column D against Data!B21:B40, one matching the year in H9 against Data!H4:M4) to populate Task!H12:L17, H19:L24, and H26:L31.",
+    "trajectory_reference": "Formula pattern: `=INDEX(Data!$H$21:$M$40, MATCH($D12, Data!$B$21:$B$40, 0), MATCH(H$9, Data!$H$4:$M$4, 0))`"
+  },
+  {
+    "reason": "Net exports must be expressed as a percentage and displayed to one decimal to meet the output formatting requirement.",
+    "key_point": "Calculate net exports % for each country with a formula ROUND((exports - imports) / GDP * 100, 1) and place these in H35:L40.",
+    "trajectory_reference": "For step 2, the formula in H35 calculates the percentage change as (H12-H19)/H26*100, and I need to make sure it rounds to one decimal place—I'll use ROUND() to handle this properly."
+  },
+  {
+    "reason": "Needed summary statistics across the six country values for each year.",
+    "key_point": "Compute per-year distribution statistics (Min, Max, Median, Average, 25th percentile, 75th percentile) across the six net-export rows and round to one decimal.",
+    "trajectory_reference": "Then computed per-year statistics across the 6 countries: - Min, Max, Median, Average, 25th/75th percentile — all rounded to 1 decimal"
+  },
+  {
+    "reason": "Weighted mean must combine country net exports properly using GDP weights rather than averaging percentages naively.",
+    "key_point": "Compute the GDP-weighted mean per year using SUMPRODUCT(net_export_percentages_range, GDP_range) / SUM(GDP_range) and round to one decimal, placing results in H50:L50.",
+    "trajectory_reference": "Step 3 — GDP-Weighted Mean (H50:L50): `=ROUND(SUMPRODUCT(H35:H40, H26:H31) / SUM(H26:H31), 1)`"
+  },
+  {
+    "reason": "Formulas must be error-free and preserve the existing workbook appearance and fills.",
+    "key_point": "Write formulas (not hardcoded values) into the Task sheet, preserve original formatting/colors (yellow fills), and ensure there are zero formula errors after recalculation.",
+    "trajectory_reference": "All formulas work with zero errors. Let me do a final check to confirm the formatting is preserved: ... All yellow fills (FFFFFF00) are preserved."
+  },
+  {
+    "reason": "Verifying one-year calculations gives confidence formulas were implemented correctly.",
+    "key_point": "Manually verify 2019 calculations (per-country net exports and the weighted mean) to check the formulas produce expected numeric results (e.g., 2019 weighted mean = 12.2%).",
+    "trajectory_reference": "For 2019 (column H): ... Now I'm calculating the weighted average using the total GDP across all countries for 2019. Finishing the weighted mean calculation, I get 12.22%, which rounds to 12.2% for 2019 — that checks out."
+  }
+]

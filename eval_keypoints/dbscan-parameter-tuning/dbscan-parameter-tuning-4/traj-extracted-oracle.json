@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch parallel-processing skill",
+    "why_essential": "Parallelization was used to speed up the grid search; the skill must be invoked before running the optimized computation.",
+    "evidence": "\"Launching skill: parallel-processing\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Launch pareto-optimization skill",
+    "why_essential": "Pareto-frontier identification was performed using a pareto-optimization utility; the skill must be available for final frontier extraction.",
+    "evidence": "\"Launching skill: pareto-optimization\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Read citizen-science data file /root/data/citsci_train.csv",
+    "why_essential": "DBSCAN clustering must be run on the citizen science annotations; reading this file supplies those input points.",
+    "evidence": "\"Read status=success input={\\\"file_path\\\": \\\"/root/data/citsci_train.csv\\\"}\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Read expert annotation file /root/data/expert_train.csv",
+    "why_essential": "Expert annotations are needed to compute F1 and delta for evaluation and averaging across images.",
+    "evidence": "\"Read status=success input={\\\"file_path\\\": \\\"/root/data/expert_train.csv\\\"}\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write the DBSCAN grid-search script to /root/optimize_dbscan.py",
+    "why_essential": "The script implements the custom distance metric, grid search, per-image evaluation, filtering (F1>0.5), and Pareto extraction — it is the executable that performs the entire optimization pipeline.",
+    "evidence": "\"File created successfully at: /root/optimize_dbscan.py\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Install required package and run the optimization script (pip install paretoset && python /root/optimize_dbscan.py)",
+    "why_essential": "Dependencies (paretoset) must be available and the script must be executed to perform the DBSCAN sweeps, compute per-image F1/delta, filter results, and compute the Pareto frontier.",
+    "evidence": "\"pip install paretoset -q && python /root/optimize_dbscan.py\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write Pareto frontier results to /root/pareto_frontier.csv",
+    "why_essential": "Saving the final filtered Pareto-optimal hyperparameter set to the specified CSV is the required output of the task.",
+    "evidence": "\"the Pareto frontier contains **17 points** written to `/...`\""
+  }
+]

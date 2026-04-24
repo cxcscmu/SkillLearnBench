@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The skill provides the strict composition rules and must be used to ensure regulated-verse compliance.",
+    "key_point": "Call the regulated-lvshi-composer skill to compose a strict seven-character regulated verse under modern Mandarin rules.",
+    "trajectory_reference": "Let me use the regulated-lvshi-composer skill for this."
+  },
+  {
+    "reason": "The form choice determines tonal pattern and rhyme locations for the whole poem.",
+    "key_point": "Choose the seven-character regulated-verse form 'Ze-start Ping-end' with rhyme-on-line-1 (仄起平收), so rhyme lines are 1,2,4,6,8.",
+    "trajectory_reference": "I'll use the \"Ze-start Ping-end rhyme-on-line-1\" form"
+  },
+  {
+    "reason": "A unified rhyme set in modern Mandarin final is required for the mandated rhyme lines.",
+    "key_point": "Select a single modern-Mandarin rhyme final and use characters 闲/年/前/烟/天 (final '-ian') as the rhyme plan for the required rhyme lines.",
+    "trajectory_reference": "Rhyme plan (lines 1,2,4,6,8): 闲/年/前/烟/天 — all share final `-iān`"
+  },
+  {
+    "reason": "Title frames the poem and must appear on first line of the saved file.",
+    "key_point": "Give the poem the title '晚秋独居书怀' and place it as the first line of the file.",
+    "trajectory_reference": "So I'm going with the title \"晚秋独居书怀\""
+  },
+  {
+    "reason": "Each line must match the seven-character requirement and the exact 平仄 pattern for the chosen form.",
+    "key_point": "Draft and verify each of the eight body lines to have exactly seven Chinese characters and to conform to the specified 平仄 pattern for the chosen form.",
+    "trajectory_reference": "Tone verification for each line: 行 1 ... 晚(仄)坐(仄)茅(平)斋(平)岁(仄)月(仄)闲(平) ... ✓ 韵"
+  },
+  {
+    "reason": "Middle couplets must be antithetical (对仗) and balanced for a proper regulated poem.",
+    "key_point": "Ensure the two middle couplets (lines 3–4 and 5–6) are carefully antithetical and parallel: L3–L4 and L5–L6 were checked and adjusted to be工整对仗.",
+    "trajectory_reference": "颔联对仗 (L3–L4): 寒山/野径（地点）｜有鸟/无人（有无相对） ... 颈联对仗 (L5–L6): 落叶/孤灯（物象）｜辞林/照壁（动宾）"
+  },
+  {
+    "reason": "Tonal and rhyme consistency required iterative checking and some line revisions.",
+    "key_point": "Iteratively check tonal values (平/仄) for each character and revise lines (e.g. changed final line to '静看寒云过碧天') to fix tone or rhyme mismatches.",
+    "trajectory_reference": "Now I'm noticing... I'll go with \"静看寒云过碧天\" for the final line. The tonal pattern checks out perfectly."
+  },
+  {
+    "reason": "Final verification confirms structure, rhyme and thematic unity before saving.",
+    "key_point": "Perform a final verification that poem has title, blank line, eight body lines, each line has 7 characters, follows the canonical tonal form, and one unified rhyme set.",
+    "trajectory_reference": "All eight lines check out perfectly—the tonal patterns match the expected Ze-start Ping-end form, the rhyme scheme holds ... and every line has exactly seven characters."
+  },
+  {
+    "reason": "The poem must be saved to the required file path as the task requested.",
+    "key_point": "Write the finished poem to /root/poem.txt with the title on the first line followed by the eight body lines.",
+    "trajectory_reference": "诗已写就，存于 `/root/poem.txt`。"
+  },
+  {
+    "reason": "Provide a brief explicit summary of form, rhyme, tonal verification, and couplet parallels to document compliance.",
+    "key_point": "Include a short grid/checklist of line-by-line tone verification and explicit notes that the selected rhyme and pairings meet the modern-Mandarin regulated-verse rules.",
+    "trajectory_reference": "Tone verification for each line: ... | 行 | 诗句 | 平仄 | 符合？ | ... \\n**颔联对仗 (L3–L4):** ... \\n**颈联对仗 (L5–L6):** ...\""
+  }
+]

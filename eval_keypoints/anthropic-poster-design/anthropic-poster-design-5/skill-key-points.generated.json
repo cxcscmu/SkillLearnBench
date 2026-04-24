@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker set the canvas background to the official light brand color; knowing the exact hex allowed them to fill the entire image with the correct Anthropic light background used in the final artifact and in design_parameters.json.",
+    "key_point": "Use Anthropic's light background color #faf9f5 for light backgrounds and text-on-dark areas.",
+    "skill_reference": "- Light: `#faf9f5` - Light backgrounds and text on dark"
+  },
+  {
+    "reason": "The worker used the dark brand color for the dominant forms and primary heading; the exact dark hex was applied to the dock body and the heading text in the composition and in design_parameters.json.",
+    "key_point": "Use Anthropic's dark color #141413 for primary text and dominant dark shapes.",
+    "skill_reference": "- Dark: `#141413` - Primary text and dark backgrounds"
+  },
+  {
+    "reason": "The worker applied a secondary, muted gray for less prominent text and elements (wordmark, tagline, footer); the mid-gray hex gave a consistent secondary tone across the artifact.",
+    "key_point": "Use Anthropic's mid gray #b0aea5 for secondary elements (e.g., taglines, wordmark, footer).",
+    "skill_reference": "- Mid Gray: `#b0aea5` - Secondary elements"
+  },
+  {
+    "reason": "The worker used a subtle, very light gray for gentle shapes and background motifs (hub-and-spoke motif); the light-gray hex ensured these elements stayed non-distracting.",
+    "key_point": "Use Anthropic's light gray #e8e6dc for subtle backgrounds and non-dominant shapes.",
+    "skill_reference": "- Light Gray: `#e8e6dc` - Subtle backgrounds"
+  },
+  {
+    "reason": "The worker restricted highlights to the primary accent and used its exact hex for the LED and accent rule; knowing the official accent color ensured the highlights read as on-brand and stayed restrained.",
+    "key_point": "Use Anthropic's primary accent orange #d97757 for accent marks on non-text shapes.",
+    "skill_reference": "- Orange: `#d97757` - Primary accent"
+  },
+  {
+    "reason": "The worker set the main heading font and size according to the brand guidance (Poppins for headings 24pt+); this rule directly determined that 'RELAY DOCK' should be rendered in Poppins at a large display size.",
+    "key_point": "Apply the Poppins font to headings 24pt and larger (i.e., use Poppins for the primary heading).",
+    "skill_reference": "- Applies Poppins font to headings (24pt and larger)"
+  },
+  {
+    "reason": "The worker used the recommended serif for body text and smaller labels (tagline, footer) so they rendered consistently with brand typography and hierarchy.",
+    "key_point": "Apply the Lora font to body text and supporting copy.",
+    "skill_reference": "- Applies Lora font to body text"
+  },
+  {
+    "reason": "The worker considered font availability and fallback behavior when deciding whether to download Poppins or use a system fallback; this rule justified checking/using fallbacks and influenced their decision to download Poppins and to report the applied heading font in the JSON.",
+    "key_point": "If custom fonts are unavailable, automatically fall back to Arial for headings and Georgia for body text.",
+    "skill_reference": "- Automatically falls back to Arial/Georgia if custom fonts unavailable"
+  },
+  {
+    "reason": "The worker colored non-text shapes (LED, accent rule, hub motif) using accent colors as permitted by the guidelines; this rule permitted using the orange accent specifically for shape highlights rather than body text.",
+    "key_point": "Color non-text shapes using the brand accent palette (i.e., accents should be applied to shapes rather than primary body text).",
+    "skill_reference": "- Non-text shapes use accent colors"
+  }
+]

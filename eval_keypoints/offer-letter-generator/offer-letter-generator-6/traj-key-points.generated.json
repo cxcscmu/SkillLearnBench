@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Knowing the relocation flag determines whether to keep or remove the relocation block.",
+    "key_point": "Checked employee data and determined RELOCATION_PACKAGE is \"Yes\", so the relocation block content should be kept and marker tags removed.",
+    "trajectory_reference": "Good. `RELOCATION_PACKAGE` is \"Yes\", so I'll keep the relocation block content and strip the marker tags."
+  },
+  {
+    "reason": "Locate and load files needed to fill the template.",
+    "key_point": "Read the employee data and located the Word template file before processing.",
+    "trajectory_reference": "thinking: Let me start by reading the employee data and understanding the template structure."
+  },
+  {
+    "reason": "File-system operations and discovery were used to find and open the template/data.",
+    "key_point": "Used file search/glob and read tools to access the template and data files (ToolSearch, Glob, Read).",
+    "trajectory_reference": "tool_use[1]: tool=ToolSearch; status=success; input_keys=max_results,query\n...\ntool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text\n...\ntool_use[1]: tool=Glob; status=success; input_keys=path,pattern; output_keys=text"
+  },
+  {
+    "reason": "Manipulating docx requires a dedicated skill that handles Word-specific structures.",
+    "key_point": "Invoked the docx manipulation skill to perform robust placeholder replacement and conditional handling.",
+    "trajectory_reference": "thinking: Now I need to use the docx skill to manipulate the Word template. Let me invoke that skill.\n...\ntool_use[1]: tool=Skill; status=success; input_keys=args,skill; output_keys=text"
+  },
+  {
+    "reason": "Split placeholders across runs are common and must be handled at paragraph level to avoid missing replacements.",
+    "key_point": "Used a paragraph-level replacement approach to handle split placeholders (rebuild paragraph runs: put new text in first run, clear others).",
+    "trajectory_reference": "The #1 issue with Word templates: Word often splits placeholder text across multiple XML runs... Correct Approach: Paragraph-Level Search and Rebuild\n...\n# Clear all runs, put new text in first run"
+  },
+  {
+    "reason": "Placeholders can appear in tables and nested structures, so recursion is necessary to replace them all.",
+    "key_point": "Processed tables (including nested tables) recursively to replace placeholders inside table cells and nested tables.",
+    "trajectory_reference": "## Nested Tables\n\ndef process_table(table, data):\n    \"\"\"Process table including nested tables.\"\"\"\n    for row in table.rows:\n        for cell in row.cells:\n            # Process paragraphs in cell\n            for para in cell.paragraphs:\n                replace_in_paragraph(para)\n\n            # Recurse into nested tables\n            for nested_table in cell.tables:\n                process_table(nested_table, data)"
+  },
+  {
+    "reason": "Headers and footers live outside the main body and can contain placeholders that must be replaced.",
+    "key_point": "Processed headers and footers in each document section to ensure placeholders there are replaced as well.",
+    "trajectory_reference": "## Headers and Footers\n\nfor section in doc.sections:\n    for para in section.header.paragraphs:\n        replace_in_paragraph(para)\n    for para in section.footer.paragraphs:\n        replace_in_paragraph(para)"
+  },
+  {
+    "reason": "Conditional markers may span paragraphs; the script must remove markers or entire blocks based on condition.",
+    "key_point": "Implemented logic to handle conditional blocks {{IF_RELOCATION}}...{{END_IF_RELOCATION}}: remove markers if include, or remove entire block if exclude.",
+    "trajectory_reference": "## Conditional Sections\n\ndef handle_conditional(doc, condition_key, should_include, data):\n    \"\"\"Remove or keep conditional sections.\"\"\"\n    start_marker = '{{IF_' + condition_key + '}}'\n    end_marker = '{{END_IF_' + condition_key + '}}'\n\n    for para in doc.paragraphs:\n        text = para.text\n        if start_marker in text and end_marker in text:\n            if should_include:\n                # Remove just the markers\n                new_text = text.replace(start_marker, '').replace(end_marker, '')\n            else:\n                # Remove entire content between markers\n                new_text = ''"
+  },
+  {
+    "reason": "The script must be executed and produce the final file at the specified path.",
+    "key_point": "Wrote and executed a Python script that loads the JSON, fills the template, and saves the output to /root/offer_letter_filled.docx.",
+    "trajectory_reference": "tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text\n...\ntool_use[1]: tool=Bash; status=success; input_keys=command; output_keys=text\n...\nfill_template('template.docx', 'data.json', 'output.docx')"
+  },
+  {
+    "reason": "Verify there are no remaining placeholders and that conditional handling behaved as expected.",
+    "key_point": "Verified output: all {{PLACEHOLDER}} fields replaced, conditional relocation block included with markers removed, and no unfilled placeholders remain.",
+    "trajectory_reference": "content: All placeholders replaced successfully... The output looks correct. All placeholders have been replaced, the relocation block is included (since RELOCATION_PACKAGE is \"Yes\"), and the conditional markers are removed.\n...\ncontent: The offer letter has been generated successfully at `/root/offer_letter_filled.docx`."
+  }
+]

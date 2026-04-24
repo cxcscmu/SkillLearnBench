@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker needed the exact corporate dark color to render the main title and darkest structural graphics (the brief required the main title or darkest structural elements use Corporate Dark). The worker mapped and applied this token when designing the wordmark and emblem (see trajectory steps where they mapped tokens and built the image).",
+    "key_point": "Anthropic Corporate Dark is #141413 and should be used for primary text and dark structural/background elements.",
+    "skill_reference": "- Dark: `#141413` - Primary text and dark backgrounds"
+  },
+  {
+    "reason": "The worker used the official light background color for the canvas to meet the requirement of a minimalist, low-saturation background; this exact hex guided the canvas fill in the generated PNG.",
+    "key_point": "Anthropic Identity Light background color is #faf9f5 and should be applied for light backgrounds.",
+    "skill_reference": "- Light: `#faf9f5` - Light backgrounds and text on dark"
+  },
+  {
+    "reason": "The brief required a restrained use of the primary accent; the worker needed the exact primary-accent hex to place the single small highlight (the filled disc) in the emblem.",
+    "key_point": "Anthropic Primary Accent (orange) is #d97757 and is the primary accent color to use for small focal highlights.",
+    "skill_reference": "- Orange: `#d97757` - Primary accent"
+  },
+  {
+    "reason": "The worker applied the brand rule that non-text shapes should use accent colors (this justified placing the accent on the emblem's center dot rather than on text), so the rule was essential for where to apply the orange accent.",
+    "key_point": "Non-text shapes should use accent colors (i.e., use accent palette colors for graphical elements rather than body/heading text).",
+    "skill_reference": "- Non-text shapes use accent colors"
+  },
+  {
+    "reason": "The worker needed the specified heading typeface to implement a brand-consistent wordmark and to decide to install/use Poppins; the trajectory shows they checked for and then installed/used Poppins for the heading.",
+    "key_point": "Headings should use the Poppins typeface (with Arial as a fallback).",
+    "skill_reference": "- **Headings**: Poppins (with Arial fallback)"
+  },
+  {
+    "reason": "The worker chose a large display size for the wordmark (112 pt) and relied on the brand rule that Poppins applies to headings at larger sizes; this determined the font application rule used when rendering the heading.",
+    "key_point": "Apply Poppins to headings at sizes 24pt and larger (Poppins is the prescribed heading font for 24pt+).",
+    "skill_reference": "- Applies Poppins font to headings (24pt and larger)"
+  },
+  {
+    "reason": "The worker attempted to verify/install fonts and explicitly checked for availability; the skill's note that fonts should be pre-installed justified those steps and the decision to install or fall back as needed.",
+    "key_point": "Fonts should be pre-installed in the environment for best results (i.e., prefer system-installed Poppins/Lora; otherwise plan for fallback or installation).",
+    "skill_reference": "- **Note**: Fonts should be pre-installed in your environment for best results"
+  }
+]

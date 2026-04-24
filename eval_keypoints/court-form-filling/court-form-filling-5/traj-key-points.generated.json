@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "Identifying that the PDF has fillable form fields is necessary before attempting to populate them.",
+    "key_point": "Detected that the SC-100 PDF has fillable form fields and proceeded with form-filling workflow.",
+    "trajectory_reference": "\"The PDF has fillable form fields.\""
+  },
+  {
+    "reason": "Accessing the PDF processing skill/environment is required to read and manipulate the form.",
+    "key_point": "Loaded and used the PDF processing skill/environment to handle reading and filling the PDF.",
+    "trajectory_reference": "tool_use[1]: tool=Skill; status=success; input_keys=skill; output_keys=text"
+  },
+  {
+    "reason": "Reading the form documentation (forms.md) is critical to follow the correct procedure for fillable PDFs.",
+    "key_point": "Read the PDF processing guide and forms.md instructions to determine how to extract and fill form fields.",
+    "trajectory_reference": "tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Extracting form field information and images is essential to map each field to case data.",
+    "key_point": "Extracted form field info and converted PDF pages to images to analyze field purposes and positions.",
+    "trajectory_reference": "The PDF has fillable fields. Now I'll extract field info and convert to images in parallel.\""
+  },
+  {
+    "reason": "Listing and mapping individual PDF field IDs to case data is necessary to populate precise form fields.",
+    "key_point": "Mapped specific PDF field IDs (e.g., PlaintiffName1, PlaintiffPhone1, PlaintiffAddress1, etc.) to the plaintiffs' contact details.",
+    "trajectory_reference": "\"SC-100[0].Page2[0].List1[0].Item1[0].PlaintiffName1[0] - First plaintiff name (Lucas Bennett)\""
+  },
+  {
+    "reason": "Determining which checkboxes apply (and which do not) ensures accurate boolean selections on the form.",
+    "key_point": "Analyzed checkboxes and decided which to check: checked venue = 'where defendant lives', checked demand = 'Yes', checked claim > $2,500 = 'Yes', left irrelevant checkboxes unchecked.",
+    "trajectory_reference": "\"Since the case description says they emailed her multiple times - so Yes, demand was made.\""
+  },
+  {
+    "reason": "Filling date range fields correctly is necessary to represent when the incident occurred.",
+    "key_point": "Used a date range (left specific-date empty) and filled 'Date started' = 2025-01-22 and 'Through' = 2025-06-30 in section 3b.",
+    "trajectory_reference": "\"Date2 = \"2025-01-22\" (Date started) - Date3 = \"2025-06-30\" (Through)\""
+  },
+  {
+    "reason": "Providing the factual basis/explanation and calculation source supports the monetary claim field.",
+    "key_point": "Entered explanation that defendant failed to return $4,280 security deposit and noted calculation: amount listed on the signed roommate sublease contract.",
+    "trajectory_reference": "\"The amount is listed on the signed roommate sublease contract\""
+  },
+  {
+    "reason": "Creating a structured mapping of field values is needed to run the automated fill script.",
+    "key_point": "Constructed a field_values.json with all mapped form field values (plaintiffs, defendant, amount, dates, checkboxes, zip code, explanations).",
+    "trajectory_reference": "Now I have all the information I need. Let me create the `field_values.json` and fill the form.\""
+  },
+  {
+    "reason": "Running the fill script and verifying output confirms the filled PDF was produced correctly.",
+    "key_point": "Ran the automated fill script to populate the PDF, verified the output file was created, and reviewed pages to confirm correct data placement.",
+    "trajectory_reference": "\"The script ran without any output, which usually means success. Let me verify the output file was created.\""
+  },
+  {
+    "reason": "Final verification ensures all required fields are correctly filled and the filled PDF is saved to the requested path.",
+    "key_point": "Verified the filled form: plaintiffs and defendant info, claim amount $4,280, explanation, dates, venue, demand, zip 94105, appropriate yes/no checkboxes, signatures dated 2025-06-30; saved to /root/sc100-filled.pdf.",
+    "trajectory_reference": "The form is filled correctly... The filled form is saved to `/root/sc100-filled.pdf`.\""
+  },
+  {
+    "reason": "Ensuring only necessary fields are filled and optional/court fields are left empty respects the instruction to not populate court-only fields.",
+    "key_point": "Populated only necessary plaintiff/defendant/claim fields and left court-filled or optional fields empty as instructed.",
+    "trajectory_reference": "Only fill in the necessary fields and leave the court-filled, optional fields or fields not mentioned in the case description below empty.\""
+  }
+]

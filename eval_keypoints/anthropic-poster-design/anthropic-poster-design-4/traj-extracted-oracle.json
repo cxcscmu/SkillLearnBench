@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke brand-guidelines skill to obtain official brand colors and typography",
+    "why_essential": "The poster must use Anthropic’s official brand tokens and typography; obtaining the authoritative guidelines is required before applying any colors or type choices.",
+    "evidence": "Invoked brand-guidelines skill: \"Launching skill: brand-guidelines\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Map task color requirements to the retrieved brand color values",
+    "why_essential": "The design parameters (background, corporate light, primary/secondary/tertiary accents, muted gray) must be set to exact HEX values to satisfy the specification and to generate the design_parameters.json.",
+    "evidence": "Mapped requirements to brand colors: \"Background: Anthropic Corporate Dark = #141413\", \"Outer Casing: Anthropic Corporate Light = #faf9f5\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Install system Pillow package (python3-pil) to enable image generation",
+    "why_essential": "Generating the PNG poster programmatically requires the Pillow imaging library; installing the system package ensures the script can run in this environment.",
+    "evidence": "Installed python3-pil: \"Setting up ...\" and subsequent confirmation: \"Pillow ready\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create the poster-generation script (/root/gen_poster.py) that draws the technical poster using the mapped brand tokens and available fonts",
+    "why_essential": "A reproducible script is needed to render the poster with the exact layout, colors, typography fallbacks, and to produce consistent output files required by the task.",
+    "evidence": "Created file: /root/gen_poster.py (\"File created successfully at: /root/gen_poster.py\")"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Execute the poster script to generate /root/orion_technical_poster.png",
+    "why_essential": "Running the script produces the required final poster image file at the specified path for delivery.",
+    "evidence": "Saved: /root/orion_technical_poster.png (2400×2800px)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write /root/design_parameters.json containing the exact HEX values used in the poster",
+    "why_essential": "The task requires a separate JSON file listing the applied HEX color values in a specific structure for documentation and verification.",
+    "evidence": "File created successfully at: /root/design_parameters.json"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Verify the generated files by reading/confirming the poster and JSON outputs",
+    "why_essential": "Confirming the presence and contents of the output files ensures the poster and the design parameters were produced correctly and are accessible at the required paths.",
+    "evidence": "Both files are generated and confirmed; read design_parameters.json showing the HEX values"
+  }
+]

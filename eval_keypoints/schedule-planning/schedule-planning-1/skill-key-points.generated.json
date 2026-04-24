@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker needed to open the calendar PDF with pdfplumber to run page-level visual inspections; this exact open-call is what the provided analysis scripts used to load /root/calendar.pdf before extracting lines, rects, chars, etc.",
+    "key_point": "Use pdfplumber.open(...) to open the PDF file and obtain page objects for further visual inspection.",
+    "skill_reference": "with pdfplumber.open(\"/root/calendar.pdf\") as pdf:"
+  },
+  {
+    "reason": "To detect the horizontal time lines (and measure the pixel spacing between them to map 15-minute intervals), the worker iterated the page's line objects; the script explicitly loops over page.lines to print those line objects.",
+    "key_point": "Iterate page.lines to extract line objects (positions) from the page for locating horizontal time grid lines.",
+    "skill_reference": "for line in page.lines[:50]:\n        print(json.dumps(line))"
+  },
+  {
+    "reason": "Appointment blocks were represented by rectangles; the worker needed both positions and color information to identify blue (flexible) slots and compute start/end times from rect coordinates. The provided script enumerates page.rects and prints x0,y0,x1,y1,width,height and color fields.",
+    "key_point": "Iterate page.rects and read each rect's x0,y0,x1,y1, width/height and non_stroking_color/stroking_color to identify appointment blocks and their colors.",
+    "skill_reference": "print(\"=== RECTS WITH COLORS ===\")\n    for i, rect in enumerate(page.rects):\n        print(f\"Rect {i}: x0={rect.get('x0'):.1f}, y0={rect.get('y0'):.1f}, x1={rect.get('x1'):.1f}, y1={rect.get('y1'):.1f}, \"\n              f\"width={rect.get('x1',0)-rect.get('x0',0):.1f}, height={rect.get('y1',0)-rect.get('y0',0):.1f}, \"\n              f\"fill={rect.get('non_stroking_color')}, stroke={rect.get('stroking_color')}\")"
+  },
+  {
+    "reason": "To reconstruct text lines and determine which textual labels (dates, times, event names) appear at which vertical positions, the worker grouped character objects by y-coordinate; the script accesses page.chars and groups by rounded y0.",
+    "key_point": "Access page.chars and group characters by approximate y position (e.g., round(char['y0']/5)*5) so text labels can be associated with vertical positions on the calendar.",
+    "skill_reference": "print(\"\\n=== CHARS ===\")\n    chars = page.chars\n    print(f\"Total chars: {len(chars)}\")\n    # Group by approximate y position\n    y_groups = {}\n    for char in chars:\n        y_key = round(char['y0'] / 5) * 5\n        if y_key not in y_groups:\n            y_groups[y_key] = []\n        y_groups[y_key].append(char['text'])\n    for y_key in sorted(y_groups.keys()):\n        print(f\"y~{y_key}: {''.join(y_groups[y_key])}\")"
+  },
+  {
+    "reason": "The worker needed a complete listing of page objects (lines, rects, chars, images, etc.) to inspect structure and debug extraction; the script reads page.objects and iterates its types to report counts and contents.",
+    "key_point": "Use objects = page.objects and iterate objects.items() to enumerate all object types and inspect their contents for detailed analysis.",
+    "skill_reference": "print(\"\\n=== ALL OBJECTS (first 100) ===\")\n    objects = page.objects\n    for obj_type, obj_list in objects.items():\n        print(f\"\\n{obj_type}: {len(obj_list)} items\")"
+  },
+  {
+    "reason": "To get word-level positions (x0,y0,x1,y1) useful for mapping text labels to rects and for precise time/date extraction, the worker used page.extract_words() and printed each word with its coordinates.",
+    "key_point": "Call page.extract_words() and read each word's x0,y0,x1,y1 to map textual words to spatial positions on the page.",
+    "skill_reference": "print(\"\\n=== TEXT WITH POSITIONS ===\")\n    words = page.extract_words()\n    for word in words:\n        print(f\"'{word['text']}': x0={word['x0']:.1f}, y0={word['y0']:.1f}, x1={word['x1']:.1f}, y1={word['y1']:.1f}\")"
+  }
+]

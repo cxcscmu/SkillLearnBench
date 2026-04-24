@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Choosing the right tool ensures access to PR metadata needed for all metrics.",
+    "key_point": "Decide to use the GitHub CLI (gh) to fetch PR data for cli/cli.",
+    "trajectory_reference": "thinking: The user wants me to gather PR metrics for the `cli/cli` repository for December 2024. Let me use the gh CLI skill to help with this."
+  },
+  {
+    "reason": "Constructing a search that restricts results to the target date range is necessary to get only December PRs.",
+    "key_point": "Use gh pr list with a search filter for created:2024-12-01..2024-12-31 to retrieve PRs created in December 2024.",
+    "trajectory_reference": "thinking: Let me use the GitHub CLI to get this data. Let me use `gh pr list` with search syntax to filter PRs created between 2024-12-01 and 2024-12-31."
+  },
+  {
+    "reason": "Specify which JSON fields are required to compute counts, merge times, and contributors.",
+    "key_point": "Request JSON fields number, createdAt, mergedAt, closedAt, state, author for each PR to compute all metrics.",
+    "trajectory_reference": "The fields I need are: `number`, `createdAt`, `mergedAt`, `closedAt`, `state`, `author`"
+  },
+  {
+    "reason": "Retrieve the full dataset (with pagination) so metrics are computed over all PRs from the month.",
+    "key_point": "Fetch all PRs and save the complete JSON output to a file, handling pagination and using a high limit to capture all results.",
+    "trajectory_reference": "I'll need to paginate through all results. Let me start with a high limit and see how many PRs there are."
+  },
+  {
+    "reason": "Counting total PRs is the foundation for other metrics and for cross-checking.",
+    "key_point": "Count the total number of PRs returned for the December date range and determine there are 50 PRs.",
+    "trajectory_reference": "thinking: 50 PRs fetched."
+  },
+  {
+    "reason": "Distinguish PRs merged before the cutoff from those merged/closed after the cutoff for correct counts.",
+    "key_point": "Determine which PRs were merged by 2026-01-01T00:00:00Z to compute the merged count.",
+    "trajectory_reference": "thinking: PRs merged by 2026-01-01T00:00:00Z (all merged PRs qualify since the deadline is far in the future)"
+  },
+  {
+    "reason": "Correctly classify PRs closed after the cutoff as still open at the cutoff to avoid miscounting closed PRs.",
+    "key_point": "Identify PR #10002 as closed on 2026-01-14 (after cutoff), so treat it as open at the cutoff and exclude it from the 'closed' count.",
+    "trajectory_reference": "thinking: PR #10002 was closed without merge at 2026-01-14, which is after the cutoff of 2026-01-01T00:00:00Z. So it doesn't count as \"closed without merge by 2026-01-01T00:00:00Z\"."
+  },
+  {
+    "reason": "Compute average merge time using creation and merge timestamps across merged PRs and round appropriately.",
+    "key_point": "Compute avg_merge_days by taking (mergedAt - createdAt) for each merged PR, averaging across the merged PRs, and rounding to one decimal place (result 8.3 days).",
+    "trajectory_reference": "thinking: `avg_merge_days` is computed across all 34 merged PRs, from each PR's `createdAt` to `mergedAt`."
+  },
+  {
+    "reason": "Identify the author with the largest number of PRs to report the top contributor and handle ties lexicographically.",
+    "key_point": "Count PRs per author and select the top contributor; malancas had the most PRs (8), chosen as top_contributor.",
+    "trajectory_reference": "thinking: `malancas` topped the contributor list with 8 PRs, ahead of `williammartin` (6) and `app/dependabot` (5)."
+  },
+  {
+    "reason": "Produce the final artifact in the exact location and JSON structure requested by the user.",
+    "key_point": "Write the final report.json file with the specified schema into /app/report.json.",
+    "trajectory_reference": "content: The report has been written to `/app/report.json`."
+  }
+]

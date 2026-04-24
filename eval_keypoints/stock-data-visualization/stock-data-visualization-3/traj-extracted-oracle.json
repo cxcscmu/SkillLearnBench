@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read the main TSV data file (/root/data/stock-descriptions.tsv)",
+    "why_essential": "To obtain the list of stocks, sectors, full company names, and marketCap values needed to drive the bubble chart and table",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/stock-descriptions.tsv\"}"
+  },
+  {
+    "step_index": 2,
+    "core_step": "List individual stock files in /root/data/indiv-stock/ to confirm available price-history CSVs",
+    "why_essential": "To confirm there are per-stock CSVs for the 50 stocks and to know which filenames to copy into the web app data folder",
+    "evidence": "Glob status=success input={\"pattern\": \"/root/data/indiv-stock/*\"} -> returned file list including /root/data/indiv-stock/GE.csv, /root/data/indiv-stock/NEE.csv, ..."
+  },
+  {
+    "step_index": 3,
+    "core_step": "Read one representative individual stock CSV (AAPL) to verify CSV structure/columns",
+    "why_essential": "To understand the per-stock CSV column layout (Date, Open, Close, etc.) so visualization code can parse them correctly",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/indiv-stock/AAPL.csv\"}"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create output directory structure (/root/output/js, /root/output/css, /root/output/data/indiv-stock)",
+    "why_essential": "To prepare the target filesystem locations required by the single-page web app (HTML, JS, CSS, and data files)",
+    "evidence": "Bash status=success input={\"command\": \"mkdir -p /root/output/js /root/output/css /root/output/data/indiv-stock && ls /root/output/\"} -> output: css data js"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Download and save D3.js v6 to /root/output/js/d3.v6.min.js",
+    "why_essential": "The visualization depends on D3 v6; the library must be available locally at the specified path for the web app to run",
+    "evidence": "Bash status=success input={\"command\": \"curl -fsSL \\\"https://cdn.jsdelivr.net/npm/d3@6.7.0/dist/d3.min.js\\\" -o /root/output/js/d3.v6.min.js\"} -> created /root/output/js/d3.v6.min.js"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Copy input data files into the web app data folder (/root/output/data/ and /root/output/data/indiv-stock/)",
+    "why_essential": "The app must include the provided TSV and individual CSVs so the browser can load and visualize the exact input data",
+    "evidence": "Bash status=success input={\"command\": \"cp /root/data/stock-descriptions.tsv /root/output/data/ && cp /root/data/indiv-stock/*.csv /root/output/data/indiv-stock/\"} -> output: 50"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write the CSS file /root/output/css/style.css",
+    "why_essential": "Styling is required to arrange the two charts side-by-side and ensure legible text and table layout per task requirements",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/css/style.css\", \"content\": \"...\"} -> File created successfully at: /root/output/css/style.css"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write the visualization script /root/output/js/visualization.js implementing the D3 bubble chart, legend div, tooltip behavior, table, and click-linking",
+    "why_essential": "The visualization logic (force simulation, sizing, coloring, labels, tooltip, table linkage and click highlighting) must be implemented in a JS file for the single-page app",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/js/visualization.js\", \"content\": \"...\"} -> File created successfully at: /root/output/js/visualization.js"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Write the main single-page web app HTML at /root/output/index.html referencing the local d3, CSS, JS, and data files",
+    "why_essential": "An index.html file is required to load the D3 script, styles, and data and present the side-by-side bubble chart and data table in the browser",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/index.html\", \"content\": \"...\"} -> File created successfully at: /root/output/index.html"
+  },
+  {
+    "step_index": 10,
+    "core_step": "Verify the output file tree to ensure all required files are present",
+    "why_essential": "To confirm the web app is complete and all specified files (index.html, d3.v6.min.js, visualization.js, style.css, and copied data) exist in the expected paths",
+    "evidence": "Bash status=success input={\"command\": \"find /root/output -type f | sort\"} -> listed /root/output/css/style.css, /root/output/js/visualization.js, /root/output/js/d3.v6.min.js, /root/output/index.html, and data files"
+  }
+]

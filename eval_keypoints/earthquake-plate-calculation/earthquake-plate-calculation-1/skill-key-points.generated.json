@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "Loading GeoJSON into GeoDataFrames was the first necessary step so the script could access plate polygons and boundary lines; the worker used gpd.read_file() to load the three input files.",
+    "key_point": "Use geopandas' gpd.read_file() to load GeoJSON files into GeoDataFrames.",
+    "skill_reference": "gdf_plates = gpd.read_file(\"plates.json\")"
+  },
+  {
+    "reason": "The worker needed to convert raw earthquake coordinate fields into a GeoDataFrame with Point geometries so spatial operations like .within() and .distance() would work.",
+    "key_point": "Construct a GeoDataFrame from longitude/latitude by creating Point geometries and setting crs=\"EPSG:4326\".",
+    "skill_reference": "geometry = [Point(row[\"lon\"], row[\"lat\"]) for row in data]\ngdf = gpd.GeoDataFrame(data, geometry=geometry, crs=\"EPSG:4326\")"
+  },
+  {
+    "reason": "Selecting only earthquakes that lie inside the Pacific plate polygon was essential before computing distances; the worker filtered earthquakes using the .within() predicate.",
+    "key_point": "Filter points to those within a target polygon using the .within() method on the GeoDataFrame.",
+    "skill_reference": "earthquakes_in_plate = gdf_eq[gdf_eq.within(target_plate)].copy()"
+  },
+  {
+    "reason": "The worker had to identify the Pacific plate polygon unambiguously from the plates dataset; the skill shows using the plate code \"PA\" and combining geometry via unary_union to get a single polygon.",
+    "key_point": "Select the Pacific plate polygon by filtering plate attributes (Code == \"PA\") and combine geometries with .geometry.unary_union.",
+    "skill_reference": "target_plate = gdf_plates[gdf_plates[\"Code\"] == \"PA\"].geometry.unary_union"
+  },
+  {
+    "reason": "To compute distance to the Pacific plate boundary, the worker needed to select boundary segments that involve the Pacific plate (PlateA or PlateB == \"PA\").",
+    "key_point": "Filter boundary features where PlateA == \"PA\" or PlateB == \"PA\" to get Pacific plate boundary segments.",
+    "skill_reference": "pacific_bounds = gdf_boundaries[(gdf_boundaries[\"PlateA\"] == \"PA\") | (gdf_boundaries[\"PlateB\"] == \"PA\")]"
+  },
+  {
+    "reason": "Accurate metric distances require projecting geometries; the worker projected data before computing distances and used EPSG:4087 specifically as the metric CRS.",
+    "key_point": "Project data to a metric CRS (EPSG:4087) before performing distance calculations.",
+    "skill_reference": "METRIC_CRS = \"EPSG:4087\""
+  },
+  {
+    "reason": "The skill explicitly warns against computing distances in geographic coordinates; the worker followed this rule to avoid incorrect degree-based distances.",
+    "key_point": "Do not calculate distances in EPSG:4326 (degrees); always project to a metric CRS first.",
+    "skill_reference": "Never calculate distances directly in geographic coordinates (EPSG:4326). Always project to a metric coordinate system first.\""
+  },
+  {
+    "reason": "Combining boundary segments into a single geometry avoids per-segment looping and is needed to compute the distance from each earthquake to the entire boundary efficiently; the worker used unary_union for this.",
+    "key_point": "Combine multiple boundary geometries into a single geometry using .geometry.unary_union before distance computations.",
+    "skill_reference": "boundary_geom = boundaries_proj.geometry.unary_union"
+  },
+  {
+    "reason": "The core distance computation used the projected point geometries' .distance() to the combined boundary, and results were converted from meters to kilometers as the final metric.",
+    "key_point": "Compute distances by calling geometry.distance(unary_union_boundary) on projected points, yield meters, then divide by 1000 to get kilometers.",
+    "skill_reference": "gdf_points[\"distance_m\"] = points_proj.geometry.distance(boundary_geom)\ngdf_points[\"distance_km\"] = gdf_points[\"distance_m\"] / 1000.0"
+  },
+  {
+    "reason": "After distances were computed, the worker needed a concise method to pick the single furthest earthquake; the skill demonstrates using nlargest to obtain that record.",
+    "key_point": "Select the furthest point by using .nlargest(1, \"distance_km\").iloc[0] on the GeoDataFrame.",
+    "skill_reference": "furthest = gdf_points.nlargest(1, \"distance_km\").iloc[0]"
+  },
+  {
+    "reason": "To avoid SettingWithCopy or modification warnings when filtering and then adding columns, the worker used .copy() on the filtered GeoDataFrame before computing distances.",
+    "key_point": "When creating filtered GeoDataFrames that will be modified, call .copy() to produce a safe writable copy.",
+    "skill_reference": "Copy when modifying: Use `.copy()` when creating filtered DataFrames\""
+  },
+  {
+    "reason": "For performance and to reduce unnecessary work, the worker filtered to relevant subsets (e.g., earthquakes within the plate) before projecting the data to the metric CRS.",
+    "key_point": "Filter datasets to the small subset of interest before projecting them to the metric CRS to reduce computation.",
+    "skill_reference": "Filter before projecting: Reduce data size before expensive operations\""
+  }
+]

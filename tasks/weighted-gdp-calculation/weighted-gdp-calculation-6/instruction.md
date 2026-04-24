@@ -1,0 +1,3 @@
+Utilizing the gdp.xlsx file, determine the weighted average of net exports relative to GDP for the GCC countries. Navigate the "Task" and "Data" sheets without altering their formatting or adding VBA. 
+
+First, populate the yellow regions (H12:L17, H19:L24, H26:L31) by retrieving values from "Data" rows 21–40 using lookup formulas triggered by the blue-coded series and years. Second, compute the net export-to-GDP percentages in H35:L40, deriving descriptive statistics like the median and quartiles. Finally, apply the SUMPRODUCT function for the weighted mean. Ensure all percentages are scaled by 100 and rounded to one decimal point.

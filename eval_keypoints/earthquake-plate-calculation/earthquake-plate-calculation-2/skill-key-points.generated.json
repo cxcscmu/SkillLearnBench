@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker needed to load the two GeoJSON sources (earthquakes and plate boundaries) into geopandas before any spatial processing; this exact method (gpd.read_file) is what the worker's script used to read the files.",
+    "key_point": "Load GeoJSON files into GeoDataFrames using geopandas' read_file (e.g., read both plate boundaries and plates via gpd.read_file).",
+    "skill_reference": "gdf_plates = gpd.read_file(\"plates.json\")\ngdf_boundaries = gpd.read_file(\"boundaries.json\")"
+  },
+  {
+    "reason": "The worker created a GeoDataFrame of earthquake points from lon/lat and explicitly set the CRS to EPSG:4326; this construction was required to make points usable for later projection and distance calculations.",
+    "key_point": "Convert tabular lon/lat earthquake records into a GeoDataFrame by building shapely Point geometries and set crs=\"EPSG:4326\".",
+    "skill_reference": "geometry = [Point(row[\"lon\"], row[\"lat\"]) for row in data]\ngdf = gpd.GeoDataFrame(data, geometry=geometry, crs=\"EPSG:4326\")"
+  },
+  {
+    "reason": "To obtain accurate, metric distances the worker followed the rule to never compute distances in geographic degrees and instead project data first; without this rule the computed distances would be meaningless.",
+    "key_point": "Do not calculate distances in EPSG:4326 (degrees); always project geographic data to a metric CRS before computing distances.",
+    "skill_reference": "**Critical Rule**: Never calculate distances directly in geographic coordinates (EPSG:4326). Always project to a metric coordinate system first."
+  },
+  {
+    "reason": "The worker projected both earthquakes and boundaries to the specified metric CRS (EPSG:4087) prior to distance computations; the explicit METRIC_CRS variable and to_crs calls show the exact projection step used.",
+    "key_point": "Project both points and boundary GeoDataFrames to a metric CRS (use METRIC_CRS = \"EPSG:4087\" and .to_crs(METRIC_CRS)) before measuring distances.",
+    "skill_reference": "METRIC_CRS = \"EPSG:4087\"\npoints_proj = gdf_points.to_crs(METRIC_CRS)\nboundaries_proj = gdf_boundaries.to_crs(METRIC_CRS)"
+  },
+  {
+    "reason": "Before computing distances the worker combined boundary segments into a single geometry, allowing a single distance call per point rather than iterating over segments; this combination is essential for correct and efficient nearest-boundary distance.",
+    "key_point": "Combine (union) plate boundary line segments into one geometry using .geometry.unary_union prior to distance calculations.",
+    "skill_reference": "# 3. Combine boundary segments if needed\nboundary_geom = boundaries_proj.geometry.unary_union"
+  },
+  {
+    "reason": "The worker computed point-to-boundary distances using the projected geometries and then converted the resulting meters to kilometers — this shows the exact distance-calculation formula used in the script.",
+    "key_point": "Compute distances with points_proj.geometry.distance(boundary_geom) (returns meters when projected) and convert to kilometers by dividing by 1000.",
+    "skill_reference": "gdf_points[\"distance_m\"] = points_proj.geometry.distance(boundary_geom)\ngdf_points[\"distance_km\"] = gdf_points[\"distance_m\"] / 1000.0"
+  },
+  {
+    "reason": "After computing distances the worker needed a simple way to select the extreme (here the minimum) earthquake; the skill explicitly recommends using .nlargest()/.nsmallest() for finding extreme values, which grounds the selection method used.",
+    "key_point": "Select extreme values (closest or furthest events) using pandas/geopandas helpers such as .nlargest() or .nsmallest() to obtain the single most extreme record.",
+    "skill_reference": "6. ✅ Use `.nlargest()` / `.nsmallest()` for finding extreme values"
+  }
+]

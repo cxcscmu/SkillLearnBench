@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read employee_data.json",
+    "why_essential": "Provides all required values (names, date, DOC_ID, RELOCATION_PACKAGE, etc.) needed to fill the template placeholders",
+    "evidence": "Read ... \"/root/employee_data.json\" → contains \"DOC_ID\": \"OFFER-2024-02154\", \"COMPANY_NAME\": \"Bluehaven Biotech Labs\", \"DATE\": \"June 10, 2024\", \"CANDIDATE_FULL_NAME\": \"Olivia ...\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Locate the Word template file",
+    "why_essential": "Identifies the template file to be filled so the script knows which .docx to open and modify",
+    "evidence": "Glob status=success ... \"/root/offer_letter_template.docx\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Inspect word/document.xml to understand placeholder layout and split runs",
+    "why_essential": "Placeholders in .docx are often split across XML runs; inspecting document.xml reveals how placeholders and the conditional block are structured so replacements can be implemented correctly",
+    "evidence": "Bash ... with z.open('word/document.xml') ... returned XML and note: \"Many placeholders are split across runs\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect headers/footers XML for placeholders",
+    "why_essential": "Placeholders can be present in headers/footers as well; they must be found and replaced to produce a complete filled letter",
+    "evidence": "Checked headers and footers ... key observations: many placeholders are split ... headers/footers also have split placeholders"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Determine relocation conditional from employee data (RELOCATION_PACKAGE = No)",
+    "why_essential": "Decides whether to keep or remove the conditional relocation section in the final document",
+    "evidence": "`RELOCATION_PACKAGE` is \"No\", so the relocation section should be removed entirely."
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write a Python script to replace placeholders (handling split runs) and remove the IF_RELOCATION block when RELOCATION_PACKAGE is No",
+    "why_essential": "Automates correct replacement across run boundaries and conditional removal so the output .docx has intact, properly filled placeholders and no leftover markers",
+    "evidence": "Write file created: /root/fill_offer_letter.py — \"Fill offer letter template, handling split placeholders and conditional sections.\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Run the Python script to fill placeholders and save the result to /root/offer_letter_filled.docx",
+    "why_essential": "Performs the actual edits to produce the final filled offer letter at the required output path",
+    "evidence": "Bash command python3 fill_offer_letter.py → \"Saved: /root/offer_letter_filled.docx\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Verify the filled document XML to confirm placeholders are replaced and the relocation block removed",
+    "why_essential": "Confirms the output file is correctly filled (no {{...}} placeholders remain) and contains expected values, ensuring task completion",
+    "evidence": "Extracted word/document.xml from filled docx → \"FORMAL OFFER OF EMPLOYMENT Bluehaven Biotech Labs Tracking Code: OFFER-2024-02154 Date: June 10, 2024 Olivia Park ...\" and \"All placeholders are filled and no {{...}} markers remain.\""
+  }
+]

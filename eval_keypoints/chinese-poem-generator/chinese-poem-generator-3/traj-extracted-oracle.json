@@ -1,0 +1,32 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Specify composition requirements (seven-character regulated verse, theme, perspective, rhyme standard)",
+    "why_essential": "Defines the exact poetic form, theme, voice, and rhyming convention the skill must follow so the generated poem meets the user's strict format requirements",
+    "evidence": "“请以羁旅思乡为主题…请严格遵守七言律诗的格律要求（平仄、押韵、对仗），押韵以现代普通话发音为准。”"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Invoke the regulated-lvshi-composer skill with the specified arguments",
+    "why_essential": "Uses the specialized tool to generate a poem that adheres to regulated-lvshi rules; the skill produces the conforming poem content",
+    "evidence": "Skill call input: {\"skill\": \"regulated-lvshi-composer\", \"args\": \"请以羁旅思乡为主题…严格遵守七言律诗的格律要求…\"}"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Confirm the skill launched and began composition",
+    "why_essential": "Verifies that the composer skill started, indicating the generation process proceeded (necessary before attempting to save output)",
+    "evidence": "Tool output: \"Launching skill: regulated-lvshi-composer\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Write the generated poem content to /root/poem.txt",
+    "why_essential": "Saves the poem in the specified file path and required format (title on first line, following 8 lines of poem), fulfilling the user's storage requirement",
+    "evidence": "Write call input: {\"file_path\": \"/root/poem.txt\", \"content\": \"客舍夜思\\n倦客他乡夜色苍，\\n…\\n泪落无声月似霜。\\n\"}"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Verify file creation succeeded",
+    "why_essential": "Confirms the poem was successfully saved to the required location so the task is complete",
+    "evidence": "Tool result: \"File created successfully at: /root/poem.txt\""
+  }
+]

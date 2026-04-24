@@ -1,0 +1,6 @@
+# Method configuration for b1-self-generated.
+# Read by core/skill_runner.py; controls runtime execution behaviour.
+
+# "interrupt": poll the container for SKILL.md files and interrupt the agent
+# as soon as files are stable; the verifier is skipped (skills-only mode).
+skills_only_mode = "interrupt"

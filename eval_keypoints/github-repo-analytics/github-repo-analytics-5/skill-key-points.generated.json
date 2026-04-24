@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker decided to run gh with a search filter (gh pr list --search). Knowing that gh's --search flag uses GitHub search syntax is essential to form the date-range query used to collect PRs in Q3 2024.",
+    "key_point": "The gh CLI provides a --search flag that accepts GitHub search syntax, which the worker used to list PRs in a specified date range.",
+    "skill_reference": "The `--search` flag uses GitHub search syntax. Full documentation: https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax"
+  },
+  {
+    "reason": "The worker filtered PRs by creation date (2024-07-01..2024-09-30); the exact date-range query pattern is required to construct the --search argument that returns PRs created during Q3 2024.",
+    "key_point": "GitHub search supports date-range queries using the pattern YYYY-MM-DD..YYYY-MM-DD (e.g. created:YYYY-MM-DD..YYYY-MM-DD) to select items created inside a date interval.",
+    "skill_reference": "`YYYY-MM-DD..YYYY-MM-DD` | `created:2024-04-30..2024-07-04` — date range |"
+  },
+  {
+    "reason": "The worker applied a timestamp cutoff (2024-10-15T00:00:00Z) to decide which PRs were merged/closed by that instant; the skill's ISO8601 date/time format informs how to supply exact timestamps.",
+    "key_point": "Date queries accept ISO8601 dates and optional times (YYYY-MM-DD and YYYY-MM-DDTHH:MM:SS+00:00), enabling precise timestamps for cutoff comparisons.",
+    "skill_reference": "Date format: `YYYY-MM-DD` (ISO8601). Optional time: `YYYY-MM-DDTHH:MM:SS+00:00`"
+  },
+  {
+    "reason": "To filter locally by changed file count and compute merge times, the worker used gh's JSON output fields; knowing which PR fields are available (changedFiles, createdAt, mergedAt, closedAt, author) was required to implement the Python filtering and metrics calculations.",
+    "key_point": "gh's --json output for PRs exposes fields such as changedFiles, createdAt, mergedAt, closedAt, and author, which the worker used to filter PRs and compute merge/close statistics.",
+    "skill_reference": "**PR**:\n\n```\nadditions\nassignees\nauthor\nbaseRefName\nbody\nchangedFiles\nclosed\nclosedAt\ncomments\ncommits\ncreatedAt\ndeletions\nfiles\nheadRefName\nheadRepository\nheadRepositoryOwner\nid\nisCrossRepository\nisDraft\nlabels\nmaintainerCanModify\nmergeCommit\nmergeStateStatus\nmergeable\nmergedAt\nmergedBy\nmilestone\nnumber\npotentialMergeCommit\nprojectCards\nreactionGroups\nreviewDecision\nreviewRequests\nreviews\nstate\nstatusCheckRollup\ntitle\nupdatedAt\nurl\n```"
+  },
+  {
+    "reason": "The worker targeted the cli/cli repository when running gh pr list; knowing how to specify another repository is necessary to run the command against the correct repo.",
+    "key_point": "Use the -R / --repo flag with the [HOST/]OWNER/REPO format to select the target repository (e.g. cli/cli) for gh commands.",
+    "skill_reference": "-R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format"
+  }
+]

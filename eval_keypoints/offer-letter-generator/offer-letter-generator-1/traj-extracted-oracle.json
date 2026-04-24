@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read employee data file /root/employee_data.json",
+    "why_essential": "The template placeholders must be filled with the candidate and offer details stored in the employee data file.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/employee_data.json\"} ... \"CANDIDATE_FULL_NAME\": \"Sar...\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Locate the offer letter template file /root/offer_letter_template.docx",
+    "why_essential": "You must identify the Word template to open and perform placeholder replacement.",
+    "evidence": "Glob status=success input={\"pattern\": \"**/*.docx\", \"path\": \"/root\"} -> \"/root/offer_letter_template.docx\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Load the docx manipulation skill",
+    "why_essential": "A docx manipulation capability is required to programmatically read and write the .docx template and handle split placeholders/conditional blocks.",
+    "evidence": "Skill status=success input={\"skill\": \"docx\"} -> \"Launching skill: docx\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Write a Python script to fill placeholders and handle the conditional relocation block",
+    "why_essential": "The script performs placeholder replacement, detects split placeholders, evaluates RELOCATION_PACKAGE, and creates the final filled document.",
+    "evidence": "File created successfully at: /root/fill_offer_letter.py; earlier note: \"write a Python script to fill in the template and then execute it.\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Execute the Python script with python3 to generate /root/offer_letter_filled.docx",
+    "why_essential": "Running the script applies the data to the template and writes the final offer letter file to the target path.",
+    "evidence": "Bash ... python3 /root/fill_offer_letter.py -> \"Saved filled offer letter to /root/offer_letter_filled.docx\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Verify filled offer letter text by reading paragraphs of /root/offer_letter_filled.docx",
+    "why_essential": "Verifying paragraphs ensures placeholders were correctly replaced in the main document body (candidate name, date, etc.).",
+    "evidence": "python3 -c \"from docx import Document...\" output showing lines: \"[ 3] Date: January 15, 2024\" and \"[ 5] Sarah Chen\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Verify filled offer letter tables (position, compensation) by reading document tables",
+    "why_essential": "Tables can contain critical structured fields (position, compensation); verifying them ensures all placeholders in tables were filled.",
+    "evidence": "python3 -c \"...\" -> \"Table 0: 2 rows x 1 cols ... Nested table: 4 rows x 2 cols ... 'Position:' 'Senior Software Engineer'\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Remove the helper script /root/fill_offer_letter.py",
+    "why_essential": "Clean up temporary helper script after successful generation to leave only the final filled document.",
+    "evidence": "Bash status=success input={\"command\": \"rm /root/fill_offer_letter.py\"} (Bash completed with no output)"
+  }
+]

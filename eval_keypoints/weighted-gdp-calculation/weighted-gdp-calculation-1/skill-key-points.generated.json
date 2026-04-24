@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker used Excel formulas rather than hardcoding numeric results (they wrote INDEX/MATCH and ROUND formulas). This rule ensured the spreadsheet remained dynamic and editable as required by the task.",
+    "key_point": "Always use Excel formulas for computed results instead of calculating values outside Excel and pasting hardcoded numbers into cells.",
+    "skill_reference": "**Always use Excel formulas instead of calculating values in Python and hardcoding them.**"
+  },
+  {
+    "reason": "The worker relied on the instruction to let Excel perform calculations (they inserted formulas such as =SUM and =ROUND into cells rather than precomputing sums externally).",
+    "key_point": "Put calculation logic into Excel formulas (e.g., use Excel functions like SUM, ROUND) so the workbook recalculates when data changes.",
+    "skill_reference": "Good: Let Excel calculate the sum\nsheet['B10'] = '=SUM(B2:B9)'"
+  },
+  {
+    "reason": "After inserting formulas the worker invoked automatic recalculation; the skill required using the recalc script with LibreOffice to evaluate formulas and check for errors before delivering the file.",
+    "key_point": "Recalculate all workbook formulas using the provided recalc.py (LibreOffice) script before finalizing the file.",
+    "skill_reference": "Use the provided `recalc.py` script to recalculate formulas:"
+  },
+  {
+    "reason": "The worker checked for and addressed formula errors after recalculation (trajectory shows they reported 'All formulas work with zero errors'), matching this requirement.",
+    "key_point": "Verify and fix any Excel formula errors reported after recalculation (e.g., #REF!, #DIV/0!, #VALUE!, #N/A, #NAME?).",
+    "skill_reference": "Verify and fix any errors:"
+  },
+  {
+    "reason": "The task required preserving the spreadsheet's visual and structural conventions (yellow fill cells, fonts, etc.); the worker preserved the yellow fills and formatting when writing formulas.",
+    "key_point": "When editing an existing workbook, exactly preserve existing formatting, styles, and template conventions (don’t change colors, fonts, or layout).",
+    "skill_reference": "Study and EXACTLY match existing format, style, and conventions when modifying files"
+  },
+  {
+    "reason": "The worker used formulas that referenced cells rather than embedding constants (e.g., ROUND((H12-H19)/H26*100,1)), following this rule to keep assumptions editable.",
+    "key_point": "Place assumptions in separate cells and use cell references in formulas instead of hardcoding numeric constants.",
+    "skill_reference": "Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells"
+  },
+  {
+    "reason": "The task required percentages to display with one decimal and the worker implemented rounding in formulas (they used ROUND and multiplied by 100). The skill's formatting rule guided this display requirement.",
+    "key_point": "Format percentages to one decimal place (0.0%), and ensure formulas produce values in the displayed units (you may multiply by 100 or use ROUND to control displayed decimal).",
+    "skill_reference": "Percentages: Default to 0.0% format (one decimal)"
+  },
+  {
+    "reason": "The worker preserved formulas in the file and used the recalc step because openpyxl does not evaluate formulas itself; the skill warned about this so the worker ran recalculation.",
+    "key_point": "Understand that openpyxl preserves formula text but does not evaluate formulas—run the separate recalc.py step to update calculated values.",
+    "skill_reference": "Formulas are preserved but not evaluated - use recalc.py to update values"
+  },
+  {
+    "reason": "The worker used SUMPRODUCT to compute a GDP-weighted mean and the skill emphasized constructing formulas in Excel rather than computing externally, supporting the SUMPRODUCT usage directly in the workbook.",
+    "key_point": "Use Excel functions like SUMPRODUCT (not external computation) to compute weighted aggregates directly in the spreadsheet.",
+    "skill_reference": "Good: Let Excel calculate the sum\nsheet['B10'] = '=SUM(B2:B9)'"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "reason": "Confirm GLM configuration and files before calibration to ensure correct inputs and editable parameters.",
+    "key_point": "Read the GLM configuration file and inspect input files to understand current parameters and file layout.",
+    "trajectory_reference": "tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Establish baseline performance with current parameters so calibration has a reference.",
+    "key_point": "Run GLM with the current namelist settings to produce NetCDF output for baseline RMSE calculation.",
+    "trajectory_reference": "tool_use[1]: tool=Bash; status=success; input_keys=command; output_keys=text"
+  },
+  {
+    "reason": "The verifier matches by exact datetime + rounded depth, so the simulation depths must be converted to the same reference frame as observations.",
+    "key_point": "Identify that GLM 'z' is height above the lake bottom and convert to depth-from-surface using depth = lake_depth - z before rounding and merging.",
+    "trajectory_reference": "thinking: GLM stores depths from the bottom of the lake, not from the surface... depth_from_surface = lake_depth - z"
+  },
+  {
+    "reason": "Implement exact matching rules required by the task (no interpolation/nearest-time), so processing must round depths and merge on datetime + depth.",
+    "key_point": "Compute merged observation/simulation pairs by rounding depths to integers and performing an exact datetime + rounded-depth inner merge to generate paired samples for RMSE.",
+    "trajectory_reference": "thinking: This means: round observation depths and simulation depths to the nearest integer, then merge on datetime + rounded depth."
+  },
+  {
+    "reason": "Accurate depth conversion must use the namelist lake_depth (not an assumed constant) to handle possible water level variation and match verifier behavior.",
+    "key_point": "Use the lake_depth value from glm3.nml (25 m here) and compute depth = lake_depth - z for every timestep/layer when building the sim dataframe.",
+    "trajectory_reference": "thinking: The NML says `lake_depth = 25`. So the conversion would be `depth = 25 - z`."
+  },
+  {
+    "reason": "Adjust only the allowed calibration knobs within their published ranges to remain compliant with task rules.",
+    "key_point": "Modify only Kw, coef_mix_hyp, wind_factor, lw_factor, and ch in glm3.nml, keeping other parameters (sw_factor, cd, ce, init profile) unchanged and staying within specified ranges.",
+    "trajectory_reference": "thinking: The current parameters are: - Kw = 0.30 ... - ch = 0.0013 (allowed: 0.0005-0.002)"
+  },
+  {
+    "reason": "Calibration requires iterative parameter trials and checking all three target RMSEs (overall, annual_deep, summer_deep), not just global RMSE.",
+    "key_point": "Run a structured calibration search (manual and/or optimizer) that evaluates overall_rmse, annual_deep_rmse, and summer_deep_rmse after each GLM run and stops when all pass.",
+    "trajectory_reference": "thinking: This skill works best after `glm-basics`... The job of this skill is to find a candidate parameter set that passes the task metrics."
+  },
+  {
+    "reason": "Parameter updates to glm3.nml must be applied programmatically and checked, and warnings about unchanged parameters may be benign when values already match.",
+    "key_point": "Use a modify_nml function (regex-based) to set parameters, and recognize warnings that occur when the file already contains the desired value.",
+    "trajectory_reference": "thinking: The regex for modifying parameters is failing for some params... the warning triggers when `new_content == content` which happens ... when the values are already correct."
+  },
+  {
+    "reason": "Deep-water warm bias indicates too much light penetration or too much mixing; choose appropriate knobs to cool deep layers without breaking surface fit.",
+    "key_point": "Target deep-water cooling by increasing Kw (reduce light penetration) or decreasing coef_mix_hyp (reduce deep mixing), then tweak wind_factor and lw_factor to balance surface vs deep performance.",
+    "trajectory_reference": "thinking: The deep water is running too warm, so I likely need to increase Kw to reduce light penetration at depth or decrease coef_mix_hyp to limit upward mixing of heat from deeper layers."
+  },
+  {
+    "reason": "Evaluate multiple candidate parameter sets and inspect how changes affect each metric subset to find a configuration that satisfies all thresholds.",
+    "key_point": "Test candidate parameter sets (e.g., (Kw, coef_mix_hyp, wind_factor, lw_factor, ch)) and record their overall, annual_deep, and summer_deep RMSEs to guide search.",
+    "trajectory_reference": "content: Good progress. Several candidates give summer_deep and deep below targets, but overall is still above 1.60.\n... (0.35, 0.30, 0.90, 0.85, 0.0013): overall=1.706, deep=1.452, summer_deep=1.423"
+  },
+  {
+    "reason": "Once a passing parameter set is found, rerun GLM with those exact values and compute final exact metrics using the prescribed exact merge logic before reporting.",
+    "key_point": "After finding a passing configuration (Kw=0.32, coef_mix_hyp=0.30, wind_factor=0.90, lw_factor=0.90, ch=0.0013), update glm3.nml, rerun GLM, then compute final metrics and write /root/metrics.json.",
+    "trajectory_reference": "thinking: We found a passing configuration!... Configuration: Kw=0.32, coef_mix_hyp=0.30, wind_factor=0.90, lw_factor=0.90, ch=0.0013\nMetrics: - overall=1.5369 < 1.60 ✓ ... Let me now use the glm-output skill to compute the final exact metrics and write metrics.json."
+  },
+  {
+    "reason": "Follow the glm-output exact-reporting procedure: read output/output.nc, convert z to depth using lake_depth, group by datetime and rounded depth, then compute RMSE subsets.",
+    "key_point": "Compute final metrics by reading output/output.nc, converting z to depth via depth = lake_depth - z, rounding depths, grouping by datetime+depth, then computing overall, annual_deep (depth>=13), and summer_deep (Jun-Sep & depth>=13) RMSEs and pair counts.",
+    "trajectory_reference": "content: Now I'll compute the final exact metrics using the skill's method and write `/root/metrics.json`.\n... Complete Output Processing code and Calculating Task Metrics"
+  },
+  {
+    "reason": "Record final parameter values and metrics so verification can confirm GLM run, parameter constraints, output path, and metric thresholds.",
+    "key_point": "Save the final calibrated parameters (Kw=0.32, coef_mix_hyp=0.30, wind_factor=0.90, lw_factor=0.90, ch=0.0013) and write `/root/metrics.json` containing the exact RMSEs and n_pair counts for overall, annual_deep, and summer_deep.",
+    "trajectory_reference": "content: Final calibrated parameters ... Kw=0.32 ... ch=0.0013\nFinal metrics ... `overall_rmse` | 1.5418 ... `annual_deep_rmse` | 1.3643 ... `summer_deep_rmse` | 1.4313\nThe simulation ... output at `/root/output/output.nc`, and metrics are saved at `/root/metrics.json`."
+  }
+]

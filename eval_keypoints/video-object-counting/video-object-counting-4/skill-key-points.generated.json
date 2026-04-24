@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker needed the exact ffmpeg command form for extracting I-frames (key frames) from the MP4 into a numbered image sequence; this enabled the successful extraction of 4 key frames and their filenames used later in the pipeline.",
+    "key_point": "Run ffmpeg with a select filter that extracts only I-frames and writes them to an output filename pattern (e.g., keyframes_%03d.png).",
+    "skill_reference": "ffmpeg -i <input_video> -vf \"select='eq(pict_type,I)'\" -vsync vfr <output_pattern>"
+  },
+  {
+    "reason": "The task required saving keyframes with a specific filename pattern in /root; the worker followed this exact argument specification to place and name the extracted frames for downstream steps.",
+    "key_point": "Extract key frames from /root/super-mario.mp4 and save them to /root/ using the filename pattern keyframes_%03d.png.",
+    "skill_reference": "ARGUMENTS: Extract key frames (I-frames) from /root/super-mario.mp4 and save them to /root/ with the filename pattern keyframes_%03d.png"
+  },
+  {
+    "reason": "The worker used ImageMagick's convert utility to transform images; recognizing convert as the command-line tool for the required image edits (grayscale conversion, overwriting files) was necessary to perform in-place image edits.",
+    "key_point": "Use the ImageMagick \"convert\" command-line tool to perform image processing operations (the tool used to convert the extracted frames).",
+    "skill_reference": "Use the `convert` command to resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more."
+  },
+  {
+    "reason": "The worker converted the extracted keyframes to grayscale in-place; this ARGUMENTS line explicitly lists the target files and the requirement to overwrite them, which guided the exact files the worker converted.",
+    "key_point": "Convert the listed keyframe files to grayscale in-place (overwrite the original files): the specified /root/keyframes_001.png … /root/keyframes_004.png.",
+    "skill_reference": "ARGUMENTS: Convert the following images to grayscale inplace (overwrite the original files): /root/keyframes_001.png, /root/keyframes_002.png, /root/keyframes_003.png, /root/keyframes_004.png"
+  },
+  {
+    "reason": "For counting objects the worker invoked the provided script with specific flags; the command shows the required invocation form including --threshold and --dedup_min_dist which the worker applied to obtain reliable counts.",
+    "key_point": "Run the count_objects.py script with flags --tool count, --input_image, --object_image, and include --threshold 0.9 and --dedup_min_dist 3 to improve fidelity and perform NMS.",
+    "skill_reference": "python3 scripts/count_objects.py \\\n    --tool count \\\n    --input_image <image file> \\\n    --object_image <object image file> \\\n    --threshold 0.9 \\\n    --dedup_min_dist 3"
+  },
+  {
+    "reason": "The worker needed to count enemies in each specific keyframe using the provided enemy template; this ARGUMENTS line specifies the exact input image, object template, and the set of keyframe files to run the script on and return per-frame counts.",
+    "key_point": "Count the number of enemies by running the object-counter on each listed keyframe using /root/enemy1.png as the template and return the count per frame.",
+    "skill_reference": "ARGUMENTS: Count the number of enemies in each of the 4 keyframes. Sample enemy image: /root/enemy1.png. Keyframes: /root/keyframes_001.png, /root/keyframes_002.png, /root/keyframes_003.png, /root/keyframes_004.png. Return the count per frame."
+  }
+]

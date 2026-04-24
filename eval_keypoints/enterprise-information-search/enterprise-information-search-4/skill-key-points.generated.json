@@ -1,0 +1,82 @@
+[
+  {
+    "reason": "The worker chose to invoke this skill because the question explicitly asked for key reviewers, authors, competitor insights, and demo URLs; this trigger justified using the artifact-review-search procedure.",
+    "key_point": "Call this skill when the question requests key reviewers, authors, product reports, competitor insights, or demo URLs across docs/Slack/meetings/PRs so the specialized extraction procedure is applied.",
+    "skill_reference": "Use this skill when a question asks for **key reviewers**, approvers, feedback contributors, authors, product reports, competitor insights, or demo URLs across docs, Slack threads, meeting transcripts, PRs, and linked URLs."
+  },
+  {
+    "reason": "The worker launched a subagent with type general-purpose following the skill's recommended invocation format; this guided how the agent packaged the dataset root, question, and output requirements.",
+    "key_point": "Invoke the skill via a Task call using subagent_type=\"general-purpose\" and include Dataset root, the verbatim Question, and explicit Output requirements in the prompt.",
+    "skill_reference": "Task(subagent_type=\"general-purpose\", prompt=\"\"\"\nDataset root: /root/DATA\nQuestion: <paste the question verbatim>\n\nOutput requirements:\n- Return JSON-ready extracted entities (employee IDs, doc IDs, etc.).\n- Provide evidence pointers: artifact_id(s) + short supporting snippets.\n\nConstraints:\n- Avoid oracle/label fields (ground_truth, gold answers).\n- Prefer primary artifacts (docs/chat/meetings/PRs/URLs) over metadata-only shortcuts.\n- MUST enforce product grounding: only accept artifacts proven to be about the target product.\n- If subagents are unavailable, perform the same procedure directly in the main agent.\n\"\"\")"
+  },
+  {
+    "reason": "The skill warns not to misuse the skill name as a runtime subagent type; the worker respected this by using a general-purpose agent instead.",
+    "key_point": "Do not call subagent_type=\"artifact-review-search\"; the string 'artifact-review-search' is the skill name, not a registered runtime subagent type unless explicitly available.",
+    "skill_reference": "- `artifact-review-search` is the skill name, not a runtime subagent type.\n- Do not call `subagent_type=\"artifact-review-search\"` unless that agent type is explicitly registered in the runtime."
+  },
+  {
+    "reason": "Before searching, the worker parsed the intent and target product (AnomalyForce) as required to ground subsequent searches and constraints.",
+    "key_point": "First parse intent and extract the target product name, needed entity types (e.g., author IDs, key reviewer IDs), and likely artifact types to guide searches.",
+    "skill_reference": "### Step 0 — Parse intent + target product\n- Extract:\n  - target product name (e.g., “CoachForce”)\n  - entity types needed (e.g., author employee IDs, key reviewer employee IDs)\n  - artifact types likely relevant (“Market Research Report”, docs, review threads)"
+  },
+  {
+    "reason": "The worker prioritized searching the product artifact file (/root/DATA/products/AnomalyForce.json) first; this search-order rule determined the initial grep/read targets.",
+    "key_point": "Build candidate artifacts by searching the product artifact file first (e.g., /root/DATA/products/<Product>.json), then broaden to other product files and linked artifacts.",
+    "skill_reference": "Search in this order:\n1) Product artifact file(s): `/root/DATA/products/<Product>.json` if exists.\n2) Global sweep (if needed): other product files and docs that mention the product name.\n3) Within found channels/meetings: follow doc links (e.g., `/archives/docs/<doc_id>`), referenced meeting chats, PR mentions."
+  },
+  {
+    "reason": "To avoid distractor artifacts, the worker applied the grounding rule requiring multiple independent signals; this determined whether a candidate report was accepted as about AnomalyForce.",
+    "key_point": "A candidate report is VALID only if it passes at least two independent product-grounding signals before being accepted.",
+    "skill_reference": "A candidate report is **VALID** only if it passes **at least 2 independent grounding signals**:"
+  },
+  {
+    "reason": "The worker used file-location grounding (product container) as one of the grounding signals by focusing on the AnomalyForce product JSON.",
+    "key_point": "One grounding signal is that the artifact is located under the correct product artifact container (e.g., inside products/<Product>.json) and tied to product channels/meetings.",
+    "skill_reference": "A) Located under the correct product artifact container (e.g., inside `products/CoachForce.json` *and* associated with that product’s planning channels/meetings)."
+  },
+  {
+    "reason": "The worker also required the document content or title to explicitly mention the product to satisfy grounding; this prevented selecting similarly-titled reports for other products.",
+    "key_point": "Another grounding signal is that the document content or title explicitly mentions the target product name (or canonical aliases) to assert product relevance.",
+    "skill_reference": "B) Document content/title explicitly mentions the target product name (“CoachForce”) or a canonical alias list you derive from artifacts."
+  },
+  {
+    "reason": "When multiple report versions existed, the worker followed the precedence rules to pick the final/latest report before extracting authors/reviewers.",
+    "key_point": "If multiple valid reports exist, choose the final/latest by precedence: explicit 'latest' marker, explicit 'final' marker, most recent by date, then most-referenced if dates missing.",
+    "skill_reference": "If multiple VALID reports exist, choose the “final/latest” by this precedence:\n\n1) Explicit “latest” marker (id/title/link contains `latest`, or most recent date field)\n2) Explicit “final” marker\n3) Otherwise, pick the most recent by `date` field\n4) If dates missing, choose the one most frequently referenced in follow-up discussions (slack replies/meeting chats)"
+  },
+  {
+    "reason": "The worker extracted authors from document fields and normalized names to eid_* IDs using the employee directory as instructed.",
+    "key_point": "Extract authors in priority from document fields (`author`, `authors`, `created_by`, `owner`) and normalize to employee IDs: keep eid_* values, otherwise resolve names via the employee directory after product grounding.",
+    "skill_reference": "Extract author(s)\nExtract authors in this priority order:\n1) Document fields: `author`, `authors`, `created_by`, `owner`\n...\nNormalize into **employee IDs**:\n- If already an `eid_*`, keep it.\n- If only a name appears, resolve via employee directory metadata (name → employee_id) but only after you have product-grounded evidence."
+  },
+  {
+    "reason": "To produce an evidence-grounded reviewer list, the worker prioritized explicit reviewer fields when present.",
+    "key_point": "Prefer explicit reviewer fields as primary evidence: document/PR fields like `reviewers`, `key_reviewers`, `approvers`, or `requested_reviewers` are Tier 1 sources for key reviewers.",
+    "skill_reference": "Tier 1 (best): explicit reviewer fields\n- Document fields: `reviewers`, `key_reviewers`, `approvers`, `requested_reviewers`\n- PR fields: `reviewers`, `approvers`, `requested_reviewers`"
+  },
+  {
+    "reason": "When explicit reviewer fields were absent, the worker included people who provided concrete, attributable feedback in Slack threads or meeting transcripts.",
+    "key_point": "If explicit reviewer fields are missing, include contributors who provided attributable substantive feedback (concrete additions/clarifications/edits) in Slack replies or meeting turns as Tier 2 reviewers.",
+    "skill_reference": "Tier 2: attributable substantive feedback in Slack replies and meeting turns\n- Slack thread replies to the report-share message where the user proposes a concrete addition, clarification, comparison, restructuring, or section-level change tied to the report\n- Meeting transcripts where turns are attributable to people AND those people provide concrete suggestions/edits"
+  },
+  {
+    "reason": "The worker excluded mere acknowledgements and the author (unless requested) from the reviewer set per the skill's exclusion rules.",
+    "key_point": "Exclude the author (unless requested), pure acknowledgements (\"looks good\", \"thanks\"), and comments that merely agree or restate without adding actionable review content when building the reviewer set.",
+    "skill_reference": "Exclude:\n  - the author (unless question explicitly wants them included as reviewer too)\n  - pure acknowledgements (“looks good”, “thanks”)\n  - comments that only agree with or restate an earlier suggestion without adding a new actionable review point"
+  },
+  {
+    "reason": "The worker avoided counting meeting participants alone as reviewers and required explicit transcript evidence or reviewer fields to include someone.",
+    "key_point": "Do NOT treat meeting participant lists as reviewers: only count someone as a key reviewer if the transcript shows they contributed feedback or they appear in explicit reviewer fields.",
+    "skill_reference": "Critical rule:\n- Meeting `participants` list alone is NOT sufficient.\n  - Only count someone as a key reviewer if the transcript shows they contributed feedback\n  - OR they appear in explicit reviewer fields."
+  },
+  {
+    "reason": "Before writing final JSON, the worker validated that outputs were eid_* IDs and de-duplicated the list in the prescribed order (authors first, then reviewers).",
+    "key_point": "Validate that all outputs are valid employee IDs (pattern `eid_...`) and exist in the employee directory; de-duplicate while preserving order with authors first then key reviewers next.",
+    "skill_reference": "Step 6 — Validate IDs & de-duplicate\n- All outputs must be valid employee IDs (pattern `eid_...`) and exist in the employee directory if provided.\n- Remove duplicates while preserving order:\n  1) authors first\n  2) key reviewers next"
+  },
+  {
+    "reason": "The worker produced a structured JSON object with specific fields for product, doc_id, authors, reviewers, and union as required by the skill's output schema.",
+    "key_point": "Return a final JSON-ready answer object containing target_product, report_doc_id, author_employee_ids, key_reviewer_employee_ids, and all_employee_ids_union as the canonical output schema.",
+    "skill_reference": "{\n  \"target_product\": \"<ProductName>\",\n  \"report_doc_id\": \"<doc_id>\",\n  \"author_employee_ids\": [\"eid_...\"],\n  \"key_reviewer_employee_ids\": [\"eid_...\"],\n  \"all_employee_ids_union\": [\"eid_...\"]\n}"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch gh-cli skill",
+    "why_essential": "The gh CLI is required to query GitHub for PR data; launching the skill makes the gh commands available.",
+    "evidence": "Launching skill: gh-cli"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Run gh pr list to fetch all PRs created 2024-01-01..2024-03-31 with required fields and save output",
+    "why_essential": "This obtains the set of PRs in the date range with metadata (createdAt, mergedAt, changedFiles, author) necessary to filter and compute metrics.",
+    "evidence": "gh pr list -R cli/cli --state all --search \"created:2024-01-01..2024-03-31\" --limit 300 --json number,createdAt,mergedAt,closedAt,state,changedFiles,author > /tmp..."
+  },
+  {
+    "step_index": 3,
+    "core_step": "Process the saved PR JSON with a Python script to filter PRs with changedFiles >= 8 and compute counts, avg merge days, and top contributor",
+    "why_essential": "Filtering by changedFiles and computing totals, merged/closed counts, average time-to-merge, and top contributor are the core metric calculations required by the task.",
+    "evidence": "python3 << 'EOF' ... CUTOFF = datetime(2024, 4, 15, 0, 0, 0, tzinfo=timezone.utc) ... Total large PRs (>=8 files): 11\nMerged by 2024-04-15: 6\nClosed without merge by 2024-04-15: 3\nAvg time-to-merge (days): 16.4\nTop contributor: app/ (1 PRs)"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect a specific PR (8876) to verify author/login formatting",
+    "why_essential": "Verifying the author/login format (e.g., 'app/') ensures correct identification of the top contributor string used in the report.",
+    "evidence": "gh pr view 8876 -R cli/cli --json author,title,changedFiles,state,closedAt,createdAt ...{\"author\":{\"is_bot\":true,\"login\":\"app/\"},\"changedFiles\":558,...}"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write the computed metrics into /app/report.json with the required JSON structure",
+    "why_essential": "Persisting the final metrics in the specified file and exact JSON schema is the deliverable requested by the task.",
+    "evidence": "File created successfully at: /app/report.json\n{\"pr\": {\"total\": 11, \"merged\": 6, \"closed\": 3, \"avg_merge_days\": 16.4, \"top_contributor\": \"app/\"}}"
+  }
+]

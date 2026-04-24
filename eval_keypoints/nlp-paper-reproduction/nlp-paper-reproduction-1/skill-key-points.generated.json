@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "This rule motivated the worker to inspect the repo's dependency files before installing anything and to align the environment to those declared dependencies (it underlies the decision to check environment.yml and requirements.txt).",
+    "key_point": "Always align the runtime environment to the repository's declared dependencies before installing packages or running tests.",
+    "skill_reference": "When reproducing an NLP research repo, **always align the environment to the repo’s declared dependencies first**."
+  },
+  {
+    "reason": "This specific failure mode led the worker to check the current Python version and then create a matching Python environment (they observed Python 3.12.3 vs repo's required 3.10 and acted accordingly).",
+    "key_point": "Treat Python version mismatches as a primary cause of failures and verify Python major/minor before installing deps.",
+    "skill_reference": "Most failures come from **Python version mismatch** or installing packages without following `requirements.txt` / `environment.yml`."
+  },
+  {
+    "reason": "This instructs the worker to inspect dependency files as the first step; the worker read the repo files and used them to determine required Python and package versions.",
+    "key_point": "Start by reading the repository's dependency files to determine pinned Python and package requirements.",
+    "skill_reference": "1. **Read the repo dependency files**"
+  },
+  {
+    "reason": "The worker preferred environment.yml when present and used it as the authoritative source for Python and non-pip deps (guiding the exact package versions to install).",
+    "key_point": "Prefer environment.yml / environment.yaml as the primary source of dependency information (it often pins Python and non-pip channels).",
+    "skill_reference": "- Prefer `environment.yml` / `environment.yaml` (often pins **Python** + channels + non-pip deps)"
+  },
+  {
+    "reason": "When environment.yml was not the only file, this rule tells the worker how to treat requirements.txt relative to environment.yml; the worker treated environment.yml as base and pip requirements as supplemental.",
+    "key_point": "If both exist, treat environment.yml as the base environment and use requirements.txt only as supplemental pip deps unless README says otherwise.",
+    "skill_reference": "If both exist, treat `environment.yml` as the base, `requirements.txt` as supplemental unless README says otherwise"
+  },
+  {
+    "reason": "The worker followed this instruction to record the Python executable, pip version, and installed packages for reproducibility; they logged this info to /root/python_info.txt as required by the task.",
+    "key_point": "Log the current environment to /root/python_int.txt (or similar) by recording python -VV, python -m pip --version, and python -m pip freeze.",
+    "skill_reference": "2. **Log the current environment (Python version is critical)**  Write `/root/python_int.txt` containing:\n- `python -VV` *(required; Python version is often the root cause)*\n- `python -m pip --version`\n- `python -m pip freeze`"
+  },
+  {
+    "reason": "This decision rule justified creating a separate matching Python installation/venv when the system Python did not match the repo's expected version; the worker created a Python 3.10 environment accordingly.",
+    "key_point": "If the repo expects a specific Python major/minor and the system Python differs, set up a matching Python environment before installing dependencies.",
+    "skill_reference": "If the repo expects a specific Python major/minor and the current Python does not match, it’s usually best to **set up a matching environment**  before installing dependencies."
+  },
+  {
+    "reason": "The worker used uv to install a different Python and create a venv; the skill's curl/install command is the concrete mechanism shown for installing uv (which the worker followed).",
+    "key_point": "Install the uv tool via the provided install script (curl ... | sh) and add it to PATH before using uv to install Python.",
+    "skill_reference": "curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh\n        export PATH=\"/root/.local/bin:$PATH\""
+  },
+  {
+    "reason": "The worker used uv commands to install the target Python and create a virtual environment; these exact uv commands show the pattern to obtain and use the matching Python.",
+    "key_point": "Use uv to install the required Python version and then create a venv with uv python install <version> and uv venv --python <version> <venv_path>.",
+    "skill_reference": "uv python install 3.11.8\n        uv venv --python 3.11.8 /opt/py311"
+  },
+  {
+    "reason": "This guidance led the worker to prefer installing packages from the repo dependency files (not arbitrarily upgrading) and to run a quick smoke test after installation—shaping how they installed torch/transformers/etc.).",
+    "key_point": "Prefer installing dependencies directly from the repository's declared files (avoid arbitrary upgrades) and run a quick import/smoke test after installation.",
+    "skill_reference": "- Prefer installing from the repo’s dependency files (avoid random upgrades), then run a quick import/smoke test."
+  }
+]

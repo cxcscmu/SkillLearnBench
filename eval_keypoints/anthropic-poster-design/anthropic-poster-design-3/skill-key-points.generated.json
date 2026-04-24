@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker chose the light canvas for the packaging-front background; the exact token for Anthropic Identity Light (#faf9f5) from the skill was necessary to set the artifact background color.",
+    "key_point": "Anthropic's light background color is #faf9f5 and is intended for light backgrounds (used as the artifact canvas).",
+    "skill_reference": "- Light: `#faf9f5` - Light backgrounds and text on dark"
+  },
+  {
+    "reason": "The worker used the dark brand color as the primary title and major structural color; the skill's Dark color token (#141413) provided the exact hex to apply for primary text and dark structural elements.",
+    "key_point": "Anthropic's corporate dark color is #141413 and should be used for primary text and dark structural elements.",
+    "skill_reference": "- Dark: `#141413` - Primary text and dark backgrounds"
+  },
+  {
+    "reason": "The task required using the primary accent sparingly; the worker used the skill's orange accent token to place a restrained highlight in the composition.",
+    "key_point": "The primary accent color (orange) is #d97757 and is the designated primary accent to use sparingly for highlights.",
+    "skill_reference": "- Orange: `#d97757` - Primary accent"
+  },
+  {
+    "reason": "The worker used a muted gray for secondary UI elements (node connectors and clusters); the skill's Mid Gray token provided the exact hex used for those secondary elements.",
+    "key_point": "Use Mid Gray #b0aea5 for secondary elements in the composition.",
+    "skill_reference": "- Mid Gray: `#b0aea5` - Secondary elements"
+  },
+  {
+    "reason": "The worker applied a subtle low-contrast grid/background element; the skill's Light Gray token supplied the exact hex to use for subtle backgrounds.",
+    "key_point": "Use Light Gray #e8e6dc for subtle/background elements and low-contrast structural motifs.",
+    "skill_reference": "- Light Gray: `#e8e6dc` - Subtle backgrounds"
+  },
+  {
+    "reason": "The worker set the heading font to Poppins and attempted to use that font; the skill explicitly names Poppins for headings (with Arial fallback), which justified selecting and downloading/using Poppins for headings.",
+    "key_point": "Headings should use the Poppins font (with Arial as a fallback).",
+    "skill_reference": "- **Headings**: Poppins (with Arial fallback)"
+  },
+  {
+    "reason": "The worker applied Poppins specifically to the large product title; the skill's explicit rule that headings 24pt and larger use Poppins justified using Poppins for the main title.",
+    "key_point": "Apply Poppins for headings at sizes 24pt and larger.",
+    "skill_reference": "- Headings (24pt+): Poppins font"
+  },
+  {
+    "reason": "The worker colored non-text shapes (the beacon diagram and sweep arc) using the brand accent rather than body text color; the skill's rule that non-text shapes use accent colors guided this decision and supported choosing the orange accent.",
+    "key_point": "Non-text shapes should use the brand accent colors (cycling through orange, blue, green as appropriate).",
+    "skill_reference": "- Non-text shapes use accent colors\n- Cycles through orange, blue, and green accents"
+  },
+  {
+    "reason": "The worker attempted to use system fonts and then downloaded Poppins when not available; the skill's font management guidance (use system-installed fonts and fall back to Arial/Georgia) governed font selection and fallback behavior in the worker's implementation.",
+    "key_point": "The brand skill assumes system-installed Poppins and Lora when available and provides automatic fallback to Arial (headings) and Georgia (body) if custom fonts are unavailable.",
+    "skill_reference": "- Uses system-installed Poppins and Lora fonts when available\n- Provides automatic fallback to Arial (headings) and Georgia (body)"
+  }
+]

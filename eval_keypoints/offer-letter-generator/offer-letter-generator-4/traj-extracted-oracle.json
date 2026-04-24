@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read employee_data.json to load required placeholder values",
+    "why_essential": "Filling the template requires the candidate and offer data (DOC_ID, COMPANY_NAME, DATE, CANDIDATE_FULL_NAME, RELOCATION_PACKAGE, etc.) from this file",
+    "evidence": "Read ... /root/employee_data.json → contains \"DOC_ID\": \"OFFER-2024-01908\", \"COMPANY_NAME\": \"Apex Risk Intelligence\", \"DATE\": \"May 6, 2024\", \"CANDIDATE_FULL_NAME\": \"Malik Tho...\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Locate the Word template file offer_letter_template.docx",
+    "why_essential": "You must open the correct template to replace placeholders and produce the final filled offer letter",
+    "evidence": "Glob ... returned \"/root/offer_letter_template.docx\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Load the docx skill to enable reading and writing the .docx file",
+    "why_essential": "Manipulating a .docx template programmatically requires the docx skill/tool to parse and modify the document content",
+    "evidence": "Skill status=success input={\"skill\": \"docx\"} → \"Launching skill: docx\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect the template structure (paragraphs, runs, and nested tables) to identify all placeholders including split placeholders and the IF_RELOCATION conditional",
+    "why_essential": "Understanding how placeholders are distributed (in runs, paragraphs, nested tables) is necessary to reliably find and replace each placeholder and correctly remove or keep the conditional relocation block",
+    "evidence": "Printed paragraphs and table XML: paragraphs show '{{COMPANY_NAME}}', 'Candidate Ref: {{DOC_ID}}', '{{CANDIDATE_FULL_NAME}}', and table XML shows nested tables and placeholders"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write a Python script that replaces each {{PLACEHOLDER}} with values from employee_data.json and handles the {{IF_RELOCATION}}...{{END_IF_RELOCATION}} conditional based on RELOCATION_PACKAGE",
+    "why_essential": "A deterministic script ensures all placeholders (including split placeholders and placeholders inside nested table runs) are consistently replaced, and it conditionally includes or removes the relocation section as required",
+    "evidence": "Write file /root/fill_offer_letter.py created with code to load data, replace placeholders, handle split runs and the relocation conditional"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run the fill script to produce /root/offer_letter_filled.docx",
+    "why_essential": "Executing the script performs the actual replacements and writes the final filled offer letter to the specified output path",
+    "evidence": "Ran python3 fill_offer_letter.py → \"Saved: /root/offer_letter_filled.docx\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Open and verify the filled document to confirm placeholders were replaced and the relocation section was handled",
+    "why_essential": "Verification confirms the output file contains the expected substituted values and that the conditional relocation block was removed (since RELOCATION_PACKAGE was \"No\") before delivering the final document",
+    "evidence": "Opened /root/offer_letter_filled.docx → paragraphs show 'Apex Risk Intelligence', 'Candidate Ref: OFFER-2024-01908', 'Date: May 6, 2024', 'Malik Thompson' and note that RELOCATION_PACKAGE is \"No\""
+  }
+]

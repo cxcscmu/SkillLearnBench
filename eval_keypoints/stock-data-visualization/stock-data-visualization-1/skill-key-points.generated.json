@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker needed to deterministically order rows before binding them (they produced a table 'sorted by sector then ticker'); this rule ensures stable visual bindings and reproducible outputs.",
+    "key_point": "Sort input rows deterministically before binding to visual marks to ensure stable, reproducible bindings.",
+    "skill_reference": "- **Sort** input rows deterministically before binding to marks (e.g., by x then by category)."
+  },
+  {
+    "reason": "The worker used a force simulation and explicitly avoided randomness; the skill's ban on randomness justifies avoiding Math.random/d3-random so the layout is reproducible.",
+    "key_point": "Do not use randomness (e.g., Math.random or d3-random) in visual layouts to keep results deterministic.",
+    "skill_reference": "**No randomness**: do not use `Math.random()` or `d3-random`."
+  },
+  {
+    "reason": "The worker ran the force simulation for a fixed number of ticks and turned off animations; the skill's no-transitions rule supports removing animations that would introduce timing variance.",
+    "key_point": "Disable transitions/animations by default to avoid timing variance in the rendered output.",
+    "skill_reference": "- **No transitions/animations** by default (transitions can introduce timing variance)."
+  },
+  {
+    "reason": "To make the force-based bubble clustering deterministic, the worker fixed ticks and initial positions; the skill prescribes the exact pattern to achieve deterministic force layouts.",
+    "key_point": "When using a force layout, fix the tick count and initial positions deterministically and run exactly N ticks (then stop) to make the layout reproducible.",
+    "skill_reference": "Avoid layout algorithms with non-deterministic iteration unless you control seeds/iterations (e.g., force simulation). If a force layout is required:\n  - fix the tick count,\n  - fix initial positions deterministically (e.g., sorted nodes placed on a grid),\n  - run exactly N ticks and stop."
+  },
+  {
+    "reason": "The task required vendoring d3.v6.min.js offline; the skill explicitly forbids loading D3 from CDNs and instructs vendoring, which the worker followed by placing a local d3 file.",
+    "key_point": "Do not load D3 from a CDN; vendor the library locally for offline, deterministic builds.",
+    "skill_reference": "- **Do not** load D3 from a CDN."
+  },
+  {
+    "reason": "The worker needed to choose and vendor a specific D3 version (they created /root/output/js/d3.v6.min.js); the skill's guidance to pin a version and vendor a minified bundle justifies that action.",
+    "key_point": "Pin D3 to a specific version and prefer vendoring a minified D3 bundle (rather than relying on an external CDN) to ensure dependency determinism.",
+    "skill_reference": "Pin D3 to a specific version (default: **d3@7.9.0**).\n- Prefer vendoring a minified D3 bundle (e.g., `vendor/d3.v7.9.0.min.js`) or bundling with a lockfile."
+  },
+  {
+    "reason": "The worker implemented a tooltip element and CSS; the skill provides the exact HTML element the visualization should create to host tooltip content.",
+    "key_point": "Create a tooltip container element in the HTML (a dedicated div with id/class) to show hover details.",
+    "skill_reference": "<div id=\"tooltip\" class=\"tooltip\"></div>"
+  },
+  {
+    "reason": "The worker implemented tooltip show/hide and positioned it near the mouse; the skill's example code shows using .classed('visible', true/false) and event.pageX/pageY to position the tooltip.",
+    "key_point": "Toggle tooltip visibility via a CSS class (e.g., .visible) and position it using event.pageX/event.pageY when handling mouse events.",
+    "skill_reference": "d3.select('#tooltip')\n            .classed('visible', true)  // Add .visible class\n            .html(`<strong>${d.name}</strong><br/>${d.value}`)\n            .style('left', (event.pageX + 10) + 'px')\n            .style('top', (event.pageY - 10) + 'px');"
+  },
+  {
+    "reason": "The worker implemented click-based highlighting (bubble↔table); the skill's click-handler pattern shows how to remove previous selection and mark the clicked element with a 'selected' class.",
+    "key_point": "Implement click handlers that clear previous selection and add a 'selected' class to the clicked element to support cross-highlighting.",
+    "skill_reference": "svg.selectAll('.bar')\n    .on('click', function(event, d) {\n        // Remove previous selection\n        d3.selectAll('.bar').classed('selected', false);\n        // Add to clicked element\n        d3.select(this).classed('selected', true);\n    });"
+  },
+  {
+    "reason": "The worker excluded tooltips for ETF entries (they noted ETFs lack marketCap etc.); the skill's conditional-interactivity snippet shows the pattern to early-return to skip tooltip for specific categories.",
+    "key_point": "Use conditional checks inside event handlers to skip showing tooltips or other interactions for excluded categories (exit early when a condition matches).",
+    "skill_reference": ".on('mouseover', function(event, d) {\n    // Example: Don't show tooltip for certain categories\n    if (d.category === 'excluded') {\n        return;  // Exit early, no tooltip\n    }\n    // Show tooltip for others\n    showTooltip(event, d);\n})"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "Reading the employee data is necessary to obtain all placeholder values for substitution.",
+    "key_point": "Read the employee data file to obtain required placeholder values.",
+    "trajectory_reference": "thinking: Let me read the employee data and find the template file."
+  },
+  {
+    "reason": "Locating the Word template file is required to know which document to fill.",
+    "key_point": "Find and read the offer letter template file (/root/offer_letter_template.docx).",
+    "trajectory_reference": "ARGUMENTS: Fill in placeholders in the offer letter template and save to a new file.\n\nTemplate file: /root/offer_letter_template.docx"
+  },
+  {
+    "reason": "Determining the relocation flag controls whether the conditional block is kept or removed.",
+    "key_point": "Check RELOCATION_PACKAGE and decide conditional behavior (it was 'No', so the relocation block must be removed).",
+    "trajectory_reference": "thinking: Since RELOCATION_PACKAGE is \"No\", I need to remove the conditional section `{{IF_RELOCATION}}...{{END_IF_RELOCATION}}` entirely."
+  },
+  {
+    "reason": "Placeholders in Word can be split across runs; handling them at paragraph level prevents missed replacements.",
+    "key_point": "Handle split placeholders by performing paragraph-level search-and-rebuild rather than run-level replacement to correctly replace placeholders split across runs.",
+    "trajectory_reference": "The #1 issue with Word templates: Word often splits placeholder text across multiple XML runs... Correct Approach: Paragraph-Level Search and Rebuild"
+  },
+  {
+    "reason": "All document areas may contain placeholders; processing tables and nested tables ensures no placeholders left behind.",
+    "key_point": "Process tables (including nested tables) and replace placeholders inside all table cells and nested tables.",
+    "trajectory_reference": "Process tables (including nested)\nfor table in doc.tables:\n    for row in table.rows:\n        for cell in row.cells:\n            for para in cell.paragraphs:\n                replace_in_paragraph(para)\n            # Handle nested tables"
+  },
+  {
+    "reason": "Headers and footers are not part of the main paragraph list, so they must be handled separately to avoid leftover placeholders.",
+    "key_point": "Process headers and footers separately and replace placeholders contained there.",
+    "trajectory_reference": "Headers/Footers\nHeaders/footers are separate from main document body:\nfor section in doc.sections:\n    for para in section.header.paragraphs:\n        replace_in_paragraph(para)"
+  },
+  {
+    "reason": "When removing conditional content, replacing or clearing the paragraph(s) ensures markers and enclosed text are removed as required.",
+    "key_point": "Remove the entire conditional block between {{IF_RELOCATION}} and {{END_IF_RELOCATION}} (clear the paragraph text) because relocation is not included.",
+    "trajectory_reference": "thinking: The relocation section is in paragraph [19] which contains `{{IF_RELOCATION}}...{{END_IF_RELOCATION}}` all in one paragraph. Since RELOCATION_PACKAGE is \"No\", I need to clear this paragraph completely"
+  },
+  {
+    "reason": "Implementing the logic in a script applies the replacements programmatically and preserves formatting by rebuilding runs carefully.",
+    "key_point": "Write a Python script using python-docx that replaces placeholders, merges runs per paragraph, preserves first-run formatting, and saves the filled document.",
+    "trajectory_reference": "Complete Solution Pattern\nfrom docx import Document\nimport json\nimport re\n\ndef fill_template(template_path, data_path, output_path):\n    ...\n    if new_text != text and para.runs:\n        para.runs[0].text = new_text\n        for run in para.runs[1:]:\n            run.text = ''\n\n    doc.save(output_path)"
+  },
+  {
+    "reason": "Verifying the output confirms successful replacement and correct handling of conditionals.",
+    "key_point": "Verify the generated /root/offer_letter_filled.docx has no leftover {{...}} placeholders and that the relocation section was removed.",
+    "trajectory_reference": "content: `/root/offer_letter_filled.docx` is ready. Here's a summary of what was done:\n- **All placeholders replaced** ...\n- **Relocation section removed** ...\n- **Zero leftover `{{...}}` markers** confirmed in the output."
+  }
+]

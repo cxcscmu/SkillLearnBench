@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker began by deciding to create planning files before executing the bulk file work and repeatedly referenced creating and saving findings; the single essential instruction that enabled that decision is the Quick Start step to create task_plan.md first.",
+    "key_point": "Create a task_plan.md in the project directory before starting a complex/multi-step task (use the template as a reference).",
+    "skill_reference": "1. **Create `task_plan.md`** in your project — Use [templates/task_plan.md](templates/task_plan.md) as reference"
+  },
+  {
+    "reason": "The worker planned to record discoveries while reading many PDFs; the skill's explicit step to create findings.md is the concrete artifact the worker relied on for saving read/extraction results.",
+    "key_point": "Create a findings.md in the project directory to record research discoveries and key findings as you read files.",
+    "skill_reference": "2. **Create `findings.md`** in your project — Use [templates/findings.md](templates/findings.md) as reference"
+  },
+  {
+    "reason": "The worker kept a session log and later verified counts and progress; the skill prescribes creating a progress.md as the session log used throughout the session.",
+    "key_point": "Create a progress.md in the project directory to keep a running session log and test/results notes throughout the session.",
+    "skill_reference": "3. **Create `progress.md`** in your project — Use [templates/progress.md](templates/progress.md) as reference"
+  },
+  {
+    "reason": "The worker stored planning files alongside the work and referenced templates in the skill directory; the policy for where templates vs planning files live determined where the worker created and looked for templates versus writing files.",
+    "key_point": "Keep template files in the skill installation folder but create all planning files (task_plan.md, findings.md, progress.md) in your project directory (the folder where you are working).",
+    "skill_reference": "- **Templates** are stored in the skill directory at `${CLAUDE_PLUGIN_ROOT}/templates/`\n- **Your planning files** (`task_plan.md`, `findings.md`, `progress.md`) should be created in **your project directory** — the folder where you're working"
+  },
+  {
+    "reason": "The worker repeatedly read many PDFs and wrote results (moved files, produced summary); the core principle that anything important must be persisted to disk underpinned creating planning files and writing findings/results.",
+    "key_point": "Follow the core pattern that ephemeral RAM is limited: anything important should be written to disk (use the filesystem as persistent working memory).",
+    "skill_reference": "→ Anything important gets written to disk."
+  },
+  {
+    "reason": "The worker performed many read operations (many Read tool calls) and then saved categorizations/summaries; the 2-Action Rule is the concrete rule instructing when to save findings during many view/read operations.",
+    "key_point": "After every two view/browser/search operations, immediately save key findings to text files (the '2-Action Rule').",
+    "skill_reference": "After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files."
+  },
+  {
+    "reason": "The worker specifically read PDFs and other multimodal files and then recorded categorizations; the decision matrix row for viewed PDFs gives the required immediate action for such multimodal reads.",
+    "key_point": "When you view an image or PDF, write findings immediately (i.e., 'Viewed image/PDF → Write findings NOW').",
+    "skill_reference": "| Viewed image/PDF | Write findings NOW | Multimodal → text before lost |"
+  },
+  {
+    "reason": "The worker executed phases (create folders, read batches, move files) and then recorded phase completion and a summary table; the skill's 'Update After Act' instructions specify exactly which phase-state and metadata to record after each phase.",
+    "key_point": "After completing any phase, mark the phase status (e.g., in_progress → complete), log any errors encountered, and note files created or modified.",
+    "skill_reference": "After completing any phase:\n- Mark phase status: `in_progress` → `complete`\n- Log any errors encountered\n- Note files created/modified"
+  },
+  {
+    "reason": "The worker used different planning files for distinct roles (plan, findings, progress); the skill's file-purpose table defines what each planning file is for and when to update it—guiding the worker where to put which information.",
+    "key_point": "Use task_plan.md to track phases/progress/decisions, findings.md for research discoveries, and progress.md as the session log/test results, updating each at the specified cadence.",
+    "skill_reference": "| `task_plan.md` | Phases, progress, decisions | After each phase |\n| `findings.md` | Research, discoveries | After ANY discovery |\n| `progress.md` | Session log, test results | Throughout session |"
+  },
+  {
+    "reason": "Before making categorization/movement decisions the worker described re-reading the plan to refresh goals; the skill's directive to re-read the plan before decisions directly supports that behavior.",
+    "key_point": "Re-read your task plan before major decisions to refresh goals and keep them in the attention window.",
+    "skill_reference": "4. **Re-read plan before decisions** — Refreshes goals in attention window"
+  }
+]

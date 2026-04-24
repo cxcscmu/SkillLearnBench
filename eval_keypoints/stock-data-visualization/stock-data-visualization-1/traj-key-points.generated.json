@@ -1,0 +1,82 @@
+[
+  {
+    "reason": "Reading input data files is necessary to understand their structure and extract fields like ticker, sector, and marketCap used in the visualization.",
+    "key_point": "Read the stock descriptions CSV and individual stock CSVs to discover columns (ticker, sector, full name, marketCap, etc.) and that some entries are ETFs with missing marketCap/country/website.",
+    "trajectory_reference": "The stock-descriptions.csv has these columns: - (index), ticker, sector, full name, marketCap, ... Some entries are ETFs (lowercase tickers like spy, qqq, gld, ...) with no marketCap, country, or website."
+  },
+  {
+    "reason": "Listing files in the individual-stock directory is required to copy all per-stock CSVs into the app data folder.",
+    "key_point": "Use a glob/listing of the /root/data/indiv-stock/ files to identify and copy all 50 individual price-history CSVs into /root/output/data/indiv-stock/ for the web app.",
+    "trajectory_reference": "Let me read a sample of the stock descriptions and an individual stock file to understand the data structure. tool_use[1]: tool=Glob; status=success; input_keys=path,pattern;"
+  },
+  {
+    "reason": "The app must include D3 v6 locally; vendoring the specific version into the output path ensures offline deterministic loading.",
+    "key_point": "Vendor D3 v6 as a local file at /root/output/js/d3.v6.min.js (download or obtain d3@6 and place minified bundle in that path) rather than loading from a CDN.",
+    "trajectory_reference": "The user specified `d3.v6.min.js`. ... The user wants it vendored at `/root/output/js/d3.v6.min.js` rather than loaded from a CDN, so I'll need to either fetch it via npm or download it directly and place it in the right location."
+  },
+  {
+    "reason": "Creating the app files with correct paths is required so the single-page web app can be opened and run locally.",
+    "key_point": "Create the output file structure and files: /root/output/index.html, /root/output/js/visualization.js, /root/output/css/style.css, /root/output/js/d3.v6.min.js, and copy data into /root/output/data/.",
+    "trajectory_reference": "Let me plan the files I need to create: 1. `/root/output/index.html` ... 2. `/root/output/js/d3.v6.min.js` ... 4. `/root/output/css/style.css` ... 5. `/root/output/data/` - copy the input data"
+  },
+  {
+    "reason": "Sizing bubbles by market cap with a fixed uniform size for ETFs ensures a consistent bubble-chart encoding even when marketCap is missing.",
+    "key_point": "Size bubbles using a d3.scaleSqrt based on marketCap; for ETF entries (no marketCap) assign a uniform fixed bubble size.",
+    "trajectory_reference": "Size: scaled by market cap (`d3.scaleSqrt`) — ETFs get a fixed uniform size since they have no market cap"
+  },
+  {
+    "reason": "Clustering bubbles by sector requires sector-based forces so that same-sector bubbles group together spatially.",
+    "key_point": "Use a D3 force simulation with forceX/forceY that pull nodes toward sector-specific cluster centers so bubbles of the same sector form tight clusters.",
+    "trajectory_reference": "Clustering: D3 force simulation with `forceX`/`forceY` pulling each bubble toward its sector's cluster center"
+  },
+  {
+    "reason": "Preventing overlap is essential to keep bubbles distinct and readable.",
+    "key_point": "Add forceCollide to the force simulation to avoid bubble overlaps (collision radius based on bubble size).",
+    "trajectory_reference": "Clustering: ... plus `forceCollide` to prevent overlaps; run for 400 fixed ticks (deterministic, no animation)"
+  },
+  {
+    "reason": "Deterministic positioning is required to avoid non-deterministic layouts across runs.",
+    "key_point": "Run the force simulation for a fixed number of ticks (400) and avoid animations so the layout is deterministic across runs.",
+    "trajectory_reference": "Clustering: D3 force simulation ... run for 400 fixed ticks (deterministic, no animation)"
+  },
+  {
+    "reason": "Each bubble must be clearly identified in the chart.",
+    "key_point": "Render ticker symbols as text labels inside each SVG circle, adjusting font size relative to circle radius.",
+    "trajectory_reference": "Labels: ticker symbol inside each bubble, font size adapted to bubble radius"
+  },
+  {
+    "reason": "Tooltips should only appear for stocks with full metadata and not for ETFs which lack marketCap/country/website.",
+    "key_point": "Implement hover tooltips that show ticker, full name, sector (and market cap) for non-ETF stocks only; do not show tooltips for ETF entries.",
+    "trajectory_reference": "Tooltip on hover (non-ETF only): shows ticker, full name, sector, and market cap"
+  },
+  {
+    "reason": "A legend is required for sector color mapping and must be implemented as an HTML div element per the task.",
+    "key_point": "Add a color legend for sectors implemented as a div element showing a colored swatch per sector name.",
+    "trajectory_reference": "Legend: below the chart with a colored swatch per sector"
+  },
+  {
+    "reason": "The data table must mirror the chart and include specific columns and formatting to meet the task requirements.",
+    "key_point": "Create a scrollable data table beside the bubble chart with columns: Ticker Symbol, Full Company Name, Sector (color-coded badge), and Market Cap formatted into T/B/M.",
+    "trajectory_reference": "Data table (right) - All 50 stocks sorted by sector then ticker - Columns: Ticker Symbol, Full Company Name, Sector (color-coded badge), Market Cap (formatted: T/B/M)"
+  },
+  {
+    "reason": "Interactive linking between chart and table is necessary so selection in one highlights the other.",
+    "key_point": "Implement cross-highlighting: clicking a bubble highlights and scrolls its corresponding table row into view, and clicking a table row highlights its bubble; clicking background or already-selected clears selection.",
+    "trajectory_reference": "Cross-highlighting - Clicking a bubble highlights its table row (scrolls it into view) and vice versa - Clicking an already-selected item or the SVG background clears the selection"
+  },
+  {
+    "reason": "Verifying final output and file count confirms all assets and data were generated and placed correctly.",
+    "key_point": "Verify and report the final output layout and that files are present: index.html, css/style.css, js/d3.v6.min.js, js/visualization.js, and data/stock-descriptions.csv plus indiv-stock CSVs.",
+    "trajectory_reference": "All 55 files are in place. Here's a summary of everything built: ... output/ ├── index.html ├── css/style.css ├── js/ ├── d3.v6.min.js ← vendored offline (from npm d3@6) └── visualization.js └── data/ ├── stock-descriptions.csv └── indiv-stock/ ← all 50 individual price history CSVs"
+  },
+  {
+    "reason": "The requirement forbids auxiliary SVG circles that are not individual stock bubbles, so the implementation must avoid drawing decorative circles.",
+    "key_point": "Ensure every SVG <circle> corresponds to an individual stock bubble only; do not create any auxiliary or decorative SVG circles.",
+    "trajectory_reference": "** All SVG <circle> elements must represent individual stock bubbles only. No auxiliary or decorative SVG circles are allowed. **"
+  },
+  {
+    "reason": "The legend element must be an HTML div (not SVG) as explicitly required by the user.",
+    "key_point": "Implement the bubble chart legend as a div element (HTML) rather than as SVG graphics.",
+    "trajectory_reference": "** It is important to include a legend for the bubble chart, and the legend should be implemented as a div element. **"
+  }
+]

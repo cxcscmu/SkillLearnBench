@@ -1,0 +1,56 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List and inspect the papers directory to discover files to organize",
+    "why_essential": "You must know which files exist and where they are before you can classify or move them",
+    "evidence": "There’s a `papers` directory in /root. Let me explore it to find all the documents."
+  },
+  {
+    "step_index": 2,
+    "core_step": "Create a persistent inventory/todo for the archiving task",
+    "why_essential": "Tracking progress and recording which files remain to be classified ensures no document is left unsorted and supports a systematic, reproducible process",
+    "evidence": "Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress."
+  },
+  {
+    "step_index": 3,
+    "core_step": "Extract text from all PDFs (first-page batch using pdftotext) to obtain titles/abstracts for classification",
+    "why_essential": "PDF filenames (arXiv IDs) are insufficient to determine subject; extracting page text provides the content needed to classify each document into the correct subject folder",
+    "evidence": "pdftotext -l 1 ...; 103 files found. Let me extract titles/content from all files to classify them. I'll use a fast batch approach."
+  },
+  {
+    "step_index": 4,
+    "core_step": "Read the extracted text outputs (and additional file reads) to determine each paper's subject",
+    "why_essential": "You must examine the extracted text to assign each document to exactly one of the five subject folders (LLM, trapped_ion_and_qc, black_hole, DNA, music_history)",
+    "evidence": "Read ... bsgzll4rq.txt; 'Lower ground state due to counter-rotating wave interaction in trapped ion system' ... 'arXiv:2308.16149v2 [cs.CL]'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Install or prepare supplemental readers for non-PDF files (attempt python-pptx and python-docx) and extract PPTX/DOCX content",
+    "why_essential": "The collection includes PPTX and DOCX files whose content must be inspected to classify them; installing/using appropriate readers is required to extract their titles/contents",
+    "evidence": "pip3 install python-pptx python-docx ...; python3 -c \"from pptx import Presentation ...\"; 'Temporally multiplexed ion-photon quantum interface' and 'Dear Editor,... Temporally multiplexed ion-photon quantum interface' were read"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Decide subject-category mapping for each document (classify every file into one of the five folders)",
+    "why_essential": "Each file must be mapped to exactly one folder (mutually exclusive and collectively exhaustive); the classification decisions determine the subsequent file moves",
+    "evidence": "There are 103 files total (101 PDFs, 1 PPTX, 2 DOCX). I need to classify each into one of 5 folders. The filenames are arXiv IDs which don't tell us much about the content. I need to examine each file to determine its..."
+  },
+  {
+    "step_index": 7,
+    "core_step": "Create the five target folders (LLM, trapped_ion_and_qc, black_hole, DNA, music_history)",
+    "why_essential": "Folders must exist as destinations before files can be moved into their assigned repositories",
+    "evidence": "mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Move each classified file into its assigned subject folder",
+    "why_essential": "Physically relocating the files into the appropriate folders completes the organization task and ensures each document is stored exactly once in the correct repository",
+    "evidence": "mv \"$SRC/0704.0117v1.pdf\" ... (commands to move files into each category); final counts show files were moved"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Verify folder counts and that no files remain in the source directory",
+    "why_essential": "Verification confirms the operation succeeded, that all documents were sorted (no leftovers), and that folder distributions meet expectations",
+    "evidence": "=== Folder counts === LLM: 20 files trapped_ion_and_qc: 23 files black_hole: 20 files DNA: 20 files music_history: 20 files === Remaining in /all === 0"
+  }
+]

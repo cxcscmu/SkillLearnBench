@@ -1,0 +1,127 @@
+[
+  {
+    "reason": "The worker used this instruction to know which specific user requirements to extract and track (trip duration, travelers, budget, transportation, pet needs, food prefs) when planning the itinerary.",
+    "key_point": "Extract and record the user's explicit requirements and implicit preferences: trip duration, number of travelers, budget, transportation constraints (like no flights), special requirements (like pet-friendly), and food preferences.",
+    "skill_reference": "Extract the user's requirements and implicit preferences, including: Trip duration, Number of travelers, Budget constraints, Transportation constraints (e.g., no flights), Special requirements (e.g., pet-friendly accommodations), Food preferences (e.g., American, Mediterranean, Chinese, Italian)"
+  },
+  {
+    "reason": "The worker relied on this default when ensuring every day had at least one planned activity (the itinerary included an attraction each day).",
+    "key_point": "If not specified, assume each day should include at least one activity (no empty days).",
+    "skill_reference": "If not explicitly specified, each day should include at least one activity (i.e., no empty days)."
+  },
+  {
+    "reason": "The worker followed this step to pick the three Ohio cities from the available dataset before building the route.",
+    "key_point": "Select candidate cities based on user constraints and dataset availability.",
+    "skill_reference": "- Select candidate cities based on user constraints and dataset availability"
+  },
+  {
+    "reason": "The worker used this rule to construct the travel routing (Atlanta → Cincinnati → Columbus → Cleveland) considering drive times.",
+    "key_point": "Construct a preliminary travel route considering distance and feasibility.",
+    "skill_reference": "- Construct a preliminary travel route (considering distance and feasibility)"
+  },
+  {
+    "reason": "The worker used this to allocate the seven days across the chosen cities as a draft plan (e.g., 2-2-3 nights).",
+    "key_point": "Allocate the total number of days across selected cities as a draft plan.",
+    "skill_reference": "- Allocate the total number of days across selected cities as a draft plan"
+  },
+  {
+    "reason": "The worker applied this per-day rule when assigning attractions so every day had at least one attraction.",
+    "key_point": "Assign one attraction per day (unless the user explicitly indicates they do not want to go out).",
+    "skill_reference": "- **Assign one attraction per day**, unless the user explicitly indicates that they do not want to go out."
+  },
+  {
+    "reason": "The worker used cuisine preferences to choose restaurants for each day; this rule specifies meals must match preferences.",
+    "key_point": "Assign meals for each day based on the user's cuisine preferences.",
+    "skill_reference": "- **Assign meals** based on cuisine preferences"
+  },
+  {
+    "reason": "The worker selected lodging that met pet constraints and labeled accommodations 'pet-friendly' as required.",
+    "key_point": "Assign accommodations that satisfy constraints (for example, must be pet-friendly).",
+    "skill_reference": "- **Assign accommodation** (must satisfy constraints such as pet-friendly)"
+  },
+  {
+    "reason": "The worker iteratively adjusted city day allocations when attractions/minimum-stay rules and budget issues required changes.",
+    "key_point": "If planning feasibility problems appear (e.g., insufficient attractions), iteratively adjust by reducing days, reselecting cities, or changing allocations.",
+    "skill_reference": "- If a city does not have enough attractions → reduce its allocated days"
+  },
+  {
+    "reason": "The worker used the workflow's feedback-loop guidance to revise earlier decisions (e.g., re-evaluating lodging and day allocation to meet budget).",
+    "key_point": "Use a feedback loop to revise earlier decisions during planning (iterative adjustment and backtracking).",
+    "skill_reference": "This step introduces a **feedback loop**, allowing the system to revise earlier decisions."
+  },
+  {
+    "reason": "The worker performed an explicit final validation pass before outputting the itinerary, as required by this instruction.",
+    "key_point": "Before returning the itinerary, perform an explicit final validation pass.",
+    "skill_reference": "Before returning the final itinerary, the agent must perform an explicit final validation pass."
+  },
+  {
+    "reason": "The worker explicitly checked for and enforced the transportation constraint (no flights) when building routes.",
+    "key_point": "Validate transportation constraints (for example, ensure no flights are used).",
+    "skill_reference": "transportation constraints (e.g., no flights)"
+  },
+  {
+    "reason": "The worker checked and labeled accommodations as pet-friendly and ensured the dataset entries did not contain 'No pets'; the skill required explicit keyword reflection.",
+    "key_point": "Validate special requirements for accommodations by explicitly checking for pet-friendly indicators (use keywords such as 'pet' or 'animal').",
+    "skill_reference": "pet-friendly accommodations, which should be explicitly reflected using keywords such as pet or animal"
+  },
+  {
+    "reason": "The worker ensured the itinerary included the requested cuisine coverage (American, Mediterranean, Chinese, Italian) when choosing restaurants.",
+    "key_point": "Validate that food preferences are satisfied (e.g., American, Mediterranean, Chinese, Italian).",
+    "skill_reference": "food preferences (e.g., American, Mediterranean, Chinese, and Italian cuisines)."
+  },
+  {
+    "reason": "The worker enforced that each day (including first and last) contained an attraction, per this explicit requirement.",
+    "key_point": "Ensure each day includes at least one attraction, including both the first and last day (unless user opts out).",
+    "skill_reference": "**Each day includes at least one attraction, including both the first day and last day** (unless the user explicitly indicates that they do not want to go out.)"
+  },
+  {
+    "reason": "The worker checked that driving legs between cities were feasible (drive times/distances) as directed by this rule.",
+    "key_point": "Verify that travel transitions between cities are feasible.",
+    "skill_reference": "**Travel transitions between cities are feasible**"
+  },
+  {
+    "reason": "The worker used this to ensure the final JSON had no missing or contradictory fields and met the required format.",
+    "key_point": "Verify the itinerary format is complete and consistent, with no missing or contradictory information.",
+    "skill_reference": "**The itinerary format is complete and consistent**, with no missing or contradictory information."
+  },
+  {
+    "reason": "The worker performed refinement when budget/encoding/availability issues arose because the skill explicitly instructs refinement upon violations.",
+    "key_point": "If validations detect violations or inconsistencies, refine the itinerary to fix them.",
+    "skill_reference": "**Please refine the itinerary if any violations or inconsistencies are detected**"
+  },
+  {
+    "reason": "The worker invoked the bundled dataset search scripts before writing custom code, following this explicit instruction to use provided tools first.",
+    "key_point": "Always use the provided bundled tool scripts first rather than writing custom code yourself.",
+    "skill_reference": "This skill provides six tools for searching the bundled dataset, always first use these tool scripts than writing code by yourself."
+  },
+  {
+    "reason": "The worker installed these packages before running the bundled Python scripts (they ran pip installs as required).",
+    "key_point": "Install the required Python packages before using the bundled scripts: pip install pandas numpy requests.",
+    "skill_reference": "pip install pandas numpy requests"
+  },
+  {
+    "reason": "The worker used the Accommodations script pattern to query pet-friendly lodging entries (calling .run with a city).",
+    "key_point": "Use the search_accommodations script via: from search_accommodations import Accommodations; acc = Accommodations(); result = acc.run(\"<City>\"); print(result).",
+    "skill_reference": "from search_accommodations import Accommodations\n\nacc = Accommodations()\nresult = acc.run(\"Seattle\")\nprint(result)"
+  },
+  {
+    "reason": "The worker used the attractions tool to list city attractions when assigning one attraction per day.",
+    "key_point": "Use the search_attractions script via: from search_attractions import Attractions; attractions = Attractions(); print(attractions.run(\"<City>\"))",
+    "skill_reference": "from search_attractions import Attractions\n\nattractions = Attractions()\nprint(attractions.run(\"New York\"))"
+  },
+  {
+    "reason": "The worker used the cities tool to map states to cities (they enumerated Ohio cities using the provided tool).",
+    "key_point": "Use the search_cities script to map states to cities: from search_cities import Cities; cities = Cities(); print(cities.run(\"<State>\"))",
+    "skill_reference": "from search_cities import Cities\n\ncities = Cities()\nprint(cities.run(\"California\"))"
+  },
+  {
+    "reason": "The worker used the driving-distance tool to compute drive times/distances and label transportation as 'Self-driving' with actual durations.",
+    "key_point": "Use the search_driving_distance script to look up driving distance/duration: from search_driving_distance import GoogleDistanceMatrix; matrix = GoogleDistanceMatrix(); print(matrix.run(\"Origin\", \"Destination\", mode=\"driving\")).",
+    "skill_reference": "from search_driving_distance import GoogleDistanceMatrix\n\nmatrix = GoogleDistanceMatrix()\nprint(matrix.run(\"Seattle\", \"Portland\", mode=\"driving\"))"
+  },
+  {
+    "reason": "The worker queried restaurants in each city to match cuisine preferences when assigning breakfast/lunch/dinner.",
+    "key_point": "Use the search_restaurants script to query restaurants for a given city (script at scripts/search_restaurants.py).",
+    "skill_reference": "Query restaurants for a given city. The bundled script is located at scripts/search_restaurants.py."
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read /root/data/stock-descriptions.json to load metadata for all 50 stocks",
+    "why_essential": "The bubble chart and table require the master stock metadata (tickers, full names, sectors, marketCap) to build nodes, sizes, colors, and table rows.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/stock-descriptions.json\"}"
+  },
+  {
+    "step_index": 2,
+    "core_step": "List /root/data/indiv-stock/ files to discover individual stock history files",
+    "why_essential": "The app must copy and potentially use per-stock time series files; discovering all filenames ensures the data folder contains the 50 individual stock files needed for the web app.",
+    "evidence": "Glob status=success input={\"pattern\": \"/root/data/indiv-stock/*\"} -> listed files like /root/data/indiv-stock/BA.json, /root/data/indiv-stock/GE.json, ..."
+  },
+  {
+    "step_index": 3,
+    "core_step": "Read a sample individual stock file (AAPL.json) to confirm file format",
+    "why_essential": "Confirming the structure of an individual stock JSON ensures visualization code can parse per-stock histories and confirms compatibility before copying data.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/indiv-stock/AAPL.json\"} -> shows fields like \"Date\", \"Open\", \"High\", \"Low\", \"Volume\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create output directory structure /root/output/js, /root/output/css, and /root/output/data/indiv-stock",
+    "why_essential": "The web app and its assets must be placed in the specified output paths so the browser can open /root/output/index.html and load JS/CSS/data files from those locations.",
+    "evidence": "Bash status=success input={\"command\": \"mkdir -p /root/output/js /root/output/css /root/output/data/indiv-stock\"} (Bash completed with no output)"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Download D3 v6 minified library to /root/output/js/d3.v6.min.js",
+    "why_essential": "The visualization must use D3.js v6; placing the minified library at the requested path ensures the app can load the correct D3 runtime locally.",
+    "evidence": "curl -sL \"https://unpkg.com/d3@6.7.0/dist/d3.min.js\" -o /root/output/js/d3.v6.min.js && wc -c ... -> 270687 /root/output/js/d3.v6.min.js"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Copy stock-descriptions.json and all /root/data/indiv-stock/* files into /root/output/data/",
+    "why_essential": "The web app must include the provided input data under /root/output/data so it can be loaded in-browser without external dependencies.",
+    "evidence": "cp /root/data/stock-descriptions.json /root/output/data/ && cp /root/data/indiv-stock/* /root/output/data/indiv-stock/ && echo \"Copied 50 individual stock files\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write CSS file to /root/output/css/style.css for the app layout and styles",
+    "why_essential": "CSS provides layout (side-by-side charts), fonts, and ensures text is not truncated and legend is styled as a div as required.",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/css/style.css\", \"content\": \"...\"} -> File created successfully at: /root/output/css/style.css"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write D3 visualization script to /root/output/js/visualization.js implementing bubble chart, legend div, table, and interactions",
+    "why_essential": "The main behavior (force simulation, sizing by marketCap, sector clustering, tooltip rules, legend as div, table linking and highlighting) must be implemented in this JS file for the app to function.",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/js/visualization.js\", \"content\": \"(...)\"} -> File created successfully at: /root/output/js/visualization.js"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Write single-page web app HTML to /root/output/index.html referencing the D3 lib, visualization.js, CSS, and data paths",
+    "why_essential": "The browser entrypoint must exist at /root/output/index.html and link to the local D3, visualization script, styles, and data so the user can open the app in a browser.",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/index.html\", \"content\": \"<!DOCTYPE html>...\"} -> File created successfully at: /root/output/index.html"
+  },
+  {
+    "step_index": 10,
+    "core_step": "Sanity-check output by listing /root/output files to confirm all assets and data are present",
+    "why_essential": "Verifying the created files and copied data ensures the web app is complete and ready to open in a browser at /root/output/index.html.",
+    "evidence": "Bash status=success input={\"command\": \"find /root/output -type f | sort && echo '---' && wc -l ...\"} -> output lists css/style.css, data/indiv-stock/AAPL.json, js/visualization.js, index.html, etc."
+  }
+]

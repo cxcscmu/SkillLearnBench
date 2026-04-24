@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker ran the recalculation step and checked there were no formula errors; this requirement is why they invoked recalculation and verified a ‘Zero errors’ result in the trajectory.",
+    "key_point": "Deliver Excel models with zero formula errors (no #REF!, #DIV/0!, #VALUE!, #N/A, or #NAME?).",
+    "skill_reference": "Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)"
+  },
+  {
+    "reason": "The agent avoided hardcoding calculated results and instead wrote Excel formulas (so the workbook stays dynamic); this rule underpinned the worker’s choice to put INDEX/MATCH/SUMPRODUCT formulas into the sheet rather than writing values from Python.",
+    "key_point": "Always use Excel formulas (not Python-calculated hardcoded values) so the spreadsheet remains dynamic and updateable.",
+    "skill_reference": "Always use Excel formulas instead of calculating values in Python and hardcoding them."
+  },
+  {
+    "reason": "The worker used openpyxl to edit the file and then ran the provided recalculation script; the skill’s note that openpyxl leaves formulas unevaluated justified running recalc.py to produce computed values.",
+    "key_point": "When editing with openpyxl, formulas are stored as strings and not evaluated—use the provided recalc.py script to recalculate formulas.",
+    "skill_reference": "Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:"
+  },
+  {
+    "reason": "The worker executed the recalc script (shown in the trajectory) using the example usage; this exact command pattern is what they ran to trigger LibreOffice recalculation.",
+    "key_point": "Run the recalc script with: python recalc.py <excel_file> [timeout_seconds] (example usage shown).",
+    "skill_reference": "python recalc.py output.xlsx 30"
+  },
+  {
+    "reason": "The task required percentage results to one decimal and the worker applied rounding/formatting accordingly; the skill’s formatting rule specifies the required percentage format (one decimal).",
+    "key_point": "Format percentages using one decimal (0.0%) as the default percentage display.",
+    "skill_reference": "Percentages: Default to 0.0% format (one decimal)"
+  },
+  {
+    "reason": "The worker structured formulas to reference cells (e.g., INDEX/MATCH lookups, SUMPRODUCT) rather than embedding constants; the skill rule to use cell references guided this approach.",
+    "key_point": "Use cell references instead of hardcoded values inside formulas (place assumptions in cells and reference them).",
+    "skill_reference": "Use cell references instead of hardcoded values in formulas"
+  }
+]

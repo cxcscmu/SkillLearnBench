@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker parallelized the grid search across parameter combinations; they needed the exact pattern for using joblib to run a function in parallel over many inputs.",
+    "key_point": "Use joblib's Parallel combined with delayed to run a loop of independent evaluations in parallel (example pattern for mapping a function over an iterable).",
+    "skill_reference": "from joblib import Parallel, delayed\n\ndef process_item(x):\n    \"\"\"Process a single item.\"\"\"\n    return x ** 2\n\n# Sequential\nresults = [process_item(x) for x in range(100)]\n\n# Parallel (uses all available cores)\nresults = Parallel(n_jobs=-1)(\n    delayed(process_item)(x) for x in range(100)\n)"
+  },
+  {
+    "reason": "The worker chose to use all cores for speed; this parameter value is what enables that behavior in joblib.",
+    "key_point": "Set n_jobs=-1 in Parallel to use all available CPU cores for the parallel computation.",
+    "skill_reference": "- **n_jobs**: `-1` for all cores, `1` for sequential, or specific number"
+  },
+  {
+    "reason": "To avoid reloading shared data inside every worker (and to match the worker's decision to precompute data once), the worker relied on the pattern for pre-computing and passing shared data into each parallel task.",
+    "key_point": "Pre-compute shared data once and pass it as an argument to each parallel task so workers reuse the same prepared data instead of reloading it.",
+    "skill_reference": "# Pre-compute once\nshared_data = load_data()\n\ndef process_with_shared(params, data):\n    return compute(params, data)\n\n# Pass shared data to each task\nresults = Parallel(n_jobs=-1)(\n    delayed(process_with_shared)(p, shared_data)\n    for p in param_list\n)"
+  },
+  {
+    "reason": "The worker built the Cartesian product of hyperparameters for the grid search and used it as the iterable to feed into Parallel; the itertools.product pattern is the concrete way to generate that grid.",
+    "key_point": "Build the parameter grid with itertools.product and iterate over that list when performing a parallel grid search.",
+    "skill_reference": "from joblib import Parallel, delayed\nfrom itertools import product\n\ndef evaluate_params(param_a, param_b):\n    \"\"\"Evaluate one parameter combination.\"\"\"\n    score = expensive_computation(param_a, param_b)\n    return {'param_a': param_a, 'param_b': param_b, 'score': score}\n\n# Define parameter grid\nparams = list(product([0.1, 0.5, 1.0], [10, 20, 30]))\n\n# Parallel grid search\nresults = Parallel(n_jobs=-1, verbose=10)(\n    delayed(evaluate_params)(a, b) for a, b in params\n)"
+  },
+  {
+    "reason": "The worker evaluated the tradeoff of parallel overhead versus per-item cost and decided to precompute distance matrices; knowing the overhead threshold informed that decision.",
+    "key_point": "Parallelization overhead makes it worthwhile only for tasks that take longer than roughly 0.1 seconds per item.",
+    "skill_reference": "## Performance Tips\n\n- Only worth it for tasks taking >0.1s per item (overhead cost)\n- Watch memory usage - each worker gets a copy of data\n- Use `verbose=10` to monitor progress"
+  },
+  {
+    "reason": "Because the worker explicitly avoided duplicating large data per worker and considered memory implications when precomputing, they needed the rule that each worker gets its own copy of data.",
+    "key_point": "Be aware that each worker process gets its own copy of data (watch memory usage when parallelizing).",
+    "skill_reference": "## Performance Tips\n\n- Only worth it for tasks taking >0.1s per item (overhead cost)\n- Watch memory usage - each worker gets a copy of data\n- Use `verbose=10` to monitor progress"
+  },
+  {
+    "reason": "To identify Pareto-optimal configurations the worker used the paretoset library; they needed the exact function call and the meaning of the sense argument to map maximize/minimize objectives.",
+    "key_point": "Use paretoset(objectives, sense=[...]) to compute a boolean mask of Pareto-optimal rows, where sense contains 'max' for objectives to maximize and 'min' for objectives to minimize.",
+    "skill_reference": "from paretoset import paretoset\nimport pandas as pd\n\n# Data with two objectives (e.g., model accuracy vs inference time)\ndf = pd.DataFrame({\n    'accuracy': [0.95, 0.92, 0.88, 0.85, 0.80],\n    'latency_ms': [120, 95, 75, 60, 45],\n    'model_size': [100, 80, 60, 40, 20],\n    'learning_rate': [0.001, 0.005, 0.01, 0.05, 0.1]\n})\n\n# Compute Pareto mask\n# sense: \"max\" for objectives to maximize, \"min\" for objectives to minimize\nobjectives = df[['accuracy', 'latency_ms']]\npareto_mask = paretoset(objectives, sense=[\"max\", \"min\"])"
+  },
+  {
+    "reason": "The worker needed the formal dominance rule to correctly select non-dominated configurations when constructing the Pareto frontier.",
+    "key_point": "A point A dominates point B if A is at least as good as B in all objectives and strictly better in at least one objective.",
+    "skill_reference": "Point A **dominates** point B if:\n- A is at least as good as B in all objectives\n- A is strictly better than B in at least one objective"
+  }
+]

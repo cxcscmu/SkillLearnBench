@@ -1,0 +1,32 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Extract key frames from /root/super-mario.mp4 into /root/keyframes_%03d.png using ffmpeg",
+    "why_essential": "Key frames are the input images required for all subsequent image processing and object counting steps.",
+    "evidence": "ffmpeg -i /root/super-mario.mp4 -vf \"select='eq(pict_type,I)'\" -vsync vfr /root/keyframes_%03d.png"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Verify the extracted keyframe files and their names (ls /root/keyframes_*.png | sort)",
+    "why_essential": "Confirming the extracted file list and names ensures the correct frames will be processed and enumerated in the CSV.",
+    "evidence": "ls /root/keyframes_*.png | sort -> /root/keyframes_001.png ... /root/keyframes_008.png"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Convert each keyframe image to grayscale inplace using ImageMagick (convert \"$i\" -colorspace Gray \"$i\")",
+    "why_essential": "The task requires frames to be overwritten as grayscale images before running template-based object counting.",
+    "evidence": "for i in /root/keyframes_*.png; do convert \"$i\" -colorspace Gray \"$i\"; done && echo \"Done\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Count coins, enemies, and turtles in each keyframe using the object_counter script against templates /root/coin.png, /root/enemy.png, /root/turtle.png",
+    "why_essential": "Counting objects per frame is the core analytic goal; these counts populate the CSV output.",
+    "evidence": "for frame in /root/keyframes_00{1,2,3,4,5,6,7,8}.png; do coins=$(python3 /logs/agent/.../count_objects.py --tool count --input_...); done"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write the CSV summary file /root/counting_results.csv with columns frame_id,coins,enemies,turtles and the per-frame counts",
+    "why_essential": "Producing the specified CSV file finalizes the task by saving the required summary of counts in the required location.",
+    "evidence": "File created successfully at: /root/counting_results.csv and content: frame_id,coins,enemies,turtles\n/root/keyframes_001.png,0,0,0\n..."
+  }
+]

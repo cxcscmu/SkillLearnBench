@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The lookup range and matching keys are fundamental to retrieving the correct source numbers from the Data sheet.",
+    "key_point": "Use INDEX with two MATCHes to retrieve values from Data!$H$21:$M$40 by matching the series code in Task!$D (rows D12:D31) against Data!$B$21:$B$40 and matching the year in Task!$10 against Data!$H$4:$M$4.",
+    "trajectory_reference": "\"=INDEX(Data!$H$21:$M$40, MATCH($D<row>, Data!$B$21:$B$40, 0), MATCH(<col>$10, Data!$H$4:$M$4, 0))\""
+  },
+  {
+    "reason": "The task requires filling three distinct yellow blocks (exports, imports, GDP) using the same lookup approach, so mapping their Task sheet ranges is critical.",
+    "key_point": "Populate yellow cells H12:L17 (exports), H19:L24 (imports), and H26:L31 (GDP) on the Task sheet with INDEX/MATCH formulas that reference Data rows 21–40.",
+    "trajectory_reference": "Key mappings confirmed: - Exports: rows 12-17, D12:D17 has series codes - Imports: rows 19-24, D19:D24 has series codes - GDP: rows 26-31, D26:D31 has series codes - The data rows in Data sheet are 21-40"
+  },
+  {
+    "reason": "Net exports as a percent of GDP is the central calculated metric; the formula and rounding must be correct and placed in the specified cells.",
+    "key_point": "Calculate net exports % in H35:L40 using =ROUND((Exports - Imports) / GDP * 100, 1) so each net exports cell computes (exports - imports)/GDP*100 and is rounded to one decimal.",
+    "trajectory_reference": "\"=ROUND((Exports - Imports) / GDP * 100, 1)\" and \"Net exports %: rows 35-40 (yellow cells H35:L40)\""
+  },
+  {
+    "reason": "The weighted mean must use the correct algebraic form and reference raw values to avoid rounding error.",
+    "key_point": "Compute the GCC GDP-weighted mean per year in H50:L50 with =ROUND(SUMPRODUCT(Exports_range - Imports_range) / SUM(GDP_range) * 100, 1), i.e., SUM(net_exports_i)/SUM(GDP_i)*100.",
+    "trajectory_reference": "\"=ROUND(SUMPRODUCT(Exports_range - Imports_range) / SUM(GDP_range) * 100, 1)\" and \"This correctly computes the GDP-weighted average as: Σ(net_exports_i) / Σ(GDP_i) × 100\""
+  },
+  {
+    "reason": "Formulas must be copyable across year columns, so mixed/relative references and consistent header matching are necessary.",
+    "key_point": "Use mixed references for MATCH on the year header row 10 (Task) and Data row 4 so the lookup formula can be copied across columns H:L for years 2019–2023.",
+    "trajectory_reference": "\"Second MATCH finds the year (row 10) in Data row 4 header (2018–2023)\" and \"I'll use an INDEX/MATCH formula... matching the year headers in row 10 against the Data sheet's row 4\""
+  },
+  {
+    "reason": "Ensuring formulas are not hardcoded and that Excel recalculation produces actual values is required by workflow.",
+    "key_point": "Insert formulas (not hardcoded values) into the workbook and run the recalc (LibreOffice recalc.py) so data_only mode returns calculated values for verification.",
+    "trajectory_reference": "\"Always use Excel formulas instead of calculating values in Python and hardcoding them.\" and \"the data_only mode is returning actual values instead of None, which confirms the recalc.py script executed correctly.\""
+  },
+  {
+    "reason": "Verification and sanity checks confirm correctness of both individual rows and the aggregated weighted mean.",
+    "key_point": "Sanity-check sample calculations (e.g., UAE 2019 and Saudi Arabia 2019) by manually computing (exports - imports)/GDP*100 and verifying results (UAE ≈20.5%, Saudi ≈8.5%), and confirm weighted mean (~12.7% for 2019).",
+    "trajectory_reference": "\"For UAE 2019: Exports: 419.45 ... Net exports = ... ≈ 20.5% ✓\" and \"Total net exports ... total GDP ... giving me a weighted mean of approximately 12.7%.\""
+  },
+  {
+    "reason": "Statistics (min, max, median, mean, quartiles) are required and must also be rounded to one decimal place.",
+    "key_point": "Compute statistics (MIN, MAX, MEDIAN, AVERAGE, PERCENTILE 25/75) across H35:L40 and wrap each in ROUND(...,1) in rows H42:L47.",
+    "trajectory_reference": "\"Statistics (rows 42–47): MIN, MAX, MEDIAN, AVERAGE, PERCENTILE(0.25/0.75) — all ROUND(..., 1)\""
+  },
+  {
+    "reason": "The Data sheet year columns are offset relative to the Task sheet years, so the MATCH must search the correct header row and numeric range.",
+    "key_point": "Match Task sheet year labels in row 10 against Data sheet headers in row 4 (Data!$H$4:$M$4) because Data's numeric columns run H:M (2018–2023) while Task years start at 2019 in H10.",
+    "trajectory_reference": "\"The Data sheet has years 2018-2023 in columns H through M, but the Task sheet starts at 2019, so when I use MATCH to find the year column in the Data sheet, I need to account for this offset.\""
+  },
+  {
+    "reason": "Maintaining workbook formatting and avoiding formula errors is an explicit requirement.",
+    "key_point": "Do not change existing formatting or add macros/VBA; ensure all formulas return no Excel errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?) by verifying references and denominators before saving.",
+    "trajectory_reference": "\"You should not change the original format of the file... You may achieve this by multiplying the final calculation by 100 within your formula.\" and \"Zero Formula Errors - Every Excel model MUST be delivered with ZERO formula errors\""
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker implemented all calculations as Excel formulas (INDEX/MATCH, ROUND, SUMPRODUCT) rather than hardcoding Python-calculated numbers; this rule ensured the spreadsheet remained dynamic and was explicitly followed when writing formulas into cells.",
+    "key_point": "Do not calculate results in Python and hardcode them; always put calculation logic into Excel formulas so the workbook stays dynamic.",
+    "skill_reference": "**Always use Excel formulas instead of calculating values in Python and hardcoding them.**"
+  },
+  {
+    "reason": "The worker used the provided recalculation tool after writing formulas to evaluate formulas and check for errors; invoking recalc.py with a timeout is the prescribed way to force LibreOffice to recalc formulas and return error diagnostics.",
+    "key_point": "Recalculate the workbook with the provided recalc.py script (python recalc.py <file> [timeout]) to evaluate formulas and detect Excel errors.",
+    "skill_reference": "python recalc.py output.xlsx 30"
+  },
+  {
+    "reason": "The task required delivering a workbook with no formula errors; the worker explicitly checked and reported 'Zero errors', so adhering to this zero-error rule was essential to pass validation.",
+    "key_point": "Deliver the Excel file with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?).",
+    "skill_reference": "Zero Formula Errors - Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)"
+  },
+  {
+    "reason": "The worker formatted percentage outputs and used ROUND(...,1) and multiplying by 100 to display one decimal percentage points as required; this formatting rule determined how the final formulas were written.",
+    "key_point": "Format percentages to one decimal (0.0%) / ensure percentage results are rounded to one decimal place.",
+    "skill_reference": "**Percentages**: Default to 0.0% format (one decimal)"
+  },
+  {
+    "reason": "The worker followed the guidance to reference cells rather than hardcode numbers, e.g., using INDEX/MATCH to pull exports/imports from Data! rather than pasting values; this rule ensured formulas update with data changes.",
+    "key_point": "Use cell references in formulas instead of hardcoded numeric values.",
+    "skill_reference": "Use cell references instead of hardcoded values in formulas"
+  },
+  {
+    "reason": "Before applying formulas to the whole range the worker spot-checked a couple of cells (UAE 2018, Kuwait 2021) to verify correctness; the skill recommends starting with a few test cells to catch mistakes early.",
+    "key_point": "Start small: test formulas on 2–3 sample cells before applying them across ranges.",
+    "skill_reference": "Start small: Test formulas on 2-3 cells before applying broadly"
+  },
+  {
+    "reason": "The worker had to reconcile pandas/excel indexing and ensure correct row/column offsets; the skill's reminder about off-by-one errors is directly relevant and was implicitly used when mapping Data! rows to Task! ranges.",
+    "key_point": "Check for off-by-one errors in ranges when mapping data between tools or sheets.",
+    "skill_reference": "Check for off-by-one errors in ranges"
+  },
+  {
+    "reason": "Because openpyxl preserves formulas but does not evaluate them, the worker used recalc.py after writing formulas — the skill's note about preservation vs evaluation explains why an external recalculation step is necessary.",
+    "key_point": "When editing with openpyxl, formulas are preserved but not evaluated locally—use recalc.py (LibreOffice) to evaluate them.",
+    "skill_reference": "Formulas are preserved but not evaluated - use recalc.py to update values"
+  },
+  {
+    "reason": "The worker used Excel functions (SUMPRODUCT) for the weighted mean rather than computing weights externally; the skill's examples showing 'let Excel calculate' illustrate the pattern of delegating arithmetic to spreadsheet formulas.",
+    "key_point": "Let Excel compute aggregates/weighted calculations (e.g., use SUMPRODUCT in-sheet) rather than precomputing them outside Excel.",
+    "skill_reference": "Good: Let Excel calculate the sum\nsheet['B10'] = '=SUM(B2:B9)'"
+  }
+]

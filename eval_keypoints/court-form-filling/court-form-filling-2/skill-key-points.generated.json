@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker needed the exact code pattern to open and count pages in the PDF so they could confirm the document had 4 pages and proceed; the trajectory shows the agent used this to determine page count (\"Now I have a clear view of all 4 pages\").",
+    "key_point": "Use PdfReader to open a PDF and get the number of pages via len(reader.pages).",
+    "skill_reference": "reader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")"
+  },
+  {
+    "reason": "The worker extracted text from the PDF pages to inspect form contents and verify fields; the trajectory shows the agent ran a text-extraction step before mapping fields.",
+    "key_point": "Loop over reader.pages and call page.extract_text() to gather the PDF's text.",
+    "skill_reference": "# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "To produce the final filled file the worker saved a modified PDF; the skill shows the writer.write pattern which the worker relied on to write the output (/root/sc100-filled.pdf).",
+    "key_point": "Use PdfWriter and then write the output file with writer.write(open(..., 'wb')).",
+    "skill_reference": "with open(\"merged.pdf\", \"wb\") as output:\n    writer.write(output)"
+  },
+  {
+    "reason": "The worker explicitly followed the skill's instruction to consult the forms guidance before filling a form (they state 'I need to read the forms.md file'), so the directive to read forms.md was essential for form-filling specifics.",
+    "key_point": "If you need to fill out a PDF form, read forms.md and follow its instructions.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The worker chose the tool to fill the form (pypdf) based on the skill's recommended options; this guided the implementation approach used throughout the trajectory.",
+    "key_point": "Filling PDF forms can be done with pdf-lib or pypdf (see forms.md) — pypdf is an available option for form filling.",
+    "skill_reference": "Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md"
+  }
+]

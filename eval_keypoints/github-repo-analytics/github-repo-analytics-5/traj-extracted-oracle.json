@@ -1,0 +1,38 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch the gh-cli skill",
+    "why_essential": "Enables use of GitHub CLI commands to list and inspect repository PRs programmatically.",
+    "evidence": "\"Launching skill: gh-cli\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "List all PRs in cli/cli created 2024-07-01..2024-09-30 including changedFiles and timestamps using gh pr list",
+    "why_essential": "Fetches the raw PR data (author, createdAt, mergedAt, closedAt, changedFiles) needed to filter for PRs that changed ≥8 files and compute metrics.",
+    "evidence": "\"gh pr list -R cli/cli --state all --search \\\"created:2024-07-01..2024-09-30\\\" --json number,author,createdAt,mergedAt,closedAt,state,changedFiles --limit 500\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Save the gh pr list output to /tmp/prs_q3_2024.json",
+    "why_essential": "Persists the fetched PR data so it can be processed reliably by a script to compute counts and times.",
+    "evidence": "\"gh pr list ... > /tmp...\" and tool result: \"Done\\n1 /tmp/prs_q3_2024.json\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run a Python script to filter PRs with changedFiles >= 8 and compute total, merged-by-cutoff, closed-without-merge-by-cutoff, avg time-to-merge, and top contributor",
+    "why_essential": "Performs the necessary filtering, counting, time-difference calculations (to the cutoff 2024-10-15T00:00:00Z), and tie-breaker logic to produce the required metrics.",
+    "evidence": "\"python3 << 'EOF' ...\\nLarge PRs (>=8 files): 14\\nMerged by cutoff: 11\\nClosed without merge by cutoff: 3\\nAvg merge days: 7.0\\nAuthor counts: ...\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Apply lexicographic tie-breaker to choose top contributor when multiple authors have the same count",
+    "why_essential": "Ensures deterministic selection of the top_contributor per specification when there's a tie.",
+    "evidence": "\"There are multiple authors tied at 2 PRs each. The lexicographically smallest is \\\"andyfeller\\\".\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write the computed metrics to /app/report.json with the required JSON structure",
+    "why_essential": "Creates the final report file in the specified location and exact schema required by the task.",
+    "evidence": "\"File created successfully at: /app/report.json\" and the written content showing total: 14, merged: 11, closed: 3, avg_merge_days: 7.0, top_contributor: \"andyfeller\""
+  }
+]

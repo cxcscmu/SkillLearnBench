@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "The worker needed to know that Jackson does all interpretation (type resolution, special-key handling, instantiation) during a single readValue() call so that attacks can execute during deserialization rather than being visible afterward; this justified adding pre-deserialization checks and avoiding post-deserialization validation.",
+    "key_point": "Jackson performs interpretation/resolution/instantiation during a single readValue() call, so malicious behavior can occur inside deserialization before the program ever sees the resulting object.",
+    "skill_reference": "Jackson transforms JSON text into Java objects during a single `readValue()` call. This transformation is **not** a simple data copy—Jackson interprets JSON structure, resolves types, handles special keys, and instantiates objects all within this operation."
+  },
+  {
+    "reason": "The worker relied on the principle that validating only the deserialized object is insufficient, motivating the implemented pre-deserialization validation in SamplerResource.",
+    "key_point": "Validating the deserialized Java object is insufficient to catch attacks that trigger during Jackson's parsing process because the deserialized object no longer reflects the parsing steps.",
+    "skill_reference": "This creates a fundamental blind spot: attacks that exploit Jackson's parsing behavior—rather than the final object state—cannot be detected by examining the deserialized object."
+  },
+  {
+    "reason": "The worker used the fact that empty-string keys are valid JSON and parsed by Jackson to explain how the attack payload ({\"\": {...}}) could reach Jackson and be processed.",
+    "key_point": "JSON allows empty-string keys (e.g. \"\": \"value\"), and Jackson will parse such keys without error, so an attacker can include a top-level empty key in requests.",
+    "skill_reference": "JSON permits empty strings as object keys:\n\n    {\n      \"name\": \"legitimate\",\n      \"\": \"injected value\"\n    }\n\nThis is valid JSON per RFC 8259. Jackson parses it without error."
+  },
+  {
+    "reason": "The worker cited how empty keys can map to special deserialization hooks, which underlies why the empty key can override injected values and why the fix must prevent JSON from supplying injectables.",
+    "key_point": "Empty keys can interact with Jackson behaviors such as @JsonAnySetter or custom deserializers and thereby unexpectedly set or override properties during deserialization.",
+    "skill_reference": "- **Property override**: Empty keys may interact unexpectedly with `@JsonAnySetter` or custom deserializers"
+  },
+  {
+    "reason": "This explicit mitigation directly guided the worker's implemented defense-in-depth: adding a pre-deserialization check at the sampler entry point to reject payloads containing empty keys.",
+    "key_point": "Introduce a pre-deserialization validation step at the sampler entry point to scan raw JSON and reject requests containing malicious structures (e.g., empty keys) before Jackson processes them.",
+    "skill_reference": "To robustly mitigate this issue, a pre-deserialization validation step should be introduced at the sampler entry point to intercept and reject malicious raw JSON payloads."
+  },
+  {
+    "reason": "The worker used this concrete demonstration to justify that you cannot detect the attack by inspecting the resulting object, motivating checking the raw JSON instead.",
+    "key_point": "After deserialization there is no reliable way to detect whether an empty key was present in the original JSON, so post-deserialization checks cannot ascertain that the attack occurred.",
+    "skill_reference": "After deserialization, there is no standard way to know an empty key was present:\n\n    // Original JSON: {\"name\": \"test\", \"\": \"malicious\"}\n    MyObject obj = mapper.readValue(json, MyObject.class);\n    // obj.getName() returns \"test\"\n    // Where did \"\" go? Depends on configuration. You cannot tell from obj."
+  },
+  {
+    "reason": "The worker needed to understand other deserialization attack patterns (polymorphic instantiation) that can execute code during deserialization, informing the decision to treat deserialization as a dangerous phase.",
+    "key_point": "Polymorphic type handling (e.g., @JsonTypeInfo) allows JSON to specify classes to instantiate, which can lead to arbitrary code execution during deserialization if gadget classes exist on the classpath.",
+    "skill_reference": "If the classpath contains exploitable \"gadget\" classes, arbitrary code execution may occur during deserialization—before your code ever runs."
+  },
+  {
+    "reason": "The worker used the duplicate-key behavior to reason about how different layers can disagree and how Jackson's last-value-wins behavior can subvert earlier validation, supporting the need for raw-input checks.",
+    "key_point": "Jackson's default behavior for duplicate keys is that the last occurrence wins, so validation that only examines earlier occurrences can be bypassed.",
+    "skill_reference": "Jackson's default behavior: **last value wins**."
+  }
+]

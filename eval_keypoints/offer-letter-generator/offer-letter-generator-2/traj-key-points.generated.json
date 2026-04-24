@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The task requires reading the employee data to obtain values for placeholders.",
+    "key_point": "Read the employee_data.json file to load required candidate and offer values.",
+    "trajectory_reference": "[4] role=assistant tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Needed to locate the Word template file before processing.",
+    "key_point": "Search/glob the workspace to find the offer letter template file (offer_letter_template.docx).",
+    "trajectory_reference": "[5] role=assistant tool_use[1]: tool=Glob; status=success; input_keys=path,pattern; output_keys=text"
+  },
+  {
+    "reason": "Word documents require special handling; the docx skill was used to manipulate the .docx file.",
+    "key_point": "Invoke the docx skill to load and manipulate the Word template.",
+    "trajectory_reference": "[11] role=assistant tool_use[1]: tool=Skill; status=success; input_keys=skill; output_keys=text"
+  },
+  {
+    "reason": "Word often splits placeholders across runs, so addressing that is necessary to reliably replace all placeholders.",
+    "key_point": "Recognize the split-placeholder problem (placeholders can be split across multiple runs) and decide to perform paragraph-level replacement instead of run-level replacement.",
+    "trajectory_reference": "User content: 'The #1 issue with Word templates: Word often splits placeholder text across multiple XML runs.'"
+  },
+  {
+    "reason": "Paragraph-level replacement ensures placeholders are found even if split across runs.",
+    "key_point": "Use a paragraph-level replacement strategy: get paragraph.text, replace placeholders in the full text, then rebuild runs with the new text in the first run and clear the rest.",
+    "trajectory_reference": "User content: 'Correct Approach: Paragraph-Level Search and Rebuild' and example: 'if new_text != text: runs[0].text = new_text; for run in runs[1:]: run.text = '''"
+  },
+  {
+    "reason": "Placeholders can appear inside tables and nested tables, so these must be traversed to replace content.",
+    "key_point": "Process tables recursively, iterating rows, cells, and any nested cell.tables to replace placeholders inside table cells.",
+    "trajectory_reference": "User content: 'Process tables (including nested)' and code sample that recurses into cell.tables"
+  },
+  {
+    "reason": "Headers and footers are not part of doc.paragraphs and must be handled separately to avoid leaving placeholders in them.",
+    "key_point": "Also iterate over each section's header and footer paragraphs and run the same paragraph-level replacement there.",
+    "trajectory_reference": "User content: 'Headers/footers are separate from main document body' and code showing 'for section in doc.sections: for para in section.header.paragraphs: replace_in_paragraph(para)'"
+  },
+  {
+    "reason": "The conditional relocation section must be included or removed based on RELOCATION_PACKAGE value; in this case it is Yes.",
+    "key_point": "Handle the conditional markers {{IF_RELOCATION}}...{{END_IF_RELOCATION}}: because RELOCATION_PACKAGE is 'Yes', remove only the IF/END_IF markers and keep the relocation content (also replacing any placeholders inside).",
+    "trajectory_reference": "[13] role=assistant thinking: 'RELOCATION_PACKAGE: \"Yes\" - so I need to keep the conditional section content but remove the IF/END_IF markers.'"
+  },
+  {
+    "reason": "Multi-paragraph conditionals can occur, so the implementation must be able to remove markers spanning paragraphs or handle same-paragraph markers.",
+    "key_point": "Account for conditional markers possibly spanning multiple paragraphs, but detect that in this template the IF and END_IF for relocation are in the same paragraph and handle accordingly.",
+    "trajectory_reference": "[21] role=assistant thinking: 'The conditional section is entirely within paragraph 19. The IF and END_IF markers are both in the same paragraph.'"
+  },
+  {
+    "reason": "After implementing the replacement logic, the script must write the filled document to the required output path.",
+    "key_point": "Write the filled .docx document and save the final file to /root/offer_letter_filled.docx.",
+    "trajectory_reference": "[34] role=assistant tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text"
+  },
+  {
+    "reason": "Verification confirms that placeholders and conditional markers were handled correctly across the document.",
+    "key_point": "Verify the output to ensure all placeholders are resolved across main body, nested tables, header/footer, and that conditional markers were removed while relocation content was preserved.",
+    "trajectory_reference": "[38] role=assistant content: 'All placeholders are resolved with no leftovers. ... {{IF_RELOCATION}}/{{END_IF_RELOCATION}} markers stripped since RELOCATION_PACKAGE is \"Yes\"'"
+  }
+]

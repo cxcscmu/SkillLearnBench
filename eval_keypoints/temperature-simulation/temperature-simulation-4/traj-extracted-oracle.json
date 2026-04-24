@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read GLM configuration file /root/glm3.nml",
+    "why_essential": "Verify model setup and confirm which calibration parameters and settings are present and must remain unchanged",
+    "evidence": "Read /root/glm3.nml ... sim_name = 'Mendota' ... density_model = 1"
+  },
+  {
+    "step_index": 2,
+    "core_step": "List available meteorological and hydrological forcing files in /root/bcs/",
+    "why_essential": "Ensure required forcing input files exist for the GLM run",
+    "evidence": "Glob /root/bcs/* -> /root/bcs/pheasant.csv /root/bcs/meteo.csv /root/bcs/outflow.csv /root/bcs/yahara.csv"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Run GLM to produce simulation output at /root/output/output.nc",
+    "why_essential": "Generate the model simulation output file required for comparison with observations",
+    "evidence": "mkdir -p output && glm ... (Bash completed with no output) and ls /root/output/ -> output.nc"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect field observation file /root/field_temp_oxy.csv",
+    "why_essential": "Confirm availability and basic structure of observed temperature data used for exact matching to simulations",
+    "evidence": "head -5 /root/field_temp_oxy.csv ... datetime,depth,temp,OXY_oxy and wc -l -> 2827"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Write and run evaluation script (evaluate.py) to compute baseline RMSE metrics",
+    "why_essential": "Compute the required RMSE metrics comparing simulation and observations to determine if calibration is needed",
+    "evidence": "File created at: /root/evaluate.py and python3 evaluate.py -> Baseline metrics: overall_rmse: 1.3929, annual_deep_rmse: 1.3153, summer_deep_rmse: 1.4235"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Verify depth handling and observation depth ranges",
+    "why_essential": "Ensure rounding and depth conventions used in metric calculation are correct for the exact datetime+rounded-depth matching",
+    "evidence": "python3 -c ... print('Depth range:'"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write and run final exact-metrics script (final_metrics.py) and save /root/metrics.json",
+    "why_essential": "Produce the final metrics.json with exact matching required by evaluation and to record final reported RMSEs and pair counts",
+    "evidence": "File created at: /root/final_metrics.py and python3 final_metrics.py -> Final metrics: overall_rmse: 1.3929 ...; cat /root/metrics.json -> { \"overall_rmse\": 1.3928594201012885, ... }"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Confirm that all three RMSE thresholds are satisfied with default parameters",
+    "why_essential": "Decision step concluding that no calibration parameter changes are necessary because reported metrics meet the required targets",
+    "evidence": "The baseline already passes with default parameters... overall_rmse: 1.3929 (target < 1.60) ✓; annual_deep_rmse: 1.3153 (target < 1.55) ✓; summer_deep_rmse: 1.4235 (target < 1.70) ✓\""
+  }
+]

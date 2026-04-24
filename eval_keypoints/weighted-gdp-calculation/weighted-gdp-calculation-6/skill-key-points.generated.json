@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "The worker inserted formulas and then ran the recalculation step; ensuring the model has no formula errors was checked and reported as a success in the trajectory, so the strict zero-errors requirement was essential for acceptance.",
+    "key_point": "Deliver Excel models with zero formula errors; verify there are no #REF!, #DIV/0!, #VALUE!, #N/A, or #NAME? errors.",
+    "skill_reference": "Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)"
+  },
+  {
+    "reason": "The worker avoided hardcoding computed results and instead wrote Excel formulas into the workbook (so the sheet stays dynamic). This rule directly dictated how the worker wrote values—using formulas rather than Python-calculated numbers.",
+    "key_point": "Always put calculations into Excel formulas rather than computing values in Python and hardcoding results into cells.",
+    "skill_reference": "**Always use Excel formulas instead of calculating values in Python and hardcoding them.**"
+  },
+  {
+    "reason": "After writing formulas with openpyxl the worker needed to recalculate so cells show proper values; the skill mandates using the provided script to trigger LibreOffice recalculation, which the worker ran and reported zero errors.",
+    "key_point": "After saving a workbook with formulas, run the provided recalc.py script to force LibreOffice to recalculate all formulas.",
+    "skill_reference": "python recalc.py <excel_file> [timeout_seconds]"
+  },
+  {
+    "reason": "The worker used openpyxl to insert formulas and relied on the behavior that formulas are stored as strings and must be recalculated externally—this explains why recalc.py was necessary and why formulas initially had no calculated values.",
+    "key_point": "When modifying workbooks with openpyxl, formulas are saved as strings (not evaluated); therefore you must recalculate the file afterwards.",
+    "skill_reference": "Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:"
+  },
+  {
+    "reason": "The task required percentages scaled by 100 and rounded to one decimal; the skill's numeric-formatting rule for percentages (0.0% one decimal) was the standard the worker followed when setting cell formats and rounding.",
+    "key_point": "Format percentages with one decimal (0.0%) so percentage results display to one decimal place.",
+    "skill_reference": "- **Percentages**: Default to 0.0% format (one decimal)"
+  },
+  {
+    "reason": "The worker preserved the Task sheet's visual layout and did not change formatting—this is mandated by the skill's rule to match existing format/style when updating templates.",
+    "key_point": "When modifying existing templates, exactly match the workbook's existing format, style, and conventions; do not change template formatting.",
+    "skill_reference": "Study and EXACTLY match existing format, style, and conventions when modifying files\""
+  },
+  {
+    "reason": "The task specifically asked to populate yellow regions (key assumptions); the skill defines yellow background as cells needing updates, which guided the worker to write formulas into those yellow cells.",
+    "key_point": "Treat yellow-background cells as key assumptions or cells that need to be updated and populate them accordingly.",
+    "skill_reference": "- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated"
+  },
+  {
+    "reason": "The worker mapped Data frame rows to Excel rows and used INDEX/MATCH formulas; avoiding off-by-one errors required remembering Excel’s 1-based indexing when converting dataframe/array row numbers to sheet row numbers.",
+    "key_point": "Remember Excel rows are 1-indexed when mapping data (DataFrame row 5 corresponds to Excel row 6) to avoid off-by-one reference errors.",
+    "skill_reference": "Row offset: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)"
+  },
+  {
+    "reason": "Before applying formulas across many cells the worker staged and checked samples (they mentioned testing small groups); the skill's testing strategy to start small was used to validate the INDEX/MATCH references before filling full ranges.",
+    "key_point": "Test formulas on 2–3 sample cells first (start small) to verify lookups and references before applying formulas across the whole table.",
+    "skill_reference": "Start small: Test formulas on 2-3 cells before applying broadly"
+  },
+  {
+    "reason": "After running the recalc script the worker checked for errors and reported the script returned zero errors; understanding that the script returns JSON with error details and how to interpret it was necessary to confirm success.",
+    "key_point": "Inspect the recalc.py output JSON for status/error details and, if errors_found, examine error_summary to locate and fix formula errors.",
+    "skill_reference": "The script returns JSON with error details\""
+  },
+  {
+    "reason": "The worker used openpyxl to edit the workbook and relied on the skill's guidance that openpyxl is the recommended library for preserving formulas and formatting when programmatically modifying Excel files.",
+    "key_point": "Use openpyxl for editing existing Excel files because it preserves formulas and formatting.",
+    "skill_reference": "openpyxl: Best for complex formatting, formulas, and Excel-specific features\""
+  },
+  {
+    "reason": "The worker followed the rule to avoid hardcoding by using cell references in formulas (e.g., INDEX/MATCH referencing series and year headers) rather than embedding constants.",
+    "key_point": "Use cell references in formulas (place assumptions in cells and reference them) instead of hardcoded numeric values inside formulas.",
+    "skill_reference": "Use cell references instead of hardcoded values in formulas\""
+  }
+]

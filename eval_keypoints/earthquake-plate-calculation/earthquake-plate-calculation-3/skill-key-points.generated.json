@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "The worker must avoid computing distances in degrees; this rule justifies projecting to a metric CRS before any distance calculation and is explicitly referenced in the agent’s method summary (they used EPSG:4087). Without this rule the distance calculation would be incorrect.",
+    "key_point": "Distance calculations must not be performed in geographic coordinates (EPSG:4326); use a metric projection first.",
+    "skill_reference": "**Critical Rule**: Never calculate distances directly in geographic coordinates (EPSG:4326). Always project to a metric coordinate system first."
+  },
+  {
+    "reason": "The worker projected geometries to EPSG:4087 and computed distances in meters, then converted to kilometers; this exact pattern is how they obtained correct metric distances and the reported distance_km value.",
+    "key_point": "Project geometries to EPSG:4087, compute distances in meters, then convert to kilometers (divide by 1000).",
+    "skill_reference": "```python\n# ✅ CORRECT: Project to metric CRS first\ngdf_projected = gdf.to_crs(\"EPSG:4087\")\ndistance_meters = point1_proj.distance(point2_proj)  # Correct! Returns meters\ndistance_km = distance_meters / 1000.0\n```"
+  },
+  {
+    "reason": "The worker loaded the plate and boundary GeoJSON files with geopandas; this is the required method to read the plate/boundary inputs used in spatial operations.",
+    "key_point": "Load GeoJSON plate and boundary files using geopandas.read_file().",
+    "skill_reference": "```python\nimport geopandas as gpd\n\n# Load GeoJSON files directly\ngdf_plates = gpd.read_file(\"plates.json\")\ngdf_boundaries = gpd.read_file(\"boundaries.json\")\n```"
+  },
+  {
+    "reason": "Earthquake input records needed to be converted into a GeoDataFrame with Point geometries and a defined CRS before spatial filtering; the worker followed this pattern to create gdf_eq with crs EPSG:4326.",
+    "key_point": "Convert lat/lon earthquake records to a GeoDataFrame of Point geometries with crs=\"EPSG:4326\" before spatial operations.",
+    "skill_reference": "```python\nfrom shapely.geometry import Point\nimport geopandas as gpd\n\n# Convert coordinate data to GeoDataFrame\ndata = [\n    {\"id\": 1, \"lat\": 35.0, \"lon\": 140.0, \"value\": 5.5},\n    {\"id\": 2, \"lat\": 36.0, \"lon\": 141.0, \"value\": 6.0},\n]\n\ngeometry = [Point(row[\"lon\"], row[\"lat\"]) for row in data]\ngdf = gpd.GeoDataFrame(data, geometry=geometry, crs=\"EPSG:4326\")\n```"
+  },
+  {
+    "reason": "To select earthquakes inside the Africa plate polygon the worker used a point-in-polygon test; the skill prescribes .within() which the worker applied when filtering earthquakes to the plate.",
+    "key_point": "Filter points to those inside a plate polygon using GeoDataFrame.within(target_plate).",
+    "skill_reference": "earthquakes_in_plate = gdf_eq[gdf_eq.within(target_plate)].copy()"
+  },
+  {
+    "reason": "Boundary segments must be combined into a single geometry before distance computation; the worker unioned the Africa boundary segments and used that union for the .distance() call.",
+    "key_point": "Combine boundary segments into a single geometry using .geometry.unary_union before distance calculations.",
+    "skill_reference": "boundary_geom = boundaries_proj.geometry.unary_union"
+  },
+  {
+    "reason": "The worker computed point-to-boundary distances using the GeoPandas distance method and converted meters to kilometers to produce the reported distance_km field and to determine the maximum-distance earthquake.",
+    "key_point": "Compute distances with GeoSeries.distance(unioned_boundary) to get meters, then divide by 1000 to obtain distance_km.",
+    "skill_reference": "gdf_points[\"distance_m\"] = points_proj.geometry.distance(boundary_geom)\ngdf_points[\"distance_km\"] = gdf_points[\"distance_m\"] / 1000.0"
+  },
+  {
+    "reason": "To find the single earthquake furthest from the Africa boundary the worker used an efficient ranking operation; this is how the maximum-distance event was selected.",
+    "key_point": "Use .nlargest(1, \"distance_km\") (then .iloc[0]) to select the furthest point by distance_km.",
+    "skill_reference": "furthest = gdf_points.nlargest(1, \"distance_km\").iloc[0]"
+  },
+  {
+    "reason": "Selecting which boundary segments belong to the Africa plate was necessary; the skill shows filtering by PlateA/PlateB fields which the worker used to isolate Africa-related boundary segments before unioning.",
+    "key_point": "Filter boundary features to those where PlateA or PlateB equals the plate code to get the plate's boundary segments.",
+    "skill_reference": "pacific_bounds = gdf_boundaries[\n    (gdf_boundaries[\"PlateA\"] == \"PA\") | \n    (gdf_boundaries[\"PlateB\"] == \"PA\")\n]"
+  },
+  {
+    "reason": "The worker filtered earthquakes to the plate polygon before projecting to the metric CRS; this performance pattern reduces the data to be projected and is part of the prescribed workflow.",
+    "key_point": "Filter spatially (reduce dataset) before projecting to the metric CRS to minimize expensive projection operations.",
+    "skill_reference": "```python\n# Good: Filter first, then project\nsmall_subset = gdf_large[gdf_large[\"region\"] == \"Pacific\"]\nsmall_projected = small_subset.to_crs(METRIC_CRS)\n```"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker had to produce a seven-character regulated verse with precise line and character counts; this rule determined the poem’s overall structure (8 lines, 7 chars each) and was applied repeatedly while composing and verifying each line.",
+    "key_point": "Seven-character regulated verse must have exactly eight lines and seven Chinese characters per line.",
+    "skill_reference": "For seven-character regulated verse:\n- exactly 8 lines\n- exactly 7 Chinese characters per line"
+  },
+  {
+    "reason": "The worker formatted the output (title then poem) according to the skill’s required output layout and saved the file accordingly.",
+    "key_point": "Poem output must be: line 1 the title, line 2 a blank line, and lines 3–10 the eight body lines.",
+    "skill_reference": "Output format:\n- line 1: title\n- line 2: blank line\n- lines 3-10: the 8 body lines of the poem"
+  },
+  {
+    "reason": "The worker chose and adhered to one canonical tonal form (仄起平收, rhyme-on-line-1) and therefore needed the skill rule that the poem must follow a single canonical form.",
+    "key_point": "The poem must follow one and only one of the canonical forms listed (pick exactly one canonical form to use).",
+    "skill_reference": "The poem must follow one and only one of the basic forms below."
+  },
+  {
+    "reason": "To construct each line the worker used the exact per-line 平/仄 patterns for the chosen canonical form; the specific pattern '仄仄平平仄仄平' was used as the model for several lines.",
+    "key_point": "Canonical forms specify exact per-line 平/仄 sequences (e.g., the seven-character pattern \"仄仄平平仄仄平\" is a valid line pattern to follow).",
+    "skill_reference": "仄仄平平仄仄平"
+  },
+  {
+    "reason": "The worker repeatedly classified characters by tone to fit the required 平/仄 slots; this mapping (which tones count as 平 or 仄) was essential for checking and adjusting wording.",
+    "key_point": "Modern-Mandarin tone-to-category mapping: 1st and 2nd tones = 平; 3rd and 4th tones = 仄; neutral tone does not count.",
+    "skill_reference": "- 1st and 2nd tones = 平\n- 3rd and 4th tones = 仄\n- neutral tone does not count"
+  },
+  {
+    "reason": "The worker selected rhyme by modern Mandarin phonology and ensured the poem’s rhyme-lines shared the same modern final; this rule determined which line endings needed to match.",
+    "key_point": "Rhyme is judged by modern Mandarin finals (not historical rhyme books), and all required rhyme lines must share a common modern Mandarin final.",
+    "skill_reference": "- rhyme is judged by modern Mandarin finals, not historical rhyme books\n\nAll required rhyme lines must share a common modern Mandarin final across their line-ending characters."
+  },
+  {
+    "reason": "Because the worker chose the rhyme-on-line-1 canonical form, they had to know exactly which line numbers must rhyme (used to pick line-ending characters).",
+    "key_point": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8.",
+    "skill_reference": "For forms marked rhyme-on-line-1, the rhyme lines are 1, 2, 4, 6, 8."
+  },
+  {
+    "reason": "The worker validated each line’s meter during drafting and revision; following this explicit checklist step prevented unnoticed 平/仄 mismatches.",
+    "key_point": "During revision, explicitly check every position against the target 平仄 pattern for the chosen form.",
+    "skill_reference": "9. check every position against the target 平仄 pattern"
+  },
+  {
+    "reason": "When selecting rhyme-ending characters, the worker applied these practical constraints (chose stable -ián finals like 年/田/天) to avoid ambiguous or tonally unstable endings.",
+    "key_point": "When choosing rhyme characters, prefer common, stable, unambiguous characters and avoid risky polyphonic or tonally unstable line-ending characters.",
+    "skill_reference": "When choosing rhyme characters:\n- prefer common, stable, unambiguous characters\n- avoid risky polyphonic line endings\n- avoid line-ending characters that are weak, colloquial, or tonally unstable\n- prefer rhyme characters that also contribute to atmosphere and meaning rather than serving as empty placeholders"
+  }
+]

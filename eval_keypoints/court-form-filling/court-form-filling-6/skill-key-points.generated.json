@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker used pypdf to open the SC-100 PDF and inspect its pages before filling fields (they call PdfReader and check page content). Without knowing how to read the PDF and get page objects, the agent could not examine or modify fields.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and access its pages (e.g., to inspect page count and page objects).",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")"
+  },
+  {
+    "reason": "The worker extracted text from pages to verify filled content and to inspect form text/images; this exact method (page.extract_text()) is what the agent used to read page text programmatically.",
+    "key_point": "Extract text from each page by iterating reader.pages and calling page.extract_text().",
+    "skill_reference": "text = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "To create the filled output PDF the worker wrote pages out to a new file. The agent used writer.add_page and writer.write to produce /root/sc100-filled.pdf, so the merge/write pattern is an essential pypdf usage.",
+    "key_point": "Use PdfWriter, add_page(page) for each page to build a PDF, then write the result to a file with writer.write(output).",
+    "skill_reference": "writer = PdfWriter()\nfor pdf_file in [\"doc1.pdf\", \"doc2.pdf\", \"doc3.pdf\"]:\n    reader = PdfReader(pdf_file)\n    for page in reader.pages:\n        writer.add_page(page)\n\nwith open(\"merged.pdf\", \"wb\") as output:\n    writer.write(output)"
+  },
+  {
+    "reason": "The worker explicitly followed the skill's instruction to consult the forms guidance before filling PDF form fields; this direction guided the agent to open forms.md and apply form-filling-specific steps rather than generic PDF edits.",
+    "key_point": "If you need to fill out a PDF form, read forms.md and follow its instructions.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The agent inspected page contents visually/semantically (to map fields such as date range vs single date). The pdfplumber pattern for opening a PDF and calling page.extract_text() is the documented way to get page text/layout the worker used when examining pages.",
+    "key_point": "Open a PDF with pdfplumber and call page.extract_text() for each page to extract text while preserving layout for inspection.",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()\n        print(text)"
+  },
+  {
+    "reason": "The worker converted PDF pages to images to inspect the form visually (they said they converted to images and viewed form images). The guide's pdf2image + pytesseract pattern is the prescribed method to convert pages to images for OCR/visual inspection.",
+    "key_point": "Convert PDF pages to images with convert_from_path(...) and then OCR each image with pytesseract.image_to_string(image) to extract or inspect text from scanned/form images.",
+    "skill_reference": "# Convert PDF to images\nimages = convert_from_path('scanned.pdf')\n\n# OCR each page\ntext = \"\"\nfor i, image in enumerate(images):\n    text += f\"Page {i+1}:\\n\"\n    text += pytesseract.image_to_string(image)\n    text += \"\\n\\n\""
+  },
+  {
+    "reason": "The worker created image outputs from the PDF (they reported converting to images and checking form images). The guide's pdfimages command is a direct command-line way to extract images from a PDF, which the worker could rely on when using Bash commands to inspect form visuals.",
+    "key_point": "Use the pdfimages command-line tool to extract images from a PDF: pdfimages -j input.pdf output_prefix (it extracts images as output_prefix-000.jpg, ...).",
+    "skill_reference": "pdfimages -j input.pdf output_prefix\n\n# This extracts all images as output_prefix-000.jpg, output_prefix-001.jpg, etc."
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Run fuzzy-name-search for Bridgewater Associates in Q2 2025",
+    "why_essential": "To obtain the Q2 accession number for Bridgewater, which is required to compare holdings between Q2 and Q3.",
+    "evidence": "\"ACCESSION_NUMBER: 0001172661-25-003151 ... REPORTCALENDARORQUARTER: 30-JUN-2025 ... FILINGMANAGER_NAME: Bridgewater Associates, LP\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Run fuzzy-name-search for Bridgewater Associates in Q3 2025",
+    "why_essential": "To obtain the Q3 accession number for Bridgewater so holdings in Q3 can be compared to Q2.",
+    "evidence": "\"ACCESSION_NUMBER: 0001172661-25-004777 ... REPORTCALENDARORQUARTER: 30-SEP-2025 ... FILINGMANAGER_NAME: Bridgewater Associates, LP\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Run fuzzy-name-search (stock CUSIP search) for Broadcom",
+    "why_essential": "To obtain Broadcom's CUSIP so we can find managers holding Broadcom and rank them by share value.",
+    "evidence": "\"Search Results: ... Name: broadcom inc  CUSIP: 11135F101\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Locate BlackRock, Inc. accession number by searching COVERPAGE.tsv for 'BlackRock, Inc.' in the Q3 folder",
+    "why_essential": "To get the exact accession_number for BlackRock in Q3 2025 required to retrieve its AUM.",
+    "evidence": "\"grep -i \\\"blackrock, inc\\\" /root/2025-q3/COVERPAGE.tsv ... 0002012383-25-002949 \\t ... \\tBlackRock, Inc.\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Run 13f-analyzer one_fund_analysis for BlackRock Q3 (accession 0002012383-25-002949)",
+    "why_essential": "To extract BlackRock's reported total AUM for Q3 2025.",
+    "evidence": "\"Summary stats for quarter: 2025-q3, accession_number: 0002012383-25-002949 - Total AUM: 5712254484794.00\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run 13f-analyzer one_fund_analysis for Bridgewater Q3 with baseline Q2 (accession 0001172661-25-004777, baseline 0001172661-25-003151)",
+    "why_essential": "To compute changes in holdings from Q2 to Q3 and identify stocks with the largest dollar-value increases.",
+    "evidence": "\"Summary stats for quarter: 2025-q3, accession_number: 0001172661-25-004777 ... Total number of holdings: 1014\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Run a corrected/custom holdings analysis for Broadcom CUSIP 11135F101 in Q3 to get the top-3 fund managers by share value",
+    "why_essential": "The packaged holding_analysis script failed due to a path bug, so a direct/custom analysis is required to obtain the top managers holding Broadcom in Q3.",
+    "evidence": "\"Top-3 fund managers holding Broadcom (CUSIP 11135F101) in 2025-q3: Rank 1: VANGUARD GROUP INC ... Rank 2: BlackR...\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write results to /root/answers.json using the required schema with q1, q2, q3 answers",
+    "why_essential": "To produce the final deliverable file in the specified location and schema containing the answers to the three questions.",
+    "evidence": "\"File created successfully at: /root/answers.json\""
+  }
+]

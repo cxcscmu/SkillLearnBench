@@ -1,0 +1,38 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List files in /root/papers/all to discover the files to categorize",
+    "why_essential": "You must know which files exist and how many there are before you can categorize or move them",
+    "evidence": "\"ls /root/papers/all/ | wc -l && ls /root/papers/all/\" -> \"103\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Extract first-page text from each PDF using pdftotext to determine each paper's subject",
+    "why_essential": "Reading the first page/title of each PDF gives the subject/topic needed to assign the file to the correct subject folder",
+    "evidence": "\"pdftotext -l 1 \\\"$f\\\" - 2>/dev/null | head -20\"\" and output showing titles such as \"Lower ground state ... trapped ion system\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Extract contents of DOCX and PPTX by opening them as zip archives and reading XML to determine their topics",
+    "why_essential": "DOCX/PPTX cannot be parsed by pdftotext; reading their internal XML (via zipfile) reveals titles/slide text needed for correct categorization",
+    "evidence": "\"with zipfile.ZipFile('/root/papers/all/paper_file_1.docx'...)\" -> \"Temporally multiplexed ion-photon quantum interface\"; \"DAMOP PRESENTATION - ALL SLIDE TITLES\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create the five target folders: LLM, trapped_ion_and_qc, black_hole, DNA, music_history",
+    "why_essential": "Folders must exist as destinations before files can be moved into the appropriate subject directories",
+    "evidence": "\"mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Move each file into its determined subject folder using mv",
+    "why_essential": "Physically relocating files into the subject folders is the required state change that completes the organization task",
+    "evidence": "\"mv 2306.08568v2.pdf 2308.16149v2.pdf ...\" and multiple subsequent mv commands with no output (completed)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Verify the organization by counting files in each subject folder",
+    "why_essential": "A final verification ensures all files were moved and no files remain unassigned",
+    "evidence": "\"for dir in LLM trapped_ion_and_qc black_hole DNA music_history; do count=$(ls /root/papers/$dir/ | wc -l); ...\" -> \"LLM: 20 files ...\" and totals summing to all files"
+  }
+]

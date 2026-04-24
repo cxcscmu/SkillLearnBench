@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker explicitly chose pdfplumber to programmatically open the calendar PDF and extract text from pages; without the ability to open the PDF and read page text the worker could not locate time labels or other textual cues on the calendar.",
+    "key_point": "Open a PDF with pdfplumber and extract text by iterating page objects (i.e., use pdfplumber.open(...) and page.extract_text()).",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()"
+  },
+  {
+    "reason": "The worker relied on general PDF-reading code to access pages and extract text when planning the analysis; the pypdf example shows the basic pattern for reading a PDF and concatenating page text, which the worker could use as an alternative or to get page counts.",
+    "key_point": "Use pypdf's PdfReader to read a PDF, inspect number of pages, and extract text from each page by calling page.extract_text().",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "To find structured elements (like labeled timeline axes or table-like time grids) the worker needed the ability to extract tables if present; the pdfplumber table-extraction example is the direct instruction for that capability.",
+    "key_point": "Extract tables from a PDF page with pdfplumber by calling page.extract_tables() and iterate returned tables to access rows and cells.",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for i, page in enumerate(pdf.pages):\n        tables = page.extract_tables()\n        for j, table in enumerate(tables):\n            print(f\"Table {j+1} on page {i+1}:\")\n            for row in table:\n                print(row)"
+  },
+  {
+    "reason": "The worker needed a method to preserve page layout when extracting text so that spatial relationships (e.g., left-side timeline labels used to map vertical positions) could be inferred; the pdftotext '-layout' flag is the skill's explicit command showing how to extract text while preserving layout.",
+    "key_point": "Use pdftotext with the -layout option to extract text from a PDF while preserving layout (useful for mapping visual positions to textual timeline labels).",
+    "skill_reference": "pdftotext -layout input.pdf output.txt"
+  },
+  {
+    "reason": "To analyze colored blocks the worker required a way to extract images from the PDF; the skill shows the pdfimages command that extracts embedded images, which can be inspected to determine block colors when visual PDF parsing is needed.",
+    "key_point": "Extract embedded images from a PDF with pdfimages (e.g., pdfimages -j input.pdf output_prefix) so you can analyze image content such as colored blocks.",
+    "skill_reference": "pdfimages -j input.pdf output_prefix"
+  },
+  {
+    "reason": "The skill provides a clear pattern for combining multiple table extractions into a single dataframe for later spatial/semantic analysis; the worker could rely on this pattern if time labels or structured data appeared as tables and needed aggregation.",
+    "key_point": "When extracting multiple tables, convert each table to a pandas DataFrame and concatenate them (combine all page tables into one DataFrame) for downstream analysis.",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    all_tables = []\n    for page in pdf.pages:\n        tables = page.extract_tables()\n        for table in tables:\n            if table:  # Check if table is not empty\n                df = pd.DataFrame(table[1:], columns=table[0])\n                all_tables.append(df)\n\n# Combine all tables\nif all_tables:\n    combined_df = pd.concat(all_tables, ignore_index=True)\n    combined_df.to_excel(\"extracted_tables.xlsx\", index=False)"
+  }
+]

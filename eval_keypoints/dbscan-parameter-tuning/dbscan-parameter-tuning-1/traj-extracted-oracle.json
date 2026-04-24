@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read /root/data/citsci_train.csv into the environment",
+    "why_essential": "The citizen science annotations are the input points DBSCAN will cluster; the script must load them to run clustering and evaluation.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/citsci_train.csv\"}"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Read /root/data/expert_train.csv into the environment",
+    "why_essential": "Expert annotations are the ground truth used to compute F1 and average delta for each image; they are required for evaluation and averaging across images.",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/expert_train.csv\"}"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Enable parallel-processing capability (launch parallel-processing skill)",
+    "why_essential": "Parallelization speeds up the grid search over the large hyperparameter space and was used to evaluate combinations concurrently.",
+    "evidence": "Skill status=success input={\"skill\": \"parallel-processing\"}"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Enable pareto-optimization capability (launch pareto-optimization skill)",
+    "why_essential": "Pareto-analysis is required to identify Pareto-optimal hyperparameter combinations balancing F1 and delta after filtering results.",
+    "evidence": "Skill status=success input={\"skill\": \"pareto-optimization\"}"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Enable custom-distance-metrics capability (launch custom-distance-metrics skill)",
+    "why_essential": "DBSCAN must use a custom distance metric parameterized by shape_weight (w); this skill provides the needed custom metric implementation.",
+    "evidence": "Skill status=success input={\"skill\": \"custom-distance-metrics\"}"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write the optimization script to /root/optimize_dbscan.py implementing the grid search, custom DBSCAN metric, per-image evaluation, filtering (F1>0.5) and Pareto identification",
+    "why_essential": "A script is required to systematically run DBSCAN across the specified hyperparameter grid, compute per-image and aggregated metrics, filter results, and produce the final Pareto frontier CSV.",
+    "evidence": "Write status=success input={\"file_path\": \"/root/optimize_dbscan.py\", \"content\": \"...\"}"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Execute the optimization script (python optimize_dbscan.py)",
+    "why_essential": "Running the script performs the grid search, evaluates combinations, applies the F1>0.5 filter, and computes the Pareto frontier, producing the required output file.",
+    "evidence": "Bash status=success input={\"command\": \"python optimize_dbscan.py 2>&1\"}"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Save Pareto-optimal results to /root/pareto_frontier.csv",
+    "why_essential": "The task requires the Pareto frontier to be written to /root/pareto_frontier.csv in the specified CSV format for downstream use.",
+    "evidence": "The grid search completed ... \"565 passed the F1 > 0.5 threshold - 18 Pareto-optimal points found\""
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker wrote Excel formulas (INDEX/MATCH, ROUND, SUMPRODUCT) instead of hardcoding numeric results; this rule justified creating formulas in the spreadsheet rather than computing values in Python and writing constants into cells.",
+    "key_point": "Do calculations in-sheet using Excel formulas rather than computing values in Python and hardcoding results.",
+    "skill_reference": "Always use Excel formulas instead of calculating values in Python and hardcoding them."
+  },
+  {
+    "reason": "After writing formulas with openpyxl the workbook contains formula strings but no evaluated values; the worker relied on the prescribed recalc step to get evaluated values and verify zero errors.",
+    "key_point": "Recalculate workbook formulas after edits using the provided recalc script so formula results are evaluated and errors are detected.",
+    "skill_reference": "Use the provided `recalc.py` script to recalculate formulas:"
+  },
+  {
+    "reason": "The worker ran the recalc tool to ensure formulas had been evaluated and the file reported zero errors; the exact command pattern is the required invocation to run the recalculation.",
+    "key_point": "Invoke the recalc script with: python recalc.py <excel_file> [timeout_seconds].",
+    "skill_reference": "python recalc.py <excel_file> [timeout_seconds]"
+  },
+  {
+    "reason": "The task required zero formula errors and the worker checked that all formulas returned no Excel error codes; this requirement drove careful reference validation and use of ROUND and proper denominators.",
+    "key_point": "Deliver the Excel model with zero formula errors (no #REF!, #DIV/0!, #VALUE!, #N/A, or #NAME?).",
+    "skill_reference": "Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)"
+  },
+  {
+    "reason": "To build dynamic formulas (e.g., INDEX/MATCH, SUMPRODUCT) the worker used cell references rather than embedding constants; the skill's rule underlies that construction.",
+    "key_point": "Always use cell references in formulas instead of hardcoding numeric values inside formulas.",
+    "skill_reference": "Use cell references instead of hardcoded values in formulas"
+  },
+  {
+    "reason": "The task required all percentage results rounded to one decimal; the skill's number-formatting rule (one-decimal percent) is the formatting target the worker enforced via ROUND and multiplying by 100.",
+    "key_point": "Format percentages to one decimal (0.0%) — ensure percentage results use a single decimal place.",
+    "skill_reference": "Percentages: Default to 0.0% format (one decimal)"
+  },
+  {
+    "reason": "The worker validated formulas by checking specific sample cells (UAE 2019 etc.) before filling all ranges; the skill testing strategy recommended testing a few references first to avoid propagation of errors.",
+    "key_point": "Start small: test formulas on 2–3 sample cells before applying them across the full range.",
+    "skill_reference": "Start small: Test formulas on 2-3 cells before applying broadly"
+  },
+  {
+    "reason": "When editing workbooks via openpyxl the worker needed to avoid losing formulas by using the correct load/save options and then running recalc; the skill warns that reading with data_only=True can replace formulas with values.",
+    "key_point": "Be careful when reading/saving with openpyxl: opening with data_only=True and saving can replace formulas with values (losing formulas).",
+    "skill_reference": "Warning: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost"
+  },
+  {
+    "reason": "To prevent mistakes when building formulas across many rows/columns the worker performed reference checks; the skill's checklist item (verify references) is the explicit verification step used to avoid off-by-one and wrong-range errors.",
+    "key_point": "Verify all cell references are correct to avoid off-by-one and wrong-range formula errors.",
+    "skill_reference": "Verify all cell references are correct"
+  }
+]

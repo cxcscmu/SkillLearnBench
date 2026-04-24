@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch PDF skill to handle the SC-100 form",
+    "why_essential": "A PDF-processing skill is required to inspect and fill the provided SC-100 PDF file programmatically.",
+    "evidence": "\"Launching skill: pdf\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Check whether /root/sc100-blank.pdf has fillable form fields",
+    "why_essential": "Determines whether the PDF is a fillable form (so it can be populated directly) or must be handled differently.",
+    "evidence": "\"This PDF has fillable form fields\""
+  },
+  {
+    "step_index": 3,
+    "core_step": "Extract the PDF form field information to /root/sc100_field_info.json",
+    "why_essential": "Provides a mapping of field IDs and properties needed to know which fields to populate with case data.",
+    "evidence": "\"Wrote 103 fields to /root/sc100_field_info.json\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Convert the PDF to page images (save to /root/sc100_images) for visual analysis",
+    "why_essential": "Inspecting rendered pages helps identify the purpose and placement of form fields (checkboxes, date fields, etc.) before filling.",
+    "evidence": "\"Saved page 1 as /root/sc100_images/page_1.png... Saved page 2... page_3...\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Create a field_values.json file with the case-specific values to fill into the form",
+    "why_essential": "Specifies exact values (plaintiff/defendant names, addresses, phone, dates, claim amount) mapped to form field IDs for accurate filling.",
+    "evidence": "\"File created successfully at: /root/field_values.json\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Run the fill script to populate /root/sc100-blank.pdf with /root/field_values.json and output /root/sc100-filled.pdf",
+    "why_essential": "Performs the actual form-population operation that produces the completed SC-100 PDF.",
+    "evidence": "ran fill script: \"python3 scripts/fill_fillable_fields.py /root/sc100-blank.pdf /root/field_values.json /root/sc100-filled.pdf\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Verify the output file /root/sc100-filled.pdf exists and inspect converted filled-page images",
+    "why_essential": "Confirms the filled PDF was created successfully and visually checks that key fields were filled correctly.",
+    "evidence": "\"ls -lh /root/sc100-filled.pdf\" returned file and \"Saved page 1 as /root/sc100_filled_images/page_1.png...\""
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "reason": "The worker needed to know that Jackson performs all interpretation and potential hostile behavior during readValue(), so attacks can execute during deserialization (before any later validation). This fact justified validating the raw JSON before letting Jackson parse it.",
+    "key_point": "Jackson's deserialization (readValue) is where JSON structure, special keys, and type resolution are interpreted and can execute attack-time behavior, so the attack surface exists during deserialization rather than after.",
+    "skill_reference": "Jackson transforms JSON text into Java objects during a single `readValue()` call. This transformation is **not** a simple data copy—Jackson interprets JSON structure, resolves types, handles special keys, and instantiates objects all within this operation."
+  },
+  {
+    "reason": "The worker relied on this rule to reject any approach that validated only the resulting Java object; it directly motivated implementing pre-deserialization checks in SamplerResource.",
+    "key_point": "Validating the deserialized Java object is insufficient because malicious behavior can already have run during Jackson's parsing step.",
+    "skill_reference": "Validation at step 4 examines the **result** of deserialization, not the **process**. Any malicious behavior triggered during step 2 has already executed."
+  },
+  {
+    "reason": "The worker used the fact that empty-string keys are valid JSON and can appear in payloads to detect the exploit vector and craft a validator that rejects such keys.",
+    "key_point": "JSON allows empty-string object keys (for example",
+    "\"": "injected value\"}), so attackers can embed an empty key in a request payload.",
+    "skill_reference": "JSON permits empty strings as object keys:\n\n    {\n      \"name\": \"legitimate\""
+  },
+  {
+    "reason": "The worker needed the specific mechanism by which empty keys can influence deserialization (i.e., interacting with special deserialization behaviors), which justified rejecting empty keys to prevent unexpected overrides like injected configs.",
+    "key_point": "Empty keys can interact with Jackson/custom deserializers or @JsonAnySetter to cause property overrides or special handling during deserialization.",
+    "skill_reference": "- **Property override**: Empty keys may interact unexpectedly with `@JsonAnySetter` or custom deserializers"
+  },
+  {
+    "reason": "This visibility limitation explained why post-deserialization checks cannot determine whether an empty key was present, so pre-deserialization scanning was required; the worker used this to justify parsing the raw body into a JsonNode first.",
+    "key_point": "After Jackson deserializes JSON, there is no standard way to detect that an empty-string key was present in the original JSON, so post-deserialization inspection cannot reliably find this attack.",
+    "skill_reference": "After deserialization",
+    "present": "n\n    // Original JSON: {\\\"name\\\": \\\"test\\\"",
+    "\\\"": "malicious\\\"}\n    MyObject obj = mapper.readValue(json, MyObject.class);\n    // obj.getName() returns \\\"test\\\"\n    // Where did \\\"\\\" go? Depends on configuration. You cannot tell from obj.\""
+  },
+  {
+    "reason": "This specific mitigation instruction was applied by the worker: they implemented pre-deserialization validation at the sampler endpoint to reject JSON containing empty keys.",
+    "key_point": "Mitigate the empty-key exploit by adding a pre-deserialization validation step at the sampler entry point that inspects the raw JSON and rejects payloads containing empty-string keys.",
+    "skill_reference": "To robustly mitigate this issue, a pre-deserialization validation step should be introduced at the sampler entry point to intercept and reject malicious raw JSON payloads.\""
+  }
+]

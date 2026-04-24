@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Reading the employee data is required to populate template placeholders.",
+    "key_point": "Read the employee data file before filling placeholders.",
+    "trajectory_reference": "tool_use[1]: tool=Read; status=success; input_keys=file_path; output_keys=text"
+  },
+  {
+    "reason": "Locate template files in the workspace so the script can open the correct docx template.",
+    "key_point": "Search the filesystem (glob/search) to find the Word template file.",
+    "trajectory_reference": "tool_use[1]: tool=Glob; status=success; input_keys=path,pattern; output_keys=text"
+  },
+  {
+    "reason": "Load the specialized docx document manipulation capability to handle Word-specific issues.",
+    "key_point": "Load the docx manipulation skill before attempting template replacements.",
+    "trajectory_reference": "tool_use[1]: tool=Skill; status=success; input_keys=skill; output_keys=text"
+  },
+  {
+    "reason": "Create a script to perform the robust placeholder replacement and execute it to generate the filled document.",
+    "key_point": "Write a Python script that performs paragraph-level replacements and run it to fill the template.",
+    "trajectory_reference": "tool_use[1]: tool=Write; status=success; input_keys=content,file_path; output_keys=text"
+  },
+  {
+    "reason": "Execution of the script is necessary to produce the finalized offer letter file.",
+    "key_point": "Execute the filling script (bash) to process the template and produce output.",
+    "trajectory_reference": "tool_use[1]: tool=Bash; status=success; input_keys=command; output_keys=text"
+  },
+  {
+    "reason": "Verification ensures placeholders and special sections were handled correctly after generation.",
+    "key_point": "Verify the generated document by reading or inspecting its text to confirm correct replacements.",
+    "trajectory_reference": "content: Let me verify the output looks correct by reading the document text:"
+  },
+  {
+    "reason": "Split placeholders across runs are a common failure mode; handling them prevents missed replacements.",
+    "key_point": "Perform paragraph-level replacement that reconstructs paragraph text and replaces placeholders to handle split runs.",
+    "trajectory_reference": "User content: 'Correct Approach: Paragraph-Level Search and Rebuild' and code showing rebuilding paragraph runs"
+  },
+  {
+    "reason": "Headers, footers, and nested tables often contain placeholders that must be processed as well.",
+    "key_point": "Process headers, footers, tables and nested tables (recursing into cell.tables) when replacing placeholders.",
+    "trajectory_reference": "User content: 'Process tables (including nested)' and 'Headers and Footers' code and descriptions"
+  },
+  {
+    "reason": "Conditional relocation content must be included or excluded per the employee data, and markers removed when included.",
+    "key_point": "Handle conditional sections: if RELOCATION_PACKAGE is Yes, keep the content between {{IF_RELOCATION}} and {{END_IF_RELOCATION}} and remove the markers.",
+    "trajectory_reference": "content: 'Conditional relocation section kept — since RELOCATION_PACKAGE is \"Yes\", the content between {{IF_RELOCATION}} and {{END_IF_RELOCATION}} was preserved with both markers removed.'"
+  },
+  {
+    "reason": "The final output path is necessary to locate the completed offer letter.",
+    "key_point": "Save the filled offer letter to /root/offer_letter_filled.docx.",
+    "trajectory_reference": "content: 'The offer letter has been filled and saved to `/root/offer_letter_filled.docx`.'"
+  }
+]

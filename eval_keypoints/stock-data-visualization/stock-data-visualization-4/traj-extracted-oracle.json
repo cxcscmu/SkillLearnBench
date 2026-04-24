@@ -1,0 +1,62 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Read /root/data/stock-descriptions.csv to inspect dataset schema and size",
+    "why_essential": "Understanding the columns, number of rows, and which entries are ETFs vs stocks is required to build the bubble chart and table correctly",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/stock-descriptions.csv\"} ... \"Total rows: 50\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Read an individual stock CSV (e.g., /root/data/indiv-stock/AAPL.csv) to inspect price-history format",
+    "why_essential": "Confirming the per-stock CSV structure is necessary to ensure the web app can load individual price histories if needed and to validate data copying",
+    "evidence": "Read status=success input={\"file_path\": \"/root/data/indiv-stock/AAPL.csv\"}"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Run quick shell checks (head and wc) on stock-descriptions.csv to view header and confirm row count",
+    "why_essential": "A concise head/wc check verifies the header columns and total row count to guide parsing and UI column definitions",
+    "evidence": "Bash status=success input={\"command\": \"head -5 /root/data/stock-descriptions.csv && echo \\\"---\\\" && wc -l /root/data/stock-descriptions.csv\"} ... \",ticker,sector,full name,marketCap,...\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create output directory structure (/root/output/js, /root/output/css, /root/output/data/indiv-stock)",
+    "why_essential": "The web app and its assets must be placed in an organized output directory so the index.html and referenced JS/CSS/data files resolve in the browser",
+    "evidence": "Bash status=success input={\"command\": \"mkdir -p /root/output/js /root/output/css /root/output/data/indiv-stock && echo \\\"Directories created\\\"\"} ... \"Directories created\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Download D3.js v6 (d3.v6.min.js) into /root/output/js/",
+    "why_essential": "D3 v6 is the required library for rendering the bubble chart and force simulation in the single-page web app",
+    "evidence": "Bash status=success input={\"command\": \"curl -sL \\\"https://cdn.jsdelivr.net/npm/d3@6.7.0/dist/d3.min.js\\\" -o /root/output/js/d3.v6.min.js && wc -c /root/output/js/d3.v6.min.js\"} ... \"270687 /root/output/js/d3.v6.min.js\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Copy provided data files into /root/output/data/ (stock-descriptions.csv and indiv-stock/*.csv)",
+    "why_essential": "The web app must read the input CSVs from the /root/output/data/ path at runtime in the browser, so the original CSVs need to be copied into the output data folder",
+    "evidence": "Bash status=success input={\"command\": \"cp /root/data/stock-descriptions.csv /root/output/data/ && cp /root/data/indiv-stock/*.csv /root/output/data/indiv-stock/ && echo \\\"Copied...\\\"\"} ... \"Copied 58 stock files\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Write stylesheet to /root/output/css/style.css",
+    "why_essential": "CSS is required to style the layout, ensure side-by-side charts, legend div, and untruncated text display as specified",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/css/style.css\", \"content\": \"...\"} ... \"File created successfully at: /root/output/css/style.css\""
+  },
+  {
+    "step_index": 8,
+    "core_step": "Write D3 visualization script to /root/output/js/visualization.js",
+    "why_essential": "The visualization.js implements the bubble chart, force simulation, legend div, table, and the click/highlight interactivity required by the task",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/js/visualization.js\", \"content\": \"...\"} ... \"File created successfully at: /root/output/js/visualization.js\""
+  },
+  {
+    "step_index": 9,
+    "core_step": "Write single-page web app entry at /root/output/index.html referencing d3.v6.min.js, visualization.js, style.css, and data/",
+    "why_essential": "index.html is the entry point that ties together assets and exposes the single-page web app so it can be opened in a browser",
+    "evidence": "Write status=success input={\"file_path\": \"/root/output/index.html\", \"content\": \"...\"} ... \"File created successfully at: /root/output/index.html\""
+  },
+  {
+    "step_index": 10,
+    "core_step": "Verify output file structure and file sizes to ensure all required assets and copied data are present",
+    "why_essential": "A final verification ensures the D3 bundle, JS, CSS, and data files exist and are in expected locations so the app will run in the browser",
+    "evidence": "Bash status=success input={\"command\": \"find /root/output -type f | sort && echo \\\"---\\\" && echo \\\"D3 bundle size: $(wc -c < /root/output/js/d3.v6.min.js) bytes\\\" && echo \\\"viz.js lines: $(wc -l < /root/o...\"} ... \"/root/output/css/style.css\\n/root/output/data/indiv-stock/AAPL.csv\\n...\""
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "reason": "The worker invoked this skill because the task explicitly asked for reviewers, authors, competitor insights and demo URLs across docs/threads/meetings; this sentence justifies choosing the artifact-review-search skill at the start of the trajectory.",
+    "key_point": "Invoke artifact-review-search when the question asks for key reviewers, approvers, feedback contributors, authors, product reports, competitor insights, or demo URLs across documents, Slack, meetings, PRs, and linked URLs.",
+    "skill_reference": "Use this skill when a question asks for **key reviewers**, approvers, feedback contributors, authors, product reports, competitor insights, or demo URLs across docs, Slack threads, meeting transcripts, PRs, and linked URLs."
+  },
+  {
+    "reason": "The worker explicitly avoided treating meeting attendees as reviewers and instead searched for explicit reviewer fields and substantive feedback in transcripts/slack; this rule was the basis for excluding mere participants.",
+    "key_point": "Do not treat meeting participants as key reviewers unless they appear in explicit reviewer fields or provide substantive feedback in transcript turns, document comments, or Slack replies.",
+    "skill_reference": "Never treat meeting participants as key reviewers unless they appear in explicit reviewer fields or provide substantive feedback in transcript turns, document comments, or Slack replies."
+  },
+  {
+    "reason": "The agent applied the skill's grounding gate before accepting a candidate report (they debated CoFoAIX vs CoachForce and required grounding signals); this is the core validity condition they used.",
+    "key_point": "Require a candidate report to pass at least two independent product-grounding signals before accepting it as about the target product.",
+    "skill_reference": "A candidate report is **VALID** only if it passes **at least 2 independent grounding signals**:"
+  },
+  {
+    "reason": "The worker searched the products file (CoachForce.json) and looked for product-scoped containers as part of grounding; this describes one grounding signal they applied.",
+    "key_point": "Treat being located inside the product artifact container (e.g., products/CoachForce.json and associated planning channels/meetings) as a grounding signal.",
+    "skill_reference": "Located under the correct product artifact container (e.g., inside `products/CoachForce.json` *and* associated with that product’s planning channels/meetings)."
+  },
+  {
+    "reason": "The agent found many CoFoAIX docs inside CoachForce.json and explicitly considered them distractors; this reject rule explains discarding cross-product artifacts named for another product.",
+    "key_point": "If a report repeatedly names a different product (e.g., “CoFoAIX”) and lacks target-product grounding, mark it as a DISTRACTOR and discard it even if it appears nearby.",
+    "skill_reference": "If the report content repeatedly names a different product (e.g., “CoFoAIX”) and lacks CoachForce grounding → mark as DISTRACTOR and discard, even if it is found in the same file or near similar wording."
+  },
+  {
+    "reason": "When multiple candidate reports were found, the worker selected the latest/final one; this precedence rule guided that selection.",
+    "key_point": "When multiple valid report versions exist, prefer an explicit “latest” marker (id/title/link contains \"latest\" or most recent date) before other heuristics.",
+    "skill_reference": "1) Explicit “latest” marker (id/title/link contains `latest`, or most recent date field)"
+  },
+  {
+    "reason": "The agent extracted the author from document metadata first (they reported author eid_890654c4 from the doc fields); this priority list governed that extraction.",
+    "key_point": "Extract authors using document metadata first, checking fields such as author, authors, created_by, or owner.",
+    "skill_reference": "Extract authors in this priority order:\n1) Document fields: `author`, `authors`, `created_by`, `owner`"
+  },
+  {
+    "reason": "The worker followed the instruction to treat reviewers as evidence-based contributors (they gathered Slack comments and meeting-transcript turns rather than counting attendees), so this rule determined who to include as key reviewers.",
+    "key_point": "Only treat people who provided attributable substantive evidence as key reviewers — reviewers must be evidence-based contributors, not just attendees.",
+    "skill_reference": "Key reviewers must be **evidence-based contributors**, not simply attendees."
+  },
+  {
+    "reason": "The agent prioritized explicit reviewer fields where available (they looked for reviewer fields and Slack thread metadata); this tier-1 guidance was used in extraction.",
+    "key_point": "Prefer explicit reviewer fields in documents/PRs (reviewers, key_reviewers, approvers, requested_reviewers) as primary evidence of key reviewers.",
+    "skill_reference": "Document fields: `reviewers`, `key_reviewers`, `approvers`, `requested_reviewers`"
+  },
+  {
+    "reason": "Because the worker inspected meeting transcripts and pulled speaker turns as evidence (mapping names to IDs and citing substantive suggestions), this guideline justified using transcript turns as reviewer evidence.",
+    "key_point": "Use meeting-transcript turns that contain concrete suggestions/edits (attributable to a speaker) as evidence for including them as reviewers.",
+    "skill_reference": "Meeting transcripts where turns are attributable to people AND those people provide concrete suggestions/edits"
+  },
+  {
+    "reason": "The worker excluded simple acknowledgements and did not count the author as a reviewer unless required; this exclude list was applied when deciding reviewer membership.",
+    "key_point": "Exclude the author (unless requested) and exclude pure acknowledgements or non-actionable comments when identifying key reviewers.",
+    "skill_reference": "Exclude:\n  - the author (unless question explicitly wants them included as reviewer too)\n  - pure acknowledgements (“looks good”, “thanks”)"
+  },
+  {
+    "reason": "Before finalizing, the agent ensured all outputs were normalized as eid_* and checked employee directory mappings; this validation rule was followed when listing IDs.",
+    "key_point": "Require outputs to be valid employee IDs (pattern eid_...) and verify them against the employee directory when available.",
+    "skill_reference": "All outputs must be valid employee IDs (pattern `eid_...`) and exist in the employee directory if provided."
+  },
+  {
+    "reason": "The worker produced a structured JSON output and referenced the required fields (target_product, report_doc_id, author_employee_ids, key_reviewer_employee_ids); the output template governed the final answer format.",
+    "key_point": "Produce the final answer as a JSON object with fields target_product, report_doc_id, author_employee_ids, key_reviewer_employee_ids, and all_employee_ids_union.",
+    "skill_reference": "{\n  \"target_product\": \"<ProductName>\",\n  \"report_doc_id\": \"<doc_id>\",\n  \"author_employee_ids\": [\"eid_...\"],\n  \"key_reviewer_employee_ids\": [\"eid_...\"],\n  \"all_employee_ids_union\": [\"eid_...\"]\n}"
+  },
+  {
+    "reason": "The worker attached evidence pointers (doc ids, meeting ids, snippets) to justify mappings — the skill required an evidence map and snippet for each extracted ID, which the agent followed.",
+    "key_point": "For each extracted ID, include artifact pointers (doc_id/meeting_id/slack_message_id/pr_id) plus a short supporting snippet that directly justifies the mapping.",
+    "skill_reference": "For each extracted ID, include:\n- artifact type + artifact id (doc_id / meeting_id / slack_message_id / pr_id)\n- a short snippet that directly supports the mapping"
+  }
+]

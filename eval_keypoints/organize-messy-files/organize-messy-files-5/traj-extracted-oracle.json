@@ -1,0 +1,50 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List files in the working directory to discover the dataset",
+    "why_essential": "You must know which files exist so you can plan classification and ensure none are missed",
+    "evidence": "Let me start by listing all the files in the working directory... ls /root/papers/all/ | wc -l && ls /root/papers/all/"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Extract text (titles/first lines) from each PDF using pdftotext to read content for classification",
+    "why_essential": "Classifying documents by subject requires reading their contents; extracting titles/abstracts is an efficient way to determine subject",
+    "evidence": "pdftotext /root/papers/all/0704.0117v1.pdf - ... Lower ground state due to counter-rotating wave interaction in trapped ion system"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Inspect extracted text file summarizing each PDF to determine subject labels",
+    "why_essential": "Reviewing the extracted snippets lets you assign each file to one of the five subject folders accurately",
+    "evidence": "I have a list of 103 files... saved to /tmp/pdf_titles.txt and references like 'Phylogenetic reconstruction... electronic music' and 'Lower ground state... trapped ion system'"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Inspect PPTX and DOCX files' content (using python-pptx and python-docx) to determine their subject",
+    "why_essential": "Non-PDF files must also be classified and moved; reading their content identifies which subject folder they belong in",
+    "evidence": "from pptx import Presentation ... 'Temporally multiplexed ion-photon quantum interface' and docx Document showing 'Temporally multiplexed ion-photon quantum interface via fast ion-chain transport'"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Create the five subject folders: LLM, trapped_ion_and_qc, black_hole, DNA, music_history",
+    "why_essential": "Target folders must exist before moving files into the correct organized locations",
+    "evidence": "mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Move each file into its assigned subject folder according to the determined classification",
+    "why_essential": "Physically relocating files into the correct folders completes the organization task so each file is in exactly one subject folder",
+    "evidence": "mv 0704.0117v1.pdf ... (many mv commands completed with no output)"
+  },
+  {
+    "step_index": 7,
+    "core_step": "Verify folder counts and that no files remain in the source directory",
+    "why_essential": "A final check ensures all files were moved and that the five folders contain the expected number of files with none left behind",
+    "evidence": "echo '=== LLM ===' && ls /root/papers/LLM/ | wc -l ... === remaining in all/ === 0"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Summarize the organization result listing folder names and counts",
+    "why_essential": "Providing a concise summary confirms successful completion and documents how many files are in each subject folder",
+    "evidence": "All 103 files have been organized. Here's the summary: | Folder | Files | Count | ... 'LLM' 20, 'trapped_ion_and_qc' 23, 'black_hole' 20, 'DNA' 20, 'music_history' 20\""
+  }
+]

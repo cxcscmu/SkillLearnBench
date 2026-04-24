@@ -1,0 +1,27 @@
+[
+  {
+    "reason": "The worker needed a concrete way to open and inspect the PDF pages and extract any text or field information; the agent used pypdf's PdfReader to read the PDF and iterate pages to inspect content and fields.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and iterate over reader.pages to extract text or inspect page content.",
+    "skill_reference": "from pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "After modifying or assembling pages/fields, the worker had to write out the filled PDF; the agent relied on PdfWriter and writer.write(output) to produce the output file (/root/sc100-filled.pdf).",
+    "key_point": "Use pypdf's PdfWriter (writer.add_page(page)) and writer.write(output) to create and save a new PDF file.",
+    "skill_reference": "from pypdf import PdfWriter, PdfReader\n\nwriter = PdfWriter()\nfor pdf_file in [\"doc1.pdf\", \"doc2.pdf\", \"doc3.pdf\"]:\n    reader = PdfReader(pdf_file)\n    for page in reader.pages:\n        writer.add_page(page)\n\nwith open(\"merged.pdf\", \"wb\") as output:\n    writer.write(output)"
+  },
+  {
+    "reason": "Filling form fields is a specialized operation; the worker followed the skill's explicit instruction to consult the forms.md guide for PDF form-filling procedures, which guided extracting fields, creating field_values.json, and running the fill script.",
+    "key_point": "If you need to fill out a PDF form, follow the dedicated forms.md instructions in the skill package.",
+    "skill_reference": "If you need to fill out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "The worker converted PDF pages to images to visually inspect field purposes and (if needed) OCR content; the skill shows how to convert PDF pages to images with pdf2image.convert_from_path and then OCR with pytesseract.",
+    "key_point": "Convert PDF pages to images using pdf2image.convert_from_path and (optionally) run pytesseract.image_to_string on each image for OCR.",
+    "skill_reference": "import pytesseract\nfrom pdf2image import convert_from_path\n\n# Convert PDF to images\nimages = convert_from_path('scanned.pdf')\n\n# OCR each page\ntext = \"\"\nfor i, image in enumerate(images):\n    text += f\"Page {i+1}:\\n\"\n    text += pytesseract.image_to_string(image)\n    text += \"\\n\\n\"\n\nprint(text)"
+  },
+  {
+    "reason": "The skill explicitly identifies the recommended libraries for filling PDF forms (the worker used that guidance to choose form-filling tools and scripts), pointing to pdf-lib or pypdf and referencing forms.md.",
+    "key_point": "Preferred tools for filling PDF forms are pdf-lib or pypdf; see the skill's forms.md for the exact form-filling workflow.",
+    "skill_reference": "Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md"
+  }
+]

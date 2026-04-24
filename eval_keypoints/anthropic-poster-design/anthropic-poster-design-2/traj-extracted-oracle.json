@@ -1,0 +1,38 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Invoke the brand-guidelines skill to fetch Anthropic brand tokens",
+    "why_essential": "The artifact must use Anthropic's official colors and typography, so retrieving authoritative brand tokens is required before design work.",
+    "evidence": "Launching skill: brand-guidelines"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Select and map the required brand tokens (background, corporate dark, primary accent, heading font)",
+    "why_essential": "The design requirements mandate specific color and typography usage (e.g., Corporate Dark for main title and Primary Accent for highlights); mapping establishes the exact HEX values and font to apply.",
+    "evidence": "Let me map the requirements to the brand tokens: 1. Anthropic Identity Light (background): `#faf9f5` 2. Anthropic Corporate Dark (primary wordmark/symbol): `#141413`"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Install or make the Poppins heading font available on the system",
+    "why_essential": "The heading font must be an on-brand heading (Poppins per guidelines); the font must be present so the generation script can render the typographic heading correctly.",
+    "evidence": "Saved 160316 bytes to /usr/share/fonts/truetype/poppins/Poppins-Regular.ttf"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Create the image-generation script (/root/generate_helio.py) implementing the minimalist layout, colors, typography, and product silhouette",
+    "why_essential": "A deterministic script encodes the exact design decisions and produces the final branded artifact programmatically; this is the action that composes the image from the chosen tokens and font.",
+    "evidence": "File created successfully at: /root/generate_helio.py"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Run the generation script to produce /root/anthropic_branded_artifact.png",
+    "why_essential": "Executing the script creates the final product announcement image file required by the task.",
+    "evidence": "Saved → /root/anthropic_branded_artifact.png (1400×900px)"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Write /root/design_parameters.json with the applied HEX colors and heading font name",
+    "why_essential": "The task explicitly requires a JSON file that documents the exact color HEX values and heading font used in the artifact for reproducibility and verification.",
+    "evidence": "File created successfully at: /root/design_parameters.json"
+  }
+]

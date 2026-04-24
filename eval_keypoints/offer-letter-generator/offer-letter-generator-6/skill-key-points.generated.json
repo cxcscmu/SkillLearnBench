@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker needed to know why run-level replacement can fail so they would choose paragraph-level replacement; this justification directly motivated using the paragraph-based algorithms in the trajectory.",
+    "key_point": "Word can split a placeholder across multiple runs (so run-level search may miss it).",
+    "skill_reference": "**The #1 issue with Word templates**: Word often splits placeholder text across multiple XML runs. For example, `{{CANDIDATE_NAME}}` might be stored as:"
+  },
+  {
+    "reason": "The worker avoided the naive run-level replacement shown in the skill and thus prevented missed placeholders; the exact failing condition was used to justify not searching each run for the placeholder.",
+    "key_point": "Do not search for placeholders inside individual runs (naive run-level replacement fails when placeholders are split).",
+    "skill_reference": "if '{{NAME}}' in run.text:  # Won't match if split!"
+  },
+  {
+    "reason": "To reliably replace split placeholders the worker used the paragraph-level rebuild approach that maps characters to runs and then writes the new paragraph text into the first run while clearing others.",
+    "key_point": "At paragraph level, build full_text, locate the placeholder, construct a char-to-run mapping, replace the placeholder in the full text, then put the new_text into runs[0] and clear subsequent runs.",
+    "skill_reference": "new_text = full_text.replace(placeholder, str(value))\n\n    # Preserve first run's formatting, clear others\n    for i, run in enumerate(runs):\n        if i == 0:\n            run.text = new_text\n        else:\n            run.text = ''"
+  },
+  {
+    "reason": "The worker applied a regex-based approach to find all placeholders and replace them from the data dict; this pattern guided how keys were detected and replaced in the template.",
+    "key_point": "Use a regex pattern to find placeholders of the form {{KEY}} (pattern r'\\{\\{([A-Z_]+)\\}\\}') and replace each match with data[key].",
+    "skill_reference": "pattern = r'\\{\\{([A-Z_]+)\\}\\}'"
+  },
+  {
+    "reason": "The template contained placeholders inside tables; the worker recursively processed tables so replacements in nested table cells were handled correctly.",
+    "key_point": "Recursively process tables (including nested tables) by iterating rows/cells and recursing into cell.tables so placeholders inside nested tables are replaced.",
+    "skill_reference": "for nested_table in cell.tables:\n                process_table(nested_table)"
+  },
+  {
+    "reason": "Headers and footers are not part of doc.paragraphs; the worker needed to explicitly process section headers/footers to avoid leaving placeholders there.",
+    "key_point": "Process headers and footers by iterating doc.sections and handling section.header.paragraphs and section.footer.paragraphs separately.",
+    "skill_reference": "for section in doc.sections:\n    # Header\n    header = section.header\n    for para in header.paragraphs:"
+  },
+  {
+    "reason": "The template included a conditional relocation block; the worker implemented logic to either remove the markers or remove the whole block depending on the condition, matching the task requirement that RELOCATION_PACKAGE == 'Yes' keeps content but strips markers.",
+    "key_point": "Handle conditional blocks marked {{IF_<KEY>}}...{{END_IF_<KEY>}} by defining start/end markers and either removing only the markers (if include) or removing the entire content (if exclude).",
+    "skill_reference": "start_marker = '{{IF_' + condition_key + '}}'\n    end_marker = '{{END_IF_' + condition_key + '}}'\n\n    for para in doc.paragraphs:\n        text = para.text\n        if start_marker in text and end_marker in text:\n            if should_include:\n                # Remove just the markers\n                new_text = text.replace(start_marker, '').replace(end_marker, '')\n                # Also replace any placeholders inside\n                for key, val in data.items():\n                    new_text = new_text.replace('{{' + key + '}}', str(val))\n            else:\n                # Remove entire content between markers\n                new_text = ''\n\n            # Apply to first run\n            if para.runs:\n                para.runs[0].text = new_text\n                for run in para.runs[1:]:\n                    run.text = ''"
+  },
+  {
+    "reason": "The worker preserved formatting when rebuilding paragraphs by keeping the first run's formatting and clearing others; this prevented unintended formatting loss in the filled document.",
+    "key_point": "When rebuilding paragraph text, preserve the first run's formatting and clear the remaining runs rather than creating a new run with default formatting.",
+    "skill_reference": "Preserve first run's formatting, clear others"
+  },
+  {
+    "reason": "After all replacements and conditional handling the worker had to persist the modified Document object to the required output path; saving the doc was the final necessary step to produce /root/offer_letter_filled.docx.",
+    "key_point": "Save the modified Document with doc.save(output_path) to produce the filled .docx output file.",
+    "skill_reference": "doc.save(output_path)"
+  }
+]

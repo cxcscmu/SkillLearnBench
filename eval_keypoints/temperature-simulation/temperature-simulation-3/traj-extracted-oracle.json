@@ -1,0 +1,68 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "Launch glm-basics skill to get model guidance",
+    "why_essential": "Obtain documentation and understanding of GLM inputs/outputs needed for reading configuration and running the model",
+    "evidence": "Launching skill: glm-basics; Base directory for this skill: /logs/agent/sessions/skills/glm-basics # GLM Basics Guide"
+  },
+  {
+    "step_index": 2,
+    "core_step": "Read the GLM configuration file /root/glm3.nml",
+    "why_essential": "Identify current parameter values and lake settings (e.g., lake_depth) so only allowed calibration parameters are changed and depth conversion is correct",
+    "evidence": "Read status=success input={\"file_path\": \"/root/glm3.nml\"} ... contains sim_name = 'Mendota' ... (and later grep shows Kw = 0.32, coef_mix_hyp = 0.3, wind_factor = 0.9, lw_factor = 0.9, ch = 0.0013)"
+  },
+  {
+    "step_index": 3,
+    "core_step": "List forcing files and inspect observations file header (/root/bcs/ and /root/field_temp_oxy.csv)",
+    "why_essential": "Confirm availability and basic structure of meteorological forcing and observation data required for running GLM and computing verification metrics",
+    "evidence": "Bash result: \"meteo.csv\\noutflow.csv\\n...\" and head of field_temp_oxy.csv showing \"datetime,depth,temp,OXY_oxy\\n2009-01-21 12:00:00,0,0.1,16.3...\""
+  },
+  {
+    "step_index": 4,
+    "core_step": "Run GLM to produce output/netCDF at /root/output/output.nc",
+    "why_essential": "Generate the simulated temperature profiles that will be compared to observations for calibration and final metrics",
+    "evidence": "Bash: mkdir -p output && glm ... Bash completed with no output; ls -la /root/output/ shows output files including output.nc and lake.csv"
+  },
+  {
+    "step_index": 5,
+    "core_step": "Compute baseline RMSE by extracting simulated profiles from output/output.nc and matching to observations",
+    "why_essential": "Establish baseline performance and identify whether depth interpretation or parameter tuning is needed",
+    "evidence": "Python compute: \"Total matched pairs: 2825\\nOverall RMSE: 6.7760\\nAnnual deep RMSE (depth>=13): 8.1188 ... Summer deep RMSE: 11.1048\""
+  },
+  {
+    "step_index": 6,
+    "core_step": "Correct depth conversion (use lake_depth - z) and recompute RMSE",
+    "why_essential": "Fixes incorrect depth interpretation so simulated depths align with observational depth convention; necessary to get meaningful error metrics for calibration",
+    "evidence": "Text: \"The RMSE improved significantly with the correct depth conversion.\" Python compute: \"Overall RMSE: 2.6175\\nAnnual deep RMSE: 3.1996\\nSummer deep RMSE: 4.0213\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Launch glm-calibration skill to prepare calibration workflow",
+    "why_essential": "Provides guidance and tooling for systematic parameter searches and automating repeated GLM runs needed to find acceptable calibration",
+    "evidence": "Launching skill: glm-calibration; Base directory for this skill: /logs/agent/sessions/skills/glm-calibration # GLM Calibration Guide"
+  },
+  {
+    "step_index": 8,
+    "core_step": "Run calibration scripts to search allowed parameter space and identify best-performing parameter set",
+    "why_essential": "Systematically evaluates parameter combinations within allowed ranges to reduce RMSE and meet the three verification thresholds",
+    "evidence": "Calibration script runs: outputs like \"Testing 144 candidates...\\nKw=0.320 hyp=0.300 wf=0.900 lw=0.860 ch=0.00130 -> ov=1.670...\" and final candidate reported as passing"
+  },
+  {
+    "step_index": 9,
+    "core_step": "Set final parameters in /root/glm3.nml (Kw=0.32, coef_mix_hyp=0.3, wind_factor=0.9, lw_factor=0.9, ch=0.0013) and verify file",
+    "why_essential": "Persist the calibrated parameter values so GLM runs reproducibly with the chosen configuration and to satisfy the constraint that only allowed params were modified",
+    "evidence": "grep result: \"Kw = 0.32\\n coef_mix_hyp = 0.3\\n ... wind_factor = 0.9\\n lw_factor = 0.9\\n ch = 0.0013\""
+  },
+  {
+    "step_index": 10,
+    "core_step": "Compute final exact metrics using lake_depth - z matching and write /root/metrics.json",
+    "why_essential": "Produce the required final verification metrics (overall, annual_deep, summer_deep) and counts using exact datetime + rounded-depth merge, saving them for evaluation",
+    "evidence": "Python final metrics: \"Merged pairs: 2820\\nFinal metrics:\\n overall_rmse: 1.5418293453754992\\n annual_deep_rmse: 1.3642824516137702\\n summer_deep_rmse: 1.4313467789736787\" and metrics.json printed"
+  },
+  {
+    "step_index": 11,
+    "core_step": "Verify NML contains unchanged disallowed parameters and that metrics.json and output.nc were produced",
+    "why_essential": "Ensure only allowed calibration parameters were modified, outputs exist, and the results are ready for external verification",
+    "evidence": "Command printed metrics.json and grep including sw_factor, cd, ce: metrics.json content and grep showing parameters in glm3.nml"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "step_index": 1,
+    "core_step": "List files in working directory to discover the papers folder and count files",
+    "why_essential": "You must know which files exist and how many to plan categorization and ensure all files are processed",
+    "evidence": "\"ls /root/\" -> \"papers\"; \"ls /root/papers/all/ | wc -l && ls /root/papers/all/\" -> \"103\""
+  },
+  {
+    "step_index": 2,
+    "core_step": "Create the five target subject folders",
+    "why_essential": "The files must be moved into these specific folders (LLM, trapped_ion_and_qc, black_hole, DNA, music_history) as the final organization goal",
+    "evidence": "mkdir -p /root/papers/LLM /root/papers/trapped_ion_and_qc /root/papers/black_hole /root/papers/DNA /root/papers/music_history"
+  },
+  {
+    "step_index": 3,
+    "core_step": "Read the files (PDF first pages and other metadata) to determine each file's subject",
+    "why_essential": "Categorization requires inspecting file contents/metadata to assign each file to exactly one subject folder",
+    "evidence": "\"Read status=success input={\"file_path\": \"/root/papers/all/1901.01045v1.pdf\"}\" and many other \"PDF pages extracted: 1 page(s) from /root/papers/all/...\" entries; agent batch categorizations"
+  },
+  {
+    "step_index": 4,
+    "core_step": "Extract and inspect .docx contents (unzip docx) to determine their subject",
+    "why_essential": ".docx and .pptx are binary and require special handling to read contents; their subjects must be determined before moving",
+    "evidence": "Read tool errors for paper_file_1.docx / paper_file_2.docx followed by python zipfile extraction showing: \"=== paper_file_1.docx ===\\nDear Editor... \"Temporally multiplexed ion-photon quantum interface via fast ion-chain transport\"\""
+  },
+  {
+    "step_index": 5,
+    "core_step": "Move each file into its assigned subject folder",
+    "why_essential": "Physically relocating the files into the five target folders completes the organization task and ensures no files remain unassigned",
+    "evidence": "mv 0704.0117v1.pdf 0707.1221v1.pdf ... (Bash completed with no output) and multiple mv commands in trace"
+  },
+  {
+    "step_index": 6,
+    "core_step": "Verify the /all directory is empty and count files in each subject folder",
+    "why_essential": "A final verification confirms all files were moved and folder counts match expected totals (no files left unorganized)",
+    "evidence": "\"=== Remaining in /all ===\" (empty) and folder counts: \"=== LLM === 20\", \"=== trapped_ion_and_qc === 23\", \"=== black_hole === 20\", \"=== DNA === 20\", \"=== music_history === 20\""
+  },
+  {
+    "step_index": 7,
+    "core_step": "Summarize completed organization (report folder counts)",
+    "why_essential": "Provides explicit confirmation to the user that the task is finished and shows the distribution of files across the five folders",
+    "evidence": "All 103 files have been organized... Here's the summary: | Folder | Count | ... `LLM` 20 files | `trapped_ion_and_qc` 23 files | `black_hole` 20 files | `DNA` 20 files | `music_history` 20 ...\""
+  }
+]

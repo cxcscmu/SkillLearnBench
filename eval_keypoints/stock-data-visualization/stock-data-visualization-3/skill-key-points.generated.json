@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker vendored a local D3 file instead of loading from the web (their final output lists js/d3.v6.min.js); the skill's offline rule is what justified and guided that choice so the app would run reproducibly offline.",
+    "key_point": "Do not load D3 from a CDN; include a vendored/minified D3 file locally for offline, deterministic builds.",
+    "skill_reference": "Do **not** load D3 from a CDN."
+  },
+  {
+    "reason": "The worker pinned and included a specific D3 v6 bundle (they wrote js/d3.v6.min.js). The skill's guidance to pin a D3 version explains why they must choose and vendor an explicit version rather than relying on a floating CDN release.",
+    "key_point": "Pin D3 to a specific version and vendor that exact build into the project to ensure reproducible behavior.",
+    "skill_reference": "Pin D3 to a specific version (default: **d3@7.9.0**)."
+  },
+  {
+    "reason": "To make the force simulation deterministic the worker avoided random initialization; the skill explicitly forbids randomness (which would break reproducibility) and directs the worker not to use random generators.",
+    "key_point": "Avoid introducing randomness in data processing or layout (do not use Math.random() or d3-random) so visual output is deterministic.",
+    "skill_reference": "No randomness: do not use `Math.random()` or `d3-random`."
+  },
+  {
+    "reason": "The worker ran the force simulation for an exact number of ticks (they used 300 ticks per their summary). The skill prescribes controlling force-layout iterations to guarantee determinism.",
+    "key_point": "When using a force layout, run a fixed, explicit number of ticks and stop (do not let it run indefinitely or rely on non-deterministic convergence).",
+    "skill_reference": "- run exactly N ticks and stop."
+  },
+  {
+    "reason": "The worker avoided animations/transitions in the visualization (their summary mentions deterministic rendering). The skill warns that transitions introduce timing variance and should be disabled to keep outputs stable.",
+    "key_point": "Disable transitions/animations by default to avoid timing variance and non-deterministic rendering.",
+    "skill_reference": "No transitions/animations by default (transitions can introduce timing variance)."
+  },
+  {
+    "reason": "The table and bound marks were produced in a stable order (worker sorted stocks by sector then ticker). The skill instructs to sort input rows deterministically before binding so bindings and generated DOM are stable across runs.",
+    "key_point": "Sort input rows deterministically before binding to marks (e.g., by sector then ticker) to ensure stable binding order.",
+    "skill_reference": "Sort input rows deterministically before binding to marks (e.g., by x then by category)."
+  },
+  {
+    "reason": "The worker implemented a hover tooltip that appears for non-ETF bubbles; the skill provides the HTML element pattern to create the tooltip container which the worker used.",
+    "key_point": "Create a dedicated tooltip DOM element (a div) in the HTML to host tooltip content.",
+    "skill_reference": "<div id=\"tooltip\" class=\"tooltip\"></div>"
+  },
+  {
+    "reason": "The worker's tooltip CSS used opacity transitions rather than display toggling (their CSS supports .visible); the skill's tooltip guidance specifically requires opacity:0 so toggling is smooth and doesn't block mouse events.",
+    "key_point": "Use opacity: 0 (not display:none) for the tooltip by default so it can be shown/hidden smoothly without blocking events.",
+    "skill_reference": "Use `opacity: 0` by default (not `display: none`) for smooth transitions"
+  },
+  {
+    "reason": "The worker toggled tooltip visibility via class changes (their JS uses .classed('visible')), following the skill's recommended pattern which ensures consistent show/hide behavior.",
+    "key_point": "Toggle tooltip visibility by switching a CSS class (e.g., use .classed('visible', true/false)) instead of manipulating inline styles directly.",
+    "skill_reference": "Use `.classed('visible', true/false)` to toggle visibility"
+  },
+  {
+    "reason": "The worker positioned the tooltip next to the mouse pointer in event handlers; the skill shows using event.pageX/pageY to position the tooltip which the worker applied for proper placement.",
+    "key_point": "Position the tooltip relative to the mouse using the event coordinates (event.pageX and event.pageY) in mouse event handlers.",
+    "skill_reference": "Position tooltip relative to mouse with `event.pageX/pageY`"
+  },
+  {
+    "reason": "The worker implemented click selection/deselection logic connecting bubbles and table rows; the skill demonstrates the pattern of clearing the previous selection then adding the selected class which the worker reused for toggling selection.",
+    "key_point": "Implement click-selection by removing a 'selected' class from all items then adding it to the clicked item (clear previous selection, then set selected on the target).",
+    "skill_reference": "d3.selectAll('.bar').classed('selected', false);"
+  }
+]

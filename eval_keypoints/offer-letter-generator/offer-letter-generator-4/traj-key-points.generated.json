@@ -1,0 +1,52 @@
+[
+  {
+    "reason": "Loading the employee data is required to get the values used to fill placeholders.",
+    "key_point": "Read employee_data.json to obtain placeholder values (e.g., RELOCATION_PACKAGE and other fields).",
+    "trajectory_reference": "content: The employee data is loaded. `RELOCATION_PACKAGE` is `\"No\"`, so I'll remove the conditional relocation section."
+  },
+  {
+    "reason": "The conditional relocation block decision affects whether to keep or remove that section in the final document.",
+    "key_point": "Check RELOCATION_PACKAGE value and decide to remove the {{IF_RELOCATION}}...{{END_IF_RELOCATION}} block because RELOCATION_PACKAGE is \"No\".",
+    "trajectory_reference": "Key facts:\n- `RELOCATION_PACKAGE` is `\"No\"`, so I need to remove the `{{IF_RELOCATION}}...{{END_IF_RELOCATION}}` section entirely."
+  },
+  {
+    "reason": "The docx skill/tool is needed to programmatically read and modify a Word .docx template.",
+    "key_point": "Load/invoke the docx skill/tool to manipulate the Word template programmatically.",
+    "trajectory_reference": "thinking: Now I need to use the docx skill to handle the Word document template. Let me use the Skill tool with the docx skill.\ntool_use... tool=Skill; status=success;"
+  },
+  {
+    "reason": "Understanding the template structure (including nested tables and where placeholders live) is necessary to correctly target replacements.",
+    "key_point": "Inspect the template's raw XML and document structure (paragraphs, tables, nested tables) to locate placeholders and confirm where data belongs.",
+    "trajectory_reference": "content: Let me first inspect the template's raw XML to understand placeholder structure.\nthinking: Now I have a complete picture. The table has nested tables inside each cell."
+  },
+  {
+    "reason": "Word splits placeholders across runs; performing replacements at run-level can miss placeholders.",
+    "key_point": "Handle split placeholders by using paragraph-level replacement and rebuilding runs so placeholders that span runs are replaced correctly.",
+    "trajectory_reference": "## Critical: Split Placeholder Problem... Correct Approach: Paragraph-Level Search and Rebuild\nthinking: Now I can replace all `{{PLACEHOLDER}}` patterns using paragraph-level replacement"
+  },
+  {
+    "reason": "Placeholders may appear in tables (including nested tables), so table cells must be processed recursively.",
+    "key_point": "Recursively process tables and nested tables' cells, replacing placeholders in all paragraphs inside each cell.",
+    "trajectory_reference": "## Nested Tables\ndef process_table(table):\n    for row in table.rows:\n        for cell in row.cells:\n            for para in cell.paragraphs:\n                replace_in_paragraph(para)\n            for nested_table in cell.tables:\n                process_table(nested_table)\n\nthinking: The table has nested tables with placeholders."
+  },
+  {
+    "reason": "Headers and footers are separate from the main body and can contain placeholders that must be updated.",
+    "key_point": "Process headers and footers (via doc.sections) to replace placeholders there as well.",
+    "trajectory_reference": "## Headers and Footers\nfor section in doc.sections:\n    for para in section.header.paragraphs:\n        replace_in_paragraph(para)\n    for para in section.footer.paragraphs:\n        replace_in_paragraph(para)\n\ncontent: Headers & footers updated (doc ID, company name, candidate name)."
+  },
+  {
+    "reason": "After modifying the document in memory, saving to the required path produces the final filled offer letter.",
+    "key_point": "Save the filled Word document to /root/offer_letter_filled.docx.",
+    "trajectory_reference": "thinking: ...3. Save the filled document to `/root/offer_letter_filled.docx`\ncontent: The offer letter has been filled and saved to `/root/offer_letter_filled.docx`."
+  },
+  {
+    "reason": "The conditional relocation markers must be removed or cleared so no IF/END_IF tags remain in the final output.",
+    "key_point": "Remove or clear the relocation conditional paragraph(s) entirely when the condition is false so marker tags are not left in the final document.",
+    "trajectory_reference": "## Conditional Sections\nif should_include:\n    # Remove just the markers\nelse:\n    # Remove entire content between markers\n...\ncontent: ...since `RELOCATION_PACKAGE` is `\"No\"`, the entire paragraph was cleared — no relocation content or marker tags remain in the final document."
+  },
+  {
+    "reason": "Implementation was done by writing and executing a Python script using python-docx to apply the above logic.",
+    "key_point": "Write and run a python-docx script that loads the template and data, performs paragraph-level replacements, handles conditionals and nested tables, then saves the output.",
+    "trajectory_reference": "## Complete Solution Pattern\nfrom docx import Document\nimport json\nimport re\n\ndef fill_template(template_path, data_path, output_path):\n    ...\n# Usage\nfill_template('template.docx', 'data.json', 'output.docx')\n\ncontent: I'll write a Python script to inspect and then fill the template.\ntool_use... tool=Write; status=success;"
+  }
+]

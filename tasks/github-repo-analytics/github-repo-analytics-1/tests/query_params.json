@@ -1,0 +1,6 @@
+{
+  "repo": "cli/cli",
+  "date_range": "2024-10-01..2024-12-31",
+  "cutoff": "2025-01-01T00:00:00Z",
+  "min_changed_files": 8
+}

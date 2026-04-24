@@ -1,0 +1,16 @@
+"""Prompt templates for Teacher-Student mode."""
+
+from .teacher import TEACHER_SYSTEM_SUGGESTIONS, TEACHER_USER_SUGGESTIONS
+from .teacher_student import (
+    SKILL_GEN_PROMPT,
+    SKILL_GEN_WITH_FEEDBACK_PROMPT,
+    EXECUTE_WITH_SKILL_PROMPT,
+)
+
+__all__ = [
+    "TEACHER_SYSTEM_SUGGESTIONS",
+    "TEACHER_USER_SUGGESTIONS",
+    "SKILL_GEN_PROMPT",
+    "SKILL_GEN_WITH_FEEDBACK_PROMPT",
+    "EXECUTE_WITH_SKILL_PROMPT",
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "reason": "The worker parallelized the hyperparameter grid search; this atomic instruction shows the exact API used to run functions in parallel (Parallel + delayed), which the worker relied on to distribute the evaluation across CPU cores.",
+    "key_point": "Use joblib's Parallel together with delayed to run per-parameter evaluations in parallel (Parallel(n_jobs=...), delayed(func)(...)).",
+    "skill_reference": "from joblib import Parallel, delayed"
+  },
+  {
+    "reason": "The worker used all CPU cores to speed up the computation; this parameter value is the explicit instruction for using all available cores when calling Parallel.",
+    "key_point": "Set n_jobs=-1 in joblib.Parallel to use all available CPU cores for the grid search.",
+    "skill_reference": "- **n_jobs**: `-1` for all cores, `1` for sequential, or specific number"
+  },
+  {
+    "reason": "The worker's grid-search code followed this exact pattern to invoke the parallel execution of parameter evaluations; the snippet is the concrete call shape they needed to write the parallel loop.",
+    "key_point": "Call Parallel with a generator of delayed calls, e.g. results = Parallel(n_jobs=-1, verbose=10)(delayed(evaluate_params)(a, b) for a, b in params).",
+    "skill_reference": "results = Parallel(n_jobs=-1, verbose=10)(\n    delayed(evaluate_params)(a, b) for a, b in params\n)"
+  },
+  {
+    "reason": "The worker passed shared precomputed data to each parallel task to avoid reloading inside each worker process; the skill shows the pattern to precompute and then pass the data into delayed calls.",
+    "key_point": "Pre-compute shared data once (e.g., shared_data = load_data()) and pass it as an argument into each delayed task so workers reuse it.",
+    "skill_reference": "shared_data = load_data()\n\ndef process_with_shared(params, data):\n    return compute(params, data)\n\n# Pass shared data to each task\nresults = Parallel(n_jobs=-1)(\n    delayed(process_with_shared)(p, shared_data)\n    for p in param_list\n)"
+  },
+  {
+    "reason": "The worker used verbose monitoring during the parallel run (the trajectory shows a multi-minute grid search); this describes the verbose option values and what to expect from them.",
+    "key_point": "Use the Parallel.verbose parameter (e.g., verbose=10) to monitor progress during a long-running parallel grid search.",
+    "skill_reference": "- **verbose**: `0` (silent), `10` (progress), `50` (detailed)"
+  },
+  {
+    "reason": "DBSCAN must receive the custom distance metric as a callable; the worker relied on this explicit sklearn usage to plug a generated distance function into DBSCAN.",
+    "key_point": "Pass a callable distance function to sklearn.cluster.DBSCAN via the metric parameter (metric=my_distance).",
+    "skill_reference": "sklearn's DBSCAN accepts a callable as the `metric` parameter:\n\n```python\nfrom sklearn.cluster import DBSCAN\n\ndef my_distance(point_a, point_b):\n    \"\"\"Custom distance between two points.\"\"\"\n    # point_a and point_b are 1D arrays\n    return some_calculation(point_a, point_b)\n\ndb = DBSCAN(eps=5, min_samples=3, metric=my_distance)\n```"
+  },
+  {
+    "reason": "The worker needed a parameterized distance function to vary shape_weight; this closure/factory pattern is the concrete way to create such functions for DBSCAN in Python.",
+    "key_point": "Create a parameterized distance function using a closure (factory) that returns a distance(a, b) function capturing weight parameters.",
+    "skill_reference": "def create_weighted_distance(weight_x, weight_y):\n    \"\"\"Create a distance function with specific weights.\"\"\"\n    def distance(a, b):\n        dx = a[0] - b[0]\n        dy = a[1] - b[1]\n        return np.sqrt((weight_x * dx)**2 + (weight_y * dy)**2)\n    return distance"
+  },
+  {
+    "reason": "To compute the Pareto frontier the worker used the paretoset API; this shows the exact call signature including the sense argument ordering used to indicate which objectives to maximize/minimize.",
+    "key_point": "Call paretoset(objectives, sense=[...]) to compute a Pareto mask, using 'max' for objectives to maximize and 'min' for objectives to minimize.",
+    "skill_reference": "pareto_mask = paretoset(objectives, sense=[\"max\", \"min\"])"
+  },
+  {
+    "reason": "After computing the Pareto mask the worker needed to extract and save the Pareto-optimal rows; this example shows how to index the DataFrame with the mask and write the resulting frontier to CSV.",
+    "key_point": "Index the original results DataFrame with the pareto mask and save the Pareto-optimal rows to CSV (pareto_frontier.to_csv(...)).",
+    "skill_reference": "pareto_points = df[pareto_mask]\n...\npareto_frontier.to_csv('pareto_models.csv', index=False)"
+  }
+]

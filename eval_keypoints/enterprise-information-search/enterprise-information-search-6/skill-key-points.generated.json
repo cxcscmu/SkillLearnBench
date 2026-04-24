@@ -1,0 +1,62 @@
+[
+  {
+    "reason": "The worker began by identifying the target product (ProposalForce) and needed the skill's explicit instruction to parse intent and target product before searching; this guided their initial Step 0 action in the trajectory.",
+    "key_point": "First explicitly parse the task intent and determine the target product before any search or extraction.",
+    "skill_reference": "### Step 0 — Parse intent + target product"
+  },
+  {
+    "reason": "The worker directly read /root/DATA/products/ProposalForce.json as the primary candidate source, following the skill's prescribed search order that prioritizes product artifact files.",
+    "key_point": "Start candidate discovery by checking the product artifact file at /root/DATA/products/<Product>.json (high-priority source).",
+    "skill_reference": "1) Product artifact file(s): /root/DATA/products/<Product>.json if exists."
+  },
+  {
+    "reason": "To avoid picking a report for the wrong product, the worker applied the skill's grounding requirement and validated ProposalForce artifacts against multiple signals before accepting them.",
+    "key_point": "Require a candidate report to pass at least two independent product-grounding signals before accepting it as valid.",
+    "skill_reference": "A candidate report is **VALID** only if it passes **at least 2 independent grounding signals**:"
+  },
+  {
+    "reason": "The worker used channel membership (planning-ProposalForce) as one grounding signal when confirming the ProposalForce report; this is one of the explicit allowable grounding signals.",
+    "key_point": "One valid grounding signal is that the document was shared in a product-specific channel or meeting series (e.g., planning-ProductName).",
+    "skill_reference": "C) Shared in a channel whose name is clearly for the target product (e.g., `planning-CoachForce`, `#coachforce-*`) OR a product-specific meeting series (e.g., `CoachForce_planning_*`)."
+  },
+  {
+    "reason": "When multiple report versions existed, the worker selected the 'final' version; they followed the skill's explicit precedence rules for choosing the correct report version.",
+    "key_point": "When several valid report versions exist, choose the final/latest by precedence (explicit latest/final marker, then most recent date, then most-referenced).",
+    "skill_reference": "1) Explicit “latest” marker (id/title/link contains `latest`, or most recent date field)"
+  },
+  {
+    "reason": "The worker extracted the author from the document metadata (found author: eid_5af96a7d), following the skill's author-extraction priority.",
+    "key_point": "Extract authors primarily from document fields such as author/authors/created_by/owner before using other sources.",
+    "skill_reference": "1) Document fields: `author`, `authors`, `created_by`, `owner`"
+  },
+  {
+    "reason": "To compile key reviewers, the worker relied on explicit reviewer fields when present and otherwise looked for attributable substantive feedback in Slack; the skill's Tier 1 guidance governed this.",
+    "key_point": "Prefer explicit reviewer fields (reviewers/key_reviewers/approvers/requested_reviewers) as the primary evidence for key reviewers.",
+    "skill_reference": "Document fields: `reviewers`, `key_reviewers`, `approvers`, `requested_reviewers`"
+  },
+  {
+    "reason": "The worker counted Slack replies that proposed concrete changes as evidence of substantive review (e.g., people suggesting SWOT, sensitivity analysis). This follows the Tier 2 rule for reviewers.",
+    "key_point": "Treat Slack thread replies that propose concrete additions/clarifications/restructuring tied to the report as evidence of a key reviewer (attributable substantive feedback).",
+    "skill_reference": "Slack thread replies to the report-share message where the user proposes a concrete addition, clarification, comparison, restructuring, or section-level change tied to the report"
+  },
+  {
+    "reason": "The worker included reviewers even when their suggestions weren't necessarily adopted (they kept substantive contributors); this is an explicit rule the skill mandated and the worker followed.",
+    "key_point": "Keep substantive feedback contributors as key reviewers even if their suggestion was not adopted in the final revision or omitted from the author's summary.",
+    "skill_reference": "Treat substantive feedback contributors as key reviewers even if their suggestion was not adopted in the final revision or omitted from the author's summary."
+  },
+  {
+    "reason": "The worker excluded mere meeting participants and only included people who provided substantive feedback; the skill's prohibition against treating participants-as-reviewers was applied.",
+    "key_point": "Do not infer reviewers from meeting attendance alone — a participants list by itself is insufficient evidence of review activity.",
+    "skill_reference": "Meeting `participants` list alone is NOT sufficient."
+  },
+  {
+    "reason": "Before finalizing outputs the worker ensured IDs were normalized to eid_* format and de-duplicated; the skill required validating IDs and existence in directory which the worker adhered to.",
+    "key_point": "Validate and normalize all output employee identifiers to the eid_... pattern and de-duplicate them (ensure they exist in the employee directory if available).",
+    "skill_reference": "All outputs must be valid employee IDs (pattern `eid_...`) and exist in the employee directory if provided."
+  },
+  {
+    "reason": "The worker wrote answers to /root/answer.json in the required JSON-ready structure; the skill's explicit output schema determined the exact fields the worker produced and saved.",
+    "key_point": "Return a JSON-ready final answer object with fields target_product, report_doc_id, author_employee_ids, key_reviewer_employee_ids, and all_employee_ids_union.",
+    "skill_reference": "{\n  \"target_product\": \"<ProductName>\",\n  \"report_doc_id\": \"<doc_id>\",\n  \"author_employee_ids\": [\"eid_...\"],\n  \"key_reviewer_employee_ids\": [\"eid_...\"],\n  \"all_employee_ids_union\": [\"eid_...\"]\n}"
+  }
+]

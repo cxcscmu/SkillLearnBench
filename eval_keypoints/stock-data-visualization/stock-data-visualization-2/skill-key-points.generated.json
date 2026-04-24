@@ -1,0 +1,57 @@
+[
+  {
+    "reason": "The worker explicitly decided to avoid nondeterministic randomness in the layout and the skill's rule is what justified not using Math.random/d3-random; omitting this would allow unpredictable layouts and break the stability requirements the worker enforced.",
+    "key_point": "Do not use random number generators for layout: avoid Math.random or d3-random so the visualization is deterministic.",
+    "skill_reference": "No randomness: do not use `Math.random()` or `d3-random`."
+  },
+  {
+    "reason": "The worker implemented the force simulation by running a fixed number of ticks and stopping (instead of animating), and this guidance came from the skill's force-layout determinism rule — it directly shaped how the worker ran the simulation to obtain stable positions.",
+    "key_point": "For force simulations, fix initial positions deterministically and run the simulation for an explicit, fixed number of ticks (then stop) to ensure a repeatable layout.",
+    "skill_reference": "If a force layout is required:\n  - fix the tick count,\n  - fix initial positions deterministically (e.g., sorted nodes placed on a grid),\n  - run exactly N ticks and stop."
+  },
+  {
+    "reason": "The worker vendored D3 locally instead of loading it from a CDN; the skill's offline/dependency determinism rule is the source of that constraint and justified downloading a minified D3 into the output folder.",
+    "key_point": "Do not load D3 from a CDN; vendor (bundle) a specific pinned D3 build locally for deterministic, offline rendering.",
+    "skill_reference": "Do **not** load D3 from a CDN."
+  },
+  {
+    "reason": "The worker explicitly reconciled the task's interactive needs with the skill rule to avoid animations, and therefore disabled transitions and ran the force deterministically; the skill's rule forbidding animations guided that decision.",
+    "key_point": "Avoid transitions/animations by default because they introduce timing variance — prefer deterministic, non-animated rendering.",
+    "skill_reference": "- **No transitions/animations** by default (transitions can introduce timing variance)."
+  },
+  {
+    "reason": "The worker set explicit chart dimensions and viewbox sizes (fixed width/height) to ensure stable layout across runs; this is directly supported by the skill's rendering-determinism requirement.",
+    "key_point": "Keep fixed canvas parameters (explicit width, height, margin, viewBox) so rendering is stable and repeatable.",
+    "skill_reference": "- **Fixed** `width`, `height`, `margin`, `viewBox`."
+  },
+  {
+    "reason": "The worker sorted and deterministically initialized node positions (placing nodes in sector-specific circular arrangements) before running the force; the skill's data determinism guidance required sorting input before binding, which the worker followed to keep bindings stable.",
+    "key_point": "Sort input rows deterministically before binding marks (e.g., by key fields) so node ordering and initial placement are stable.",
+    "skill_reference": "**Sort** input rows deterministically before binding to marks (e.g., by x then by category)."
+  },
+  {
+    "reason": "The worker created an HTML tooltip element and used CSS-based visibility toggling as recommended by the skill; the exact tooltip element structure in the skill guided how to add and target the tooltip in the DOM.",
+    "key_point": "Create a dedicated tooltip element in the DOM (a div#tooltip) that your JS shows/hides for hover content.",
+    "skill_reference": "```html\n<div id=\"tooltip\" class=\"tooltip\"></div>\n```"
+  },
+  {
+    "reason": "The worker implemented tooltip styling that keeps the tooltip non-blocking and toggles visibility with a class; the skill's CSS pattern (opacity 0 by default, .visible toggles it, pointer-events: none) is what the worker used for stable tooltip behavior.",
+    "key_point": "Style the tooltip with opacity:0 by default, use a .visible class to show it, and set pointer-events: none so the tooltip doesn't block mouse events.",
+    "skill_reference": ".tooltip {\n    position: absolute;\n    padding: 10px;\n    background: rgba(0, 0, 0, 0.8);\n    color: white;\n    border-radius: 4px;\n    pointer-events: none;  /* Prevent mouse interference */\n    opacity: 0;\n    transition: opacity 0.2s;\n    z-index: 1000;\n}\n\n.tooltip.visible {\n    opacity: 1;  /* Show when .visible class is added */\n}"
+  },
+  {
+    "reason": "The worker wired mouse event handlers to show the tooltip using d3.select and .classed('visible', true) and positioned it using the event coordinates; the skill's example demonstrates the precise pattern and event usage that the worker followed (noting D3 v6 event signature).",
+    "key_point": "On hover, call d3.select('#tooltip').classed('visible', true), set its HTML, and position it using event.pageX/event.pageY (event passed as first arg in handlers).",
+    "skill_reference": "d3.select('#tooltip')\n            .classed('visible', true)  // Add .visible class\n            .html(`<strong>${d.name}</strong><br/>${d.value}`)\n            .style('left', (event.pageX + 10) + 'px')\n            .style('top', (event.pageY - 10) + 'px');"
+  },
+  {
+    "reason": "To implement linked selection between bubbles and table rows the worker used the skill's recommended click-handler pattern (clear previous selection, then add a 'selected' class to the clicked element), which is exactly how the selection highlighting was implemented.",
+    "key_point": "Implement click selection by removing the previous 'selected' class from all items and adding it to the clicked element (use d3.selectAll(...).classed('selected', false) then d3.select(this).classed('selected', true)).",
+    "skill_reference": "        // Remove previous selection\n        d3.selectAll('.bar').classed('selected', false);\n        // Add to clicked element\n        d3.select(this).classed('selected', true);"
+  },
+  {
+    "reason": "The worker explicitly suppressed tooltips for ETF entries; the skill's example demonstrates how to conditionally skip interactivity by returning early in an event handler — the worker applied that pattern to avoid showing tooltips for ETFs.",
+    "key_point": "Conditionally skip interactivity in event handlers by returning early (e.g., check a field like category and return) so excluded categories (like ETFs) don't show tooltips.",
+    "skill_reference": "if (d.category === 'excluded') {\n        return;  // Exit early, no tooltip\n    }"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "reason": "The worker used pdfplumber to open the calendar PDF and extract page text/content as part of analyzing the calendar; the task required extracting all text content with positions, so the pdfplumber open/extract_text pattern from the skill is an essential capability the agent invoked.",
+    "key_point": "Open a PDF with pdfplumber and extract each page's text using page.extract_text().",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()\n        print(text)"
+  },
+  {
+    "reason": "The worker needed to extract structured elements (tables) and iterate pages to locate time labels and grid information; the pdfplumber page.extract_tables() example in the skill documents the exact method used to extract tables/structured elements from pages.",
+    "key_point": "Use pdfplumber's page.extract_tables() inside a per-page loop to extract tables and iterate rows for structured data.",
+    "skill_reference": "with pdfplumber.open(\"document.pdf\") as pdf:\n    for i, page in enumerate(pdf.pages):\n        tables = page.extract_tables()\n        for j, table in enumerate(tables):\n            print(f\"Table {j+1} on page {i+1}:\")\n            for row in table:\n                print(row)"
+  },
+  {
+    "reason": "The worker converted PDF pages to images to visually inspect colored appointment blocks; the skill shows a command-line tool to extract images from a PDF which is directly applicable for converting pages to image files for visual inspection.",
+    "key_point": "Use the pdfimages command-line tool (pdfimages -j input.pdf output_prefix) to extract pages/images from a PDF for visual inspection.",
+    "skill_reference": "pdfimages -j input.pdf output_prefix"
+  },
+  {
+    "reason": "To preserve layout when extracting text (so positions/timelines can be inferred), the skill documents using pdftotext with the -layout flag; the worker's analysis depended on preserving layout and positions, so this command is an essential tool recommendation from the skill.",
+    "key_point": "Use pdftotext with the -layout option to extract text while preserving page layout: pdftotext -layout input.pdf output.txt.",
+    "skill_reference": "pdftotext -layout input.pdf output.txt"
+  },
+  {
+    "reason": "The skill's pypdf example demonstrates a simple PDF read and per-page text extraction method; this shows an alternate library (pypdf) for reading PDFs and obtaining text, which the worker referenced in Quick Start when designing its analysis scripts.",
+    "key_point": "Use pypdf's PdfReader to open a PDF and iterate reader.pages to extract text from each page.",
+    "skill_reference": "reader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()"
+  },
+  {
+    "reason": "The worker was asked to try converting a PDF page to an image and the skill provides an explicit Python pattern (pdf2image + pytesseract) for converting PDF to images (used for OCR/visual conversion); that conversion step supports the worker's instruction to render and visually describe the page.",
+    "key_point": "Convert PDF pages to images with pdf2image's convert_from_path (images = convert_from_path('scanned.pdf')) to enable visual inspection or OCR.",
+    "skill_reference": "images = convert_from_path('scanned.pdf')"
+  }
+]

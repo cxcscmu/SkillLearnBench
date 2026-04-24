@@ -1,0 +1,82 @@
+[
+  {
+    "reason": "Selects the PDF handling capability needed to fill the SC-100 form.",
+    "key_point": "Decided to use the PDF skill to handle reading and filling the SC-100 PDF form.",
+    "trajectory_reference": "[1] role=assistant thinking: The user wants me to fill out a California Small Claims Court form (SC-100) based on the case description provided. Let me use the PDF skill to handle this task."
+  },
+  {
+    "reason": "Obtains documentation on how to fill PDF forms to follow correct procedure.",
+    "key_point": "Read the PDF Processing Guide / forms.md to learn how to inspect and fill PDF form fields.",
+    "trajectory_reference": "[5] role=user content: Base directory for this skill: /logs/agent/sessions/skills/pdf ... For filling out a PDF form, read forms.md and follow its instructions."
+  },
+  {
+    "reason": "Confirm whether the target PDF has interactive fields before attempting to map or set values.",
+    "key_point": "Checked if the SC-100 PDF has fillable form fields and confirmed it does.",
+    "trajectory_reference": "[13] role=assistant content: I can see the form. Let me first check if the PDF has fillable fields."
+  },
+  {
+    "reason": "Extracts form field metadata and visuals so each value is placed into the correct field id.",
+    "key_point": "Extracted form field information and converted form pages to images to understand field layout and IDs.",
+    "trajectory_reference": "[17] role=assistant content: The PDF has fillable fields. Now let me extract the field info and convert to images to understand the layout."
+  },
+  {
+    "reason": "Maps PDF field ids to the case data so the automated fill uses the correct keys.",
+    "key_point": "Mapped specific PDF field IDs (page 2 plaintiff fields, etc.) to case values, e.g. SC-100[0].Page2...PlaintiffName1 => 'Joyce He'.",
+    "trajectory_reference": "[21] role=assistant content: Based on the field IDs and the form images I've already seen, let me map out the fields I need to fill: **Page 2:** - `SC-100[0].Page2[0].PxCaption[0].Plaintiff[0]` - Plaintiff name (caption header): \"Joyce He\" - `SC-100[0].Page2[0].List1[0].Item1[0].PlaintiffName1[0]` - Plaintiff 1 Name: \"Joyce He\" ..."
+  },
+  {
+    "reason": "Populate plaintiff contact information exactly as provided in the case description.",
+    "key_point": "Filled plaintiff contact fields: name 'Joyce He', phone '4125886066', street '655 S Fair Oaks Ave', city 'Sunnyvale', state 'CA', zip '94086', email set from case.",
+    "trajectory_reference": "[26] role=assistant thinking: Now I'm going through the contact details: Joyce He's phone number 4125886066, her address at 655 S Fair Oaks Ave in Sunnyvale, CA 94086, and her email [REDACTED]."
+  },
+  {
+    "reason": "Populate defendant contact information exactly as provided so venue and notice are correct.",
+    "key_point": "Filled defendant fields: name 'Zhi Chen', phone '5125658878', address '299 W Washington Ave, Sunnyvale, CA 94086'.",
+    "trajectory_reference": "[26] role=assistant thinking: For the defendant, I have Zhi Chen with phone 5125658878 and an address at 299 W Washington Ave, also in Sunnyvale, CA."
+  },
+  {
+    "reason": "Enter the correct monetary claim and concise reason matching the case facts.",
+    "key_point": "Entered claim amount $1500.00 and reason: defendant failed to return security deposit per signed roommate sublease contract.",
+    "trajectory_reference": "[26] role=assistant thinking: The claim is for $1500 — a security deposit that the defendant failed to return after moving out, as specified in their roommate sublease agreement."
+  },
+  {
+    "reason": "Use the case date range for dispute timeline fields to reflect when the issue occurred and filing date.",
+    "key_point": "Filled dispute date fields with start 2025-09-30 and through/end 2026-01-19; set filing/declaration date to 2026-01-19.",
+    "trajectory_reference": "[26] role=assistant thinking: The dispute started on September 30, 2025 and continued through January 19, 2026. ... I'll fill: - Date1: 2025-09-30 - Date2: 2026-01-19 ... I'll use the signature date of January 19, 2026"
+  },
+  {
+    "reason": "Record evidence of prior demand as required by the form (yes/no and explanation).",
+    "key_point": "Marked that plaintiff asked defendant to pay (Yes) and noted collection attempts: multiple text messages asking for return of deposit with no response.",
+    "trajectory_reference": "[26] role=assistant thinking: For the payment question, the checkbox indicates yes, we did ask the defendant to pay via text. ... For the 'how did you try to collect' field, I'll describe the attempts: multiple text messages asking for the money back, with no response from the defendant."
+  },
+  {
+    "reason": "Choose correct courthouse venue option based on defendant residence.",
+    "key_point": "Selected the venue option corresponding to 'filing where defendant lives' (Sunnyvale) and entered zip code 94086.",
+    "trajectory_reference": "[26] role=assistant thinking: For the 'Why are you filing at this courthouse?' section ... both parties live in Sunnyvale, so that points to option 1 about the defendant's location. ... For the zip code, I need to enter 94086."
+  },
+  {
+    "reason": "Ensure other required checkboxes reflect case facts: first-time filer and claim under jurisdictional limit.",
+    "key_point": "Set 'first time filing' = No previous >12 claims, and 'claim >$2,500' = No ($1,500 < $2,500).",
+    "trajectory_reference": "[26] role=assistant thinking: Joyce hasn't filed more than 12 other small claims, so that's a No checkbox ... Since the claim is $1,500, which is under the $2,500 threshold, that's also No."
+  },
+  {
+    "reason": "Create the JSON field-values mapping used by the fill script so the form can be programmatically filled.",
+    "key_point": "Created field_values.json mapping form field IDs to the case values (then wrote the JSON file).",
+    "trajectory_reference": "[27] role=assistant content: Now I have a clear picture of the form structure. Let me create the `field_values.json` and fill the form. [28] tool_use[1]: tool=Write; status=success;"
+  },
+  {
+    "reason": "Run the fill script to apply the mapped values into the PDF and generate the completed document.",
+    "key_point": "Ran the fill script; script executed successfully and produced output files.",
+    "trajectory_reference": "[29] role=assistant tool_use[1]: tool=Bash; status=success; input_keys=command; output_keys=text ... [30] role=assistant thinking: The script ran without any output (no errors), which is good."
+  },
+  {
+    "reason": "Verify visually / programmatically that the important fields were filled as intended before finalizing.",
+    "key_point": "Verified filled PDF content (pages converted to images and inspected) confirming plaintiff/defendant info, amount, reason, dates, demand, venue and other checkboxes.",
+    "trajectory_reference": "[32] role=assistant content: The file was created. Let me verify the fill by converting the relevant pages to images and checking the content. ... [37] role=assistant thinking: The form is filled correctly. Let me verify what I can see: **Page 2:** - \"Plaintiff (list names): Joyce He\" ✓ ... **Page 3:** - Date started: 2025-09-30 ✓"
+  },
+  {
+    "reason": "Save the completed PDF to the requested output path and leave court-filled fields blank per instructions.",
+    "key_point": "Saved the filled SC-100 form to /root/sc100-filled.pdf and left court-only fields (case number, court name, clerk fields) blank.",
+    "trajectory_reference": "[38] role=assistant content: The form has been filled correctly. ... The filled form has been saved to `/root/sc100-filled.pdf`. ... [40] role=assistant content: The California Small Claims Court form SC-100 has been filled and saved to `/root/sc100-filled.pdf`."
+  }
+]

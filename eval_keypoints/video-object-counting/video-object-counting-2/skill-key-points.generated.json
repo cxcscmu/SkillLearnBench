@@ -1,0 +1,37 @@
+[
+  {
+    "reason": "The worker invoked FFmpeg with the select filter and -vsync vfr to extract I-frames; this exact command pattern is the operational recipe they used to produce the keyframe PNG sequence from the MP4.",
+    "key_point": "Run ffmpeg with the select filter eq(pict_type,I) and -vsync vfr to extract I-frame keyframes into an output filename pattern.",
+    "skill_reference": "ffmpeg -i <input_video> -vf \"select='eq(pict_type,I)'\" -vsync vfr <output_pattern>"
+  },
+  {
+    "reason": "The worker relied on the guidance to avoid duplicate extracted frames; this flag choice explains why the extracted sequence had unique frames (they reported 5 keyframes).",
+    "key_point": "Use -vsync vfr when extracting frames to avoid duplicate frames in the output.",
+    "skill_reference": "Use -vsync vfr to avoid duplicate frames in output"
+  },
+  {
+    "reason": "The task required saving keyframes to a specific filename pattern in /root; the worker followed this explicit argument to name the outputs as /root/keyframes_%03d.png.",
+    "key_point": "Save extracted I-frames using the specified output pattern /root/keyframes_%03d.png (e.g., keyframes_001.png, keyframes_002.png, ...).",
+    "skill_reference": "ARGUMENTS: Extract key frames (I-frames) from `/root/super-mario.mp4` and save them as `/root/keyframes_%03d.png`"
+  },
+  {
+    "reason": "The worker performed an inplace grayscale conversion of the extracted frames; the skill's ARGUMENTS explicitly instructed in-place overwrite of those filenames, which the worker executed.",
+    "key_point": "Convert the listed keyframe files to grayscale in-place (overwrite the original image files).",
+    "skill_reference": "ARGUMENTS: Convert the following image files to grayscale INPLACE (overwrite original files): /root/keyframes_001.png, /root/keyframes_002.png, /root/keyframes_003.png, /root/keyframes_004.png, /root/keyframes_005.png"
+  },
+  {
+    "reason": "To produce high-fidelity counts the worker used the recommended detection parameters; the skill explicitly recommended a high threshold and NMS distance, which the worker applied when running the counting script.",
+    "key_point": "Use a high detection threshold (e.g., 0.9) and perform Non-Maximum Suppression via --dedup_min_dist (recommended default 3) for reliable counting.",
+    "skill_reference": "For obtaining high fidelity object counting results, it's recommended to set a higher threshold, such as 0.9, also we need to do Non-Maximum Suppression using `--dedup_min_dist` flag (a good default value is 3)."
+  },
+  {
+    "reason": "The worker executed the provided counting script with the specific flags; this command form is the exact invocation pattern they used to count objects with a template image.",
+    "key_point": "Run the counting tool using: python3 scripts/count_objects.py --tool count --input_image <image> --object_image <template> --threshold 0.9 --dedup_min_dist 3.",
+    "skill_reference": "python3 scripts/count_objects.py \\\n    --tool count \\\n    --input_image <image file> \\\n    --object_image <object image file> \\\n    --threshold 0.9 \\\n    --dedup_min_dist 3"
+  },
+  {
+    "reason": "The worker was instructed to use all provided templates per object class and to report the summed result; they ran the counting script for each template and summed counts accordingly, following this explicit argument.",
+    "key_point": "For a given frame, run the count with every matching template for that object class and report the total count across all templates.",
+    "skill_reference": "ARGUMENTS: Count the number of coins in /root/keyframes_001.png using template images /root/coin1.png and /root/coin2.png. Use all provided templates and report the total coin count."
+  }
+]
