@@ -55,7 +55,7 @@ AGENTS: dict[str, dict] = {
         "run": 'gemini --yolo --output-format stream-json --model {model} -p "$(cat {instruction_file})"',
         "skill_dir": "/root/.gemini/skills",  # gemini CLI reads from here, not /root/.claude/skills
         "trajectory_tee": "/logs/agent/gemini-code.txt",
-        "default_model": "gemini-3.1-flash-lite-preview",
+        "default_model": "gemini-3.1-flash-lite",
     },
 }
 

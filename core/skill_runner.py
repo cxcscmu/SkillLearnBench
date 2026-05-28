@@ -540,6 +540,20 @@ def _run_teacher_student_loop(
             )
             feedback = _call_llm(teacher_user, model=model_name, system=_B3_TEACHER_SYSTEM)
 
+            teacher_dir = trial_path / "teacher"
+            teacher_dir.mkdir(exist_ok=True)
+            (teacher_dir / f"round{round_num}_prompt.txt").write_text(teacher_user, encoding="utf-8")
+            (teacher_dir / f"round{round_num}_feedback.txt").write_text(feedback, encoding="utf-8")
+            # Update history JSON each time so it survives an early return True on the next round
+            history_records = [
+                {"round": h["round"], "outcome": h["outcome"],
+                 "skills": [name for name, _ in h["skills"]]}
+                for h in history
+            ]
+            (teacher_dir / "b3_history.json").write_text(
+                json.dumps(history_records, indent=2), encoding="utf-8"
+            )
+
     return False, max_rounds, agent_exit, verifier_exit, agent_stdout, agent_stderr, total_steps
 
 

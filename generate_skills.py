@@ -276,10 +276,50 @@ MODEL_AGENT: dict[str, str] = {
     "claude-sonnet-4-6": "claude-code",
     "claude-opus-4-6": "claude-code",
     "claude-haiku-4-5": "claude-code",
-    "gemini-3.1-flash-lite-preview": "gemini-code",
+    "gemini-3.1-flash-lite": "gemini-code",
     "gemini-3-flash-preview": "gemini-code",
     "gemini-3.1-pro-preview": "gemini-code",
 }
+
+
+def _infer_agent(model: str) -> str | None:
+    """Infer agent ID from model name prefix for models not in MODEL_AGENT."""
+    if model.startswith("claude-"):
+        return "claude-code"
+    if model.startswith("gemini-"):
+        return "gemini-code"
+    return None
+
+
+def _check_api_key(provider: str) -> tuple[bool, str]:
+    """Make a lightweight real API call to verify the key for a provider works."""
+    if provider == "anthropic":
+        key = os.environ.get("ANTHROPIC_API_KEY", "")
+        if not key:
+            return False, "ANTHROPIC_API_KEY not set"
+        try:
+            import anthropic as _anthropic
+            _anthropic.Anthropic(api_key=key).models.list()
+            return True, ""
+        except Exception as e:
+            return False, f"ANTHROPIC_API_KEY invalid: {e}"
+    if provider == "gemini":
+        key = os.environ.get("GEMINI_API_KEY", "")
+        if not key:
+            return False, "GEMINI_API_KEY not set"
+        try:
+            from google import genai as _genai
+            from google.genai import types as _gtypes
+            _client = _genai.Client(api_key=key)
+            _client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents="hi",
+                config=_gtypes.GenerateContentConfig(max_output_tokens=1),
+            )
+            return True, ""
+        except Exception as e:
+            return False, f"GEMINI_API_KEY invalid: {e}"
+    return False, f"Unknown provider: {provider}"
 
 DEFAULT_METHODS = [
     "b1-one-shot",
@@ -433,7 +473,7 @@ def _collect_specs(
     """Collect all (task, method, model) trial specs."""
     specs = []
     for task_id, method, model in product(task_ids, methods, models):
-        agent_id = MODEL_AGENT.get(model)
+        agent_id = MODEL_AGENT.get(model) or _infer_agent(model)
         if not agent_id:
             _log(f"  [SKIP] Unknown model (no agent mapping): {model}")
             continue
@@ -1007,12 +1047,24 @@ def main() -> int:
     methods = args.methods or DEFAULT_METHODS
     models = args.models or DEFAULT_MODELS
 
-    # Validate models
-    unknown_models = [m for m in models if m not in MODEL_AGENT]
-    if unknown_models:
-        print(f"Unknown model(s): {', '.join(unknown_models)}", file=sys.stderr)
-        print(f"Valid models: {', '.join(DEFAULT_MODELS)}", file=sys.stderr)
+    # Validate models: infer provider from prefix, then verify the API key works
+    unroutable = [m for m in models if not _infer_agent(m)]
+    if unroutable:
+        print(f"Cannot determine provider for model(s): {', '.join(unroutable)}", file=sys.stderr)
+        print("Model names must start with 'claude-' or 'gemini-'", file=sys.stderr)
         return 2
+
+    providers_needed: set[str] = set()
+    for m in models:
+        if m.startswith("claude-"):
+            providers_needed.add("anthropic")
+        elif m.startswith("gemini-"):
+            providers_needed.add("gemini")
+    for provider in sorted(providers_needed):
+        ok, msg = _check_api_key(provider)
+        if not ok:
+            print(f"API key check failed [{provider}]: {msg}", file=sys.stderr)
+            return 2
 
     return hyper_run(
         task_ids,
