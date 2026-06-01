@@ -12,6 +12,8 @@ This query is evaluated with three exact RMSE checks computed from the matched o
 2. `annual_deep_rmse < 1.55`, where `annual_deep` means all matched pairs at rounded depths 13 m and deeper
 3. `summer_deep_rmse < 1.70`, where `summer` means months June-September and `deep` again means rounded depths 13 m and deeper
 
+When computing the final reported metrics, first perform the exact `datetime` + rounded-depth merge without dropping rows from the observations or from the merged table, even if an observed temperature value is missing or `NaN`. The `overall_n_pairs`, `annual_deep_n_pairs`, and `summer_deep_n_pairs` values must count the raw merged rows in their corresponding subsets before any `NaN` temperature values are excluded from arithmetic. For the RMSE values, compute the error series from the raw merged table and use standard pandas/numpy mean semantics, so `NaN` errors do not contribute to the mean but their rows still count in the `*_n_pairs` fields.
+
 Additional task rules:
 1. You may modify only these calibration parameters in `/root/glm3.nml`: `Kw`, `coef_mix_hyp`, `wind_factor`, `lw_factor`, and `ch`.
 2. Leave `sw_factor`, `cd`, `ce`, the initialization profile (`the_depths`, `the_temps`, `the_sals`), and all other settings unchanged.
