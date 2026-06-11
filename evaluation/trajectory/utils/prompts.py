@@ -3,7 +3,6 @@
 Metrics (LLM-as-judge):
   - execution_order               (1-5)
   - key_point                     (trajectory_key_point_recall)
-  - planning_quality              (1-5)
   - completeness                  (1-5)
 
 Preparation:
@@ -17,7 +16,7 @@ Preparation:
 
 GENERATE_ORACLE_TRAJECTORY_KEY_POINTS = """You are an expert at extracting critical execution key points from an agent trajectory.
 
-**Important**: Extract key points only from the oracle trajectory. Do not use or refer to any oracle skill document. The only input is the task instruction and the trajectory itself—the step-by-step execution trace of an agent that successfully completed the task.
+**Important**: Extract key points only from the oracle trajectory. Do not use or refer to any human-authored skill document. The only input is the task instruction and the trajectory itself—the step-by-step execution trace of an agent that successfully completed the task.
 
 <Input>
 - **Task instruction**: The task the agent was solving.
@@ -268,64 +267,6 @@ Example:
 {{ "label": "recalled", "reason": "The agent replaced placeholders at paragraph level and cleared other runs, matching the key point." }}
 
 Return JSON only, no other text.
-"""
-
-
-TRAJECTORY_PLANNING_QUALITY_SCORING = """# Task
-You are an expert evaluator assessing the **Planning Quality** of an AI agent prior to task execution.
-
-This metric evaluates the quality of any deliberate planning, goal decomposition, or strategic thinking the agent articulates *before or during its first substantive tool call* — not the execution itself.
-
-# Inputs
-
-## Task instruction
-{task_instruction}
-
-## Oracle reference execution path
-A canonical sequence of steps required to complete this task successfully.
-
-{oracle_compact_trajectory}
-
-## Generated trajectory
-{generated_trajectory}
-
-# Evaluation Procedure
-
-Work through the following steps before assigning a score:
-
-**Step 1 — Locate the planning section**
-Find any thinking, reasoning, or stated approach that appears *before the agent's first tool call*. If the agent proceeds directly to tool execution with no articulated plan or reasoning block, the maximum score is **2**.
-
-**Step 2 — Assess Task Comprehension**
-Does the agent correctly identify the specific goal, constraints, and requirements of *this* task? Identify at least one piece of task-specific understanding (e.g., naming a specific file, format, constraint, or data field mentioned in the task instruction). Generic restatements ("I will read the input and produce the output") that could apply to any task do not demonstrate task comprehension.
-
-**Step 3 — Assess Oracle Step Coverage**
-Count how many of the oracle's key steps the plan explicitly anticipates. A plan that covers fewer than half the oracle steps cannot score above **3**.
-
-**Step 4 — Assess Specificity**
-Does the plan name concrete elements from *this task* — specific filenames, tool names, data formats, or procedural details? A plan composed entirely of generic steps with no task-specific references cannot score above **3**.
-
-**Step 5 — Assign score using the rubric below**
-
-# Scoring Rubric
-
-1: No discernible pre-execution thinking, or the stated plan is entirely off-task and fundamentally misidentifies the goal.
-2: Agent proceeds directly to tool calls with no articulated plan, OR a plan is present but demonstrates no task-specific understanding and anticipates fewer than two oracle steps.
-3: A plan is present with at least one task-specific reference, but it is predominantly generic, covers fewer than half the oracle steps, or contains a significant factual error about the task.
-4: Plan is task-specific (names at least one concrete task element), covers most oracle steps, with at most one notable gap or imprecision.
-5: Plan is precise and task-specific throughout, covers all major oracle steps with correct sequencing, and would require minimal revision to guide execution directly.
-
-# Calibration Note
-Most agent plans fall in the 2–4 range. Score 2 should be assigned whenever the agent dives into execution with no articulated reasoning — this is common and should not default to 3. Score 5 is reserved for plans that are demonstrably execution-ready with full oracle coverage.
-
-# Output Format
-Return strictly valid JSON only:
-{{
-  "score": <integer in [1,5]>,
-  "reason": "<state whether a pre-execution plan was found, what task-specific elements it named, how many oracle steps it anticipated, then justify the score>"
-}}
-
-No markdown, no extra text.
 """
 
 

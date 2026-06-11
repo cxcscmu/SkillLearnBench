@@ -1,8 +1,8 @@
 """Centralized prompt templates for metrics/skill scripts."""
 
-GENERATE_KEY_POINTS_PROMPT_TEMPLATE = """You are an expert at extracting fine-grained critical key points from an oracle skill **as that skill text actually appears inside the worker trajectory**.
+GENERATE_KEY_POINTS_PROMPT_TEMPLATE = """You are an expert at extracting fine-grained critical key points from a human-authored skill **as that skill text actually appears inside the worker trajectory**.
 
-In this task, a worker agent successfully completed a task using an oracle skill. Your goal is to identify the smallest essential pieces of that skill **markdown (and follow-on material pasted into the log)** that the worker needed to solve the task—not to guess content from disk paths that never appear in the trajectory.
+In this task, a worker agent successfully completed a task using a human-authored skill. Your goal is to identify the smallest essential pieces of that skill **markdown (and follow-on material pasted into the log)** that the worker needed to solve the task—not to guess content from disk paths that never appear in the trajectory.
 
 <Input Information>
 
@@ -16,7 +16,7 @@ In this task, a worker agent successfully completed a task using an oracle skill
 
 </Input Information>
 
-<Where the oracle skill text lives in the trajectory>
+<Where the human-authored skill text lives in the trajectory>
 
 In typical agent logs (e.g. dataclaw / Claude-style transcripts), the **full skill document is injected into the conversation**, not only referenced by name:
 
@@ -25,9 +25,9 @@ In typical agent logs (e.g. dataclaw / Claude-style transcripts), the **full ski
    - A header line like **`Base directory for this skill: <path>`**
    - Then the **entire SKILL guide as markdown** (sections, code blocks, tables, “see reference.md”, etc.).
 
-That large **`user`** message **is the primary oracle skill document** for this evaluation. Treat every sentence and code sample inside it as skill content you may quote for `skill_reference`.
+That large **`user`** message **is the primary human-authored skill document** for this evaluation. Treat every sentence and code sample inside it as skill content you may quote for `skill_reference`.
 
-3. **Also** treat as part of the oracle skill any **later trajectory text** that clearly comes from the skill package because the worker followed it—e.g. **`user`** messages that paste file contents after the worker **`Read`** a path mentioned in that injected skill (e.g. `forms.md`, `reference.md`), or assistant turns that only exist because the skill told the worker to open them.
+3. **Also** treat as part of the human-authored skill any **later trajectory text** that clearly comes from the skill package because the worker followed it—e.g. **`user`** messages that paste file contents after the worker **`Read`** a path mentioned in that injected skill (e.g. `forms.md`, `reference.md`), or assistant turns that only exist because the skill told the worker to open them.
 
 **Do not** fabricate `skill_reference` quotes from files or paths that **do not appear** in the worker trajectory. If the trajectory truncates the skill body, only extract key points you can still ground in visible trajectory text.
 
@@ -47,11 +47,11 @@ Below is a **minimal pattern** showing where the skill lives (your real input wi
 
 Your key points must be **anchored** in content like the markdown block above, and in any **subsequent** trajectory excerpts that reproduce referenced files from that skill.
 
-</Where the oracle skill text lives in the trajectory>
+</Where the human-authored skill text lives in the trajectory>
 
 <Key Point Definition>
 
-A **key point** is a fine-grained, task-essential unit of knowledge, functionality, procedure, constraint, command, or decision rule from the oracle skill that the worker agent used or relied on.
+A **key point** is a fine-grained, task-essential unit of knowledge, functionality, procedure, constraint, command, or decision rule from the human-authored skill that the worker agent used or relied on.
 
 A key point must be:
 - **atomic**: it should express only one essential idea
@@ -127,13 +127,13 @@ Then examine the **worker trajectory** carefully and identify the concrete actio
 
 For each such dependency, ask:
 
-- What exact piece of the oracle skill enabled this?
+- What exact piece of the human-authored skill enabled this?
 - Can this dependency stand alone as one atomic key point?
 - Should this be split further because different parts were used in different trajectory steps?
 - Would removing just this one point make the task materially harder or more likely to fail?
 
 IMPORTANT:
-All markdown in the **injected skill `user` message**, plus any file contents **actually pasted into the trajectory** after the worker followed references from that skill, count as oracle skill content for extraction and quoting.
+All markdown in the **injected skill `user` message**, plus any file contents **actually pasted into the trajectory** after the worker followed references from that skill, count as human-authored skill content for extraction and quoting.
 
 Focus especially on where the worker trajectory:
 - invokes a specific capability from the skill
@@ -154,7 +154,7 @@ Return a JSON list:
 [
   {{
     "reason": "Explain why this specific atomic point is essential for completing the task, and indicate where it is used or implicitly relied upon in the worker trajectory.",
-    "key_point": "A fine-grained natural-language description of one atomic functionality, rule, procedure step, constraint, or code usage extracted from the oracle skill. Do NOT copy the original sentence.",
+    "key_point": "A fine-grained natural-language description of one atomic functionality, rule, procedure step, constraint, or code usage extracted from the human-authored skill. Do NOT copy the original sentence.",
     "skill_reference": "A contiguous exact quote from the worker trajectory (usually from the injected skill markdown user message). Copy character-for-character from the trajectory. Do not paraphrase."
   }}
 ]
@@ -165,7 +165,7 @@ Return JSON only.
 KEY_POINT_CLASSIFICATION_PROMPT_TEMPLATE = """You are evaluating whether a generated skill covers one key point.
 
 Task:
-- The key point is extracted from an oracle skill and represents an important piece of knowledge used by the worker agent to complete the task.
+- The key point is extracted from a human-authored skill and represents an important piece of knowledge used by the worker agent to complete the task.
 - Compare the key point with the generated skill text.
 - Return exactly one label:
   1 = mentioned
@@ -397,6 +397,7 @@ Does the skill contain **all information required for execution**?
 
 Check for missing:
 
+- task objectives
 - execution steps
 - required parameters
 - tool definitions
@@ -438,7 +439,7 @@ DO NOT judge based on writing quality or style.
 
 ## 4. Usability
 
-Can the skill be reused across different tasks?
+Can the skill generalize across different instances of the task, rather than being coupled to a single scenario?
 
 Penalize:
 
