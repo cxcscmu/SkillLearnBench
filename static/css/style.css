@@ -356,7 +356,7 @@ section.alt { background: var(--surface); border-top: 1px solid var(--border); b
   border: 1px solid var(--accent-soft2);
   border-radius: 999px;
   color: var(--text);
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -369,7 +369,7 @@ section.alt { background: var(--surface); border-top: 1px solid var(--border); b
   border-radius: 999px;
   color: #fff;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.2;
 }
