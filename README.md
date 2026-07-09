@@ -12,6 +12,8 @@
 
 **SkillLearnBench**: A benchmark for continual learning methods that generate agent skills for real-world tasks. <br>
 20 skill-dependent tasks · 15 sub-domains · 100 verified instances
+
+🔥Exciting news!🔥 Our paper has been accepted to COLM 2026! 🎉🎉
 </div>
 
 ## Installation
