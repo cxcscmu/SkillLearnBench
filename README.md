@@ -5,7 +5,7 @@
 <img src="SkillLearnBench_logo.png" alt="SkillLearnBench" width="900">
 
 [![Homepage](https://img.shields.io/badge/homepage-leaderboard-purple)](https://cxcscmu.github.io/SkillLearnBench)
-[![Paper](https://img.shields.io/badge/paper-arXiv-red)](https://arxiv.org/abs/2604.20087)
+[![Paper](https://img.shields.io/badge/paper-openreview-red)](https://openreview.net/pdf?id=ulrZEJrNXA)
 [![Tasks](https://img.shields.io/badge/tasks-20-blue)](#tasks)
 [![Methods](https://img.shields.io/badge/methods-4-green)](#baselines)
 [![License](https://img.shields.io/badge/license-MIT-orange)](LICENSE)
