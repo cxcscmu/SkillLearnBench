@@ -6,6 +6,7 @@
 
 [![Homepage](https://img.shields.io/badge/homepage-leaderboard-purple)](https://cxcscmu.github.io/SkillLearnBench)
 [![Paper](https://img.shields.io/badge/paper-openreview-red)](https://openreview.net/pdf?id=ulrZEJrNXA)
+[![Paper](https://img.shields.io/badge/poster-colm-red)](https://colm.eventhosts.cc/virtual/2026/poster/1764)
 [![Tasks](https://img.shields.io/badge/tasks-20-blue)](#tasks)
 [![Methods](https://img.shields.io/badge/methods-4-green)](#baselines)
 [![License](https://img.shields.io/badge/license-MIT-orange)](LICENSE)
